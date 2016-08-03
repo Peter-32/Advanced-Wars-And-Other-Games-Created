@@ -1,5 +1,5 @@
 package Dodger;
-import java.awt.BorderLayout;
+import java.awt.*;
 
 import java.util.LinkedList;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,7 +44,7 @@ public class GameBoard extends JFrame {
 
         // Main drawing panel
 
-        GameDrawingPanel gamePanel = new GameDrawingPanel();
+        GameDrawingPanel gamePanel = new GameDrawingPanel(this);
 
         // Make drawing area take up center of frame
 
@@ -130,16 +130,32 @@ class GameDrawingPanel extends JComponent {
 
     //// FIELDS
 
-    // stores a list of all BadGuys created
-
     private GameBoard gameBoard;
+    int width, height;
+
+    // Bad Guy fields.  All bad guys created in a collection, icons, and images.
+
     private LinkedList<BadGuy> badGuys = new LinkedList<BadGuy>();
+    ImageIcon badGuyIcon = null;
+    Image badGuyImg = null;
+    Image resizedBadGuyImg = null;
+    ImageIcon resizedBadGuyIcon = null;
+
+    // The player icon
+
+    ImageIcon playerIcon = null;
 
     //// CONSTRUCTOR
 
     GameDrawingPanel(GameBoard gameBoard) {
 
         this.gameBoard = gameBoard;
+        this.width = gameBoard.getWidth();
+        this.height = gameBoard.getHeight();
+
+        badGuyIcon = new ImageIcon("resources/baddie.png");
+        Image badGuyImg = badGuyIcon.getImage();
+        playerIcon = new ImageIcon("resources/player.png");
 
         // Start a thread to create Bad Guys at the top of the screen
 
@@ -161,14 +177,21 @@ class GameDrawingPanel extends JComponent {
 
     // METHODS
 
-    // generates Bad Guys that fall from the top of the screen at random positions, X velocity, and Y velocity.
-    // The starting X position should be slightly wider than the screen width.
+    public void paint(Graphics g) {
 
-    public void paint() {
+        Graphics2D graphicSettings = (Graphics2D)g;
 
-        // THIS NEEDS TO BE WORKED ON /////////////////////////////////////////////////////////////////////////
-        // loop through BadGuy array.  Draw different things based on X Y position
-        // youtube video has more information.  This is possibly the most confusing part of the rest of the project.
+        graphicSettings.setColor(Color.BLACK);
+        graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
+
+        graphicSettings.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        for (BadGuy badGuy : badGuys) {
+            resizedBadGuyImg = badGuyImg.getScaledInstance(badGuy.getSize(), badGuy.getSize(), java.awt.Image.SCALE_SMOOTH);
+            resizedBadGuyIcon = new ImageIcon(resizedBadGuyImg);
+            badGuyIcon.paintIcon(this, g, badGuy.getTopLeftXPos(), badGuy.getTopLeftYPos());
+        }
+
     }
 } // END OF GameDrawingPanel CLASS
 
@@ -227,9 +250,12 @@ class runBadGuyCreationThread implements Runnable{
     @Override
     synchronized public void run() {
 
+        // generates Bad Guys that fall from the top of the screen at random positions, X velocity, and Y velocity.
+        // The starting X position should be slightly wider than the screen width.
+
         while(!gameBoard.getGameOver()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(400);
                 this.topLeftXPos = (int) (Math.random() * (gameBoard.getWidth() + 141)) - 70; // from -70 to gameBoard.getWidth() + 70
                 this.topLeftYPos = -50; // always the same
                 this.xVelocity = (int) (Math.random() * 4); // magnitude of the x velocity is 0 to 3

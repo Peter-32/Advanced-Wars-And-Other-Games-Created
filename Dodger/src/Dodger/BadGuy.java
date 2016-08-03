@@ -7,7 +7,7 @@ public class BadGuy {
 
     // FIELDS
 
-    int topLeftXPos, topLeftYPos, xVelocity, yVelocity, size;
+    private int topLeftXPos, topLeftYPos, xVelocity, yVelocity, size;
 
     // CONSTRUCTOR
 
@@ -19,4 +19,38 @@ public class BadGuy {
         this.size = size;
 
     } // END OF BadGuy CONSTRUCTOR
+
+    public int getTopLeftXPos() {
+        return topLeftXPos;
+    }
+    public void setTopLeftXPos(int topLeftXPos) {
+        this.topLeftXPos = topLeftXPos;
+    }
+    public int getTopLeftYPos() {
+        return topLeftYPos;
+    }
+    public void setTopLeftYPos(int topLeftYPos) {
+        this.topLeftYPos = topLeftYPos;
+    }
+    public int getXVelocity() {
+        return xVelocity;
+    }
+    public void setXVelocity(int xVelocity) {
+        this.xVelocity = xVelocity;
+    }
+    public int getYVelocity() {
+        return yVelocity;
+    }
+    public void setYVelocity (int yVelocity) {
+        this.yVelocity = yVelocity;
+    }
+    public int getSize() {
+        return size;
+    }
+    public void setSize (int size) {
+        this.size = size;
+    }
+
+
+
 }
