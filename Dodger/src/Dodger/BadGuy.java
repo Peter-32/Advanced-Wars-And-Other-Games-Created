@@ -9,9 +9,14 @@ public class BadGuy {
 
     private int topLeftXPos, topLeftYPos, xVelocity, yVelocity, size;
 
-    // CONSTRUCTOR
+    // GameDrawingPanel is used to remove BadGuys from the Bad Guy array when they fall down off the screen.
 
-    public BadGuy(int topLeftXPos, int topLeftYPos, int xVelocity, int yVelocity, int size) {
+    GameBoard gameBoard;
+
+    //// CONSTRUCTOR
+
+    BadGuy(GameBoard gameBoard, int topLeftXPos, int topLeftYPos, int xVelocity, int yVelocity, int size) {
+        this.gameBoard = gameBoard;
         this.topLeftXPos = topLeftXPos;
         this.topLeftYPos = topLeftYPos;
         this.xVelocity = xVelocity;
@@ -19,6 +24,8 @@ public class BadGuy {
         this.size = size;
 
     } // END OF BadGuy CONSTRUCTOR
+
+    //// GETTERS AND SETTERS
 
     public int getTopLeftXPos() {
         return topLeftXPos;
@@ -51,6 +58,18 @@ public class BadGuy {
         this.size = size;
     }
 
+    ////METHODS
 
+    void move() {
+
+        if(getTopLeftYPos() < -10) {
+            gameBoard.removeBadGuys(this);
+            return;
+        }
+
+        topLeftXPos += xVelocity;
+        topLeftYPos += yVelocity;
+
+    }
 
 }
