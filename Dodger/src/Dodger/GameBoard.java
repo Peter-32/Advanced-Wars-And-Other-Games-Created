@@ -151,7 +151,6 @@ class MainGameLoop implements Runnable {
 
     MainGameLoop(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        badGuys = gameBoard.getBadGuys();
 
     } //END OF MainGameLoop CONSTRUCTOR
 
@@ -160,9 +159,14 @@ class MainGameLoop implements Runnable {
     @Override
     public void run() {
 
-        // move the player
+        // move the player and Bad Guys
+
         movePlayer();
         moveBadGuys();
+
+        // check for collision
+
+
 
         // Redraws the game board
 
@@ -305,9 +309,9 @@ class runBadGuyCreationThread implements Runnable{
 
         while(!gameBoard.getGameOver()) {
             try {
-                Thread.sleep(400);
+                Thread.sleep(200);
                 this.topLeftXPos = (int) (Math.random() * (gameBoard.getWidth() + 141)) - 70; // from -70 to gameBoard.getWidth() + 70
-                this.topLeftYPos = -50; // always the same
+                this.topLeftYPos = -50; // always the same  -50
                 this.xVelocity = (int) (Math.random() * 4); // magnitude of the x velocity is 0 to 3
                 this.yVelocity = (int) (Math.random() * 3) + 1; // between 1 and 3
                 this.size = (int) (Math.random() * 41) + 10; // between 10 and 50

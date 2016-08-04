@@ -62,7 +62,7 @@ public class BadGuy {
 
     void move() {
 
-        if(getTopLeftYPos() < -10) {
+        if(getTopLeftYPos() > gameBoard.getHeight() + 10) {
             gameBoard.removeBadGuys(this);
             return;
         }
