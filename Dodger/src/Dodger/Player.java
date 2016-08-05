@@ -1,5 +1,7 @@
 package Dodger;
 
+import java.awt.*;
+
 /**
  * Created by Peter on 8/3/2016.
  */
@@ -40,6 +42,20 @@ public class Player {
     public void setSize (int size) {
         this.size = size;
     }
+    int getXCenter() {
+        return topLeftXPos + (int)(size/2);
+    }
+    int getYCenter() {
+        return topLeftYPos + (int)(size/2);
+    }
+
+    //// METHODS
+
+    // used for collison detection
+
+    Rectangle getBounds() {
+        return new Rectangle(topLeftXPos,topLeftYPos,size,size);
+    }
 
     void move(int xDirection, int yDirection) {
 
@@ -50,10 +66,10 @@ public class Player {
 
         // places you back on the screen if moving off the screen
 
-        if (topLeftXPos < 0) topLeftXPos = 0;
-        if (topLeftYPos < 0) topLeftYPos = 0;
-        if (topLeftXPos + size > gameBoard.getWidth()) topLeftXPos = gameBoard.getWidth() - size;
-        if (topLeftYPos + size > gameBoard.getHeight()) topLeftYPos = gameBoard.getWidth() - size;
+        if (topLeftXPos < 10) topLeftXPos = 10;
+        if (topLeftYPos < 10) topLeftYPos = 10;
+        if (topLeftXPos + (2 * size) > gameBoard.getWidth()) topLeftXPos = gameBoard.getWidth() - (2 * size);
+        if (topLeftYPos + (3 * size) > gameBoard.getHeight()) topLeftYPos = gameBoard.getHeight() - (3 * size);
 
     }
 

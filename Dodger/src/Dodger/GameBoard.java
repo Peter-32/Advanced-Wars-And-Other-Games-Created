@@ -1,15 +1,24 @@
 package Dodger;
-import java.awt.*;
 
+
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.LinkedList;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+// import sound libraries
+
+import javax.sound.sampled.*;
+import java.io.IOException;
+import java.net.*;
 
 import javax.swing.*;
+
+//import static javafx.scene.input.KeyCode.T;
 
 /**
  * Created by Peter on 8/1/2016.
@@ -23,12 +32,34 @@ public class GameBoard extends JFrame {
     private int score = 0;
     private int topScore = 0;
     private boolean gameOver = false;
-    private int pressedKeyCode = 32;  // space
-    private LinkedList<BadGuy> badGuys = new LinkedList<BadGuy>();
+    private boolean keyUpPressed = false;
+    private boolean keyRightPressed = false;
+    private boolean keyDownPressed = false;
+    private boolean keyLeftPressed = false;
+
+
+    // sound files
+
+    private String backgroundMusic = "file:./resources/background.mid";
+    private String gameOverMusic = "file:./resources/gameover.wav";
+    private Clip clip = null;
+
+    // use this to lock for write operations like add/remove
+
+    private final Lock readLock;
+
+    // use this to lock for read operations like get/iterator/contains..
+
+    private final Lock writeLock;
+
+    // the underlying list
+
+    private final List<BadGuy> badGuys = new ArrayList();
 
     // Player starts towards bottom vertically and toward the middle horizontally
 
-    private Player player = new Player(this,width / 2 - 12, 3 * height / 2, 25);
+    private Player player = new Player(this,(width / 2) - 12, 3 * height / 4, 25);
+
 
     //// MAIN
 
@@ -44,6 +75,16 @@ public class GameBoard extends JFrame {
         this.setSize(width, height);
         this.setTitle("Dodger");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // locks
+
+        ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+        readLock = rwLock.readLock();
+        writeLock = rwLock.writeLock();
+
+        // Start the background music
+
+        playMusic(backgroundMusic, true);
 
         // Keep track of the score
 
@@ -66,12 +107,28 @@ public class GameBoard extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                pressedKeyCode = e.getKeyCode (); // store the most recent key code used this frame
+                if (e.getKeyCode() == 87 || e.getKeyCode() == 38) {
+                    keyUpPressed = true;
+                } else if (e.getKeyCode() == 68 || e.getKeyCode() == 39) {
+                    keyRightPressed = true;
+                } else if (e.getKeyCode() == 83 || e.getKeyCode() == 40) {
+                    keyDownPressed = true;
+                } else if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
+                    keyLeftPressed = true;
+                }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                pressedKeyCode = 32;  // space
+                if (e.getKeyCode() == 87 || e.getKeyCode() == 38) {
+                    keyUpPressed = false;
+                } else if (e.getKeyCode() == 68 || e.getKeyCode() == 39) {
+                    keyRightPressed = false;
+                } else if (e.getKeyCode() == 83 || e.getKeyCode() == 40) {
+                    keyDownPressed = false;
+                } else if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
+                    keyLeftPressed = false;
+                }
             }
         });
 
@@ -120,34 +177,99 @@ public class GameBoard extends JFrame {
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
     }
-    public int getPressedKeyCode() { return pressedKeyCode;}
-    public LinkedList<BadGuy> getBadGuys() {
-        return badGuys;
+    public boolean getKeyUpPressed() { return keyUpPressed;}
+    public boolean getKeyRightPressed() { return keyRightPressed;}
+    public boolean getKeyDownPressed() { return keyDownPressed;}
+    public boolean getKeyLeftPressed() { return keyLeftPressed;}
+    public Iterator<BadGuy> badGuyIterator() {
+        readLock.lock();
+        try {
+            return new ArrayList<BadGuy>(badGuys).iterator();
+            // we iterator over a snapshot of our list
+        } finally {
+            readLock.unlock();
+        }
     }
-    public void addBadGuys(BadGuy badGuy) {
-        this.badGuys.add(badGuy);
+    public void addBadGuys(BadGuy e) {
+        writeLock.lock();
+        try {
+            badGuys.add(e);
+        } finally{
+            writeLock.unlock();
+        }
     }
-    public void removeBadGuys(BadGuy badGuy) {
-        this.badGuys.remove(badGuy);
+    public void removeBadGuys(BadGuy e) {
+        writeLock.lock();
+        try {
+            badGuys.remove(e);
+        } finally{
+            writeLock.unlock();
+        }
     }
     public Player getPlayer() {
         return player;
     }
     //// METHODS
 
+    // plays music files
+
+    public void playMusic(String soundToPlay, boolean loop) {
+
+        int numLoops = (loop) ? Clip.LOOP_CONTINUOUSLY : 0;
+        URL soundLocation;
+
+        try {
+            soundLocation = new URL(soundToPlay);
+
+            // end any existing clips
+
+            if (clip != null) {
+                if (clip.isActive()) {
+                    clip.stop();
+                }
+            }
+
+
+            // start a new clip
+
+            clip = AudioSystem.getClip();
+
+            AudioInputStream inputStream;
+
+            inputStream = AudioSystem.getAudioInputStream(soundLocation);
+
+            clip.open(inputStream);
+            clip.loop(numLoops);
+            clip.start();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // used when the game ends
+
+    void GameOver() {
+        // play music
+        playMusic(gameOverMusic, false);
+        // make a display screen
+        //setVisible(false);
+        JOptionPane.showMessageDialog(this, "Game Over!");
+        // restart game if option is chosen
+        //dispose();
+        new GameBoard();
+    }
+
 } // END OF GameBoard CLASS
-
-class GameOver {
-    // play music
-
-    // make a display screen
-
-    // restart game if option is chosen
-
-}
 
 class MainGameLoop implements Runnable {
     private GameBoard gameBoard;
+    Iterator<BadGuy> tempIterator;
 
     MainGameLoop(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
@@ -158,39 +280,52 @@ class MainGameLoop implements Runnable {
 
     @Override
     public void run() {
-
+        if (gameBoard.getGameOver()) return;
         // move the player and Bad Guys
 
         movePlayer();
         moveBadGuys();
 
+        /*
         // check for collision
 
+        gameBoard.getPlayer().getBounds();
 
+        tempIterator = gameBoard.badGuyIterator();
+        while(tempIterator.hasNext()) {
+            tempIterator.next().getBounds();
+        } */
 
         // Redraws the game board
 
         gameBoard.repaint();
+
 
     }
 
     // Move the player 5 pixels if a key is down
 
     private void movePlayer() {
-        if (gameBoard.getPressedKeyCode() == 87) {
-            gameBoard.getPlayer().move(0,-5);
-        } else if (gameBoard.getPressedKeyCode() == 68) {
-            gameBoard.getPlayer().move(5,0);
-        } else if (gameBoard.getPressedKeyCode() == 83) {
+
+        if (gameBoard.getKeyUpPressed()) {
             gameBoard.getPlayer().move(0,5);
-        } else if (gameBoard.getPressedKeyCode() == 65) {
+        }
+        if (gameBoard.getKeyRightPressed()) {
             gameBoard.getPlayer().move(-5,0);
         }
+        if (gameBoard.getKeyDownPressed()) {
+            gameBoard.getPlayer().move(0,-5);
+        }
+        if (gameBoard.getKeyLeftPressed()) {
+            gameBoard.getPlayer().move(5,0);
+        }
+
     }
 
     private void moveBadGuys() {
-        for (BadGuy badGuy : gameBoard.getBadGuys()) {
-            badGuy.move();
+        tempIterator = gameBoard.badGuyIterator();
+        while(tempIterator.hasNext()) {
+            tempIterator.next().move();
         }
     }
 
@@ -208,6 +343,9 @@ class GameDrawingPanel extends JComponent {
     Image badGuyImg = null;
     Image resizedBadGuyImg = null;
     ImageIcon resizedBadGuyIcon = null;
+    Image playerImg = null;
+    Image resizedPlayerImg = null;
+    ImageIcon resizedPlayerIcon = null;
 
     // The player icon
 
@@ -221,6 +359,12 @@ class GameDrawingPanel extends JComponent {
         badGuyIcon = new ImageIcon("resources/baddie.png");
         badGuyImg = badGuyIcon.getImage();
         playerIcon = new ImageIcon("resources/player.png");
+        playerImg = playerIcon.getImage();
+
+        // resize the player icon
+
+        resizedPlayerImg = playerImg.getScaledInstance(gameBoard.getPlayer().getSize(), gameBoard.getPlayer().getSize(), java.awt.Image.SCALE_SMOOTH);
+        resizedPlayerIcon = new ImageIcon(resizedPlayerImg);
 
         // Start a thread to create Bad Guys at the top of the screen
 
@@ -240,11 +384,19 @@ class GameDrawingPanel extends JComponent {
 
         graphicSettings.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        for (BadGuy badGuy : gameBoard.getBadGuys()) {
+        Iterator<BadGuy> tempIterator = gameBoard.badGuyIterator();
+
+        while(tempIterator.hasNext()) {
+            BadGuy badGuy = tempIterator.next();
             resizedBadGuyImg = badGuyImg.getScaledInstance(badGuy.getSize(), badGuy.getSize(), java.awt.Image.SCALE_SMOOTH);
             resizedBadGuyIcon = new ImageIcon(resizedBadGuyImg);
             resizedBadGuyIcon.paintIcon(this, g, badGuy.getTopLeftXPos(), badGuy.getTopLeftYPos());
+
         }
+
+        // draw the player at their location
+
+        resizedPlayerIcon.paintIcon(this, g, gameBoard.getPlayer().getTopLeftXPos(), gameBoard.getPlayer().getTopLeftYPos());
 
     }
 } // END OF GameDrawingPanel CLASS

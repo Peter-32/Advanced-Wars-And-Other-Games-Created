@@ -1,5 +1,7 @@
 package Dodger;
 
+import java.awt.*;
+
 /**
  * Created by Peter on 8/1/2016.
  */
@@ -57,12 +59,30 @@ public class BadGuy {
     public void setSize (int size) {
         this.size = size;
     }
+    int getXCenter() {
+        return topLeftXPos + (int)(size/2);
+    }
+    int getYCenter() {
+        return topLeftYPos + (int)(size/2);
+    }
 
     ////METHODS
 
+    // used for collison detection
+
+    Rectangle getBounds() {
+        return new Rectangle(topLeftXPos,topLeftYPos,size,size);
+    }
+
     void move() {
 
+        // The bad guy's bounds for collison detection
+        Rectangle badGuyBounds = getBounds();
+
         if(getTopLeftYPos() > gameBoard.getHeight() + 10) {
+
+            // first check for collison
+
             gameBoard.removeBadGuys(this);
             return;
         }
@@ -70,6 +90,13 @@ public class BadGuy {
         topLeftXPos += xVelocity;
         topLeftYPos += yVelocity;
 
+        // now check for collison
+        Rectangle playerBox = gameBoard.getPlayer().getBounds();
+
+        if (badGuyBounds.intersects(playerBox)) {
+            gameBoard.setGameOver(true);
+            gameBoard.GameOver();
+        }
     }
 
 }
