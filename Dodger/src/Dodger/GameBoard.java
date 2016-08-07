@@ -86,15 +86,15 @@ public class GameBoard extends JFrame {
 
         playMusic(backgroundMusic, true);
 
-        // Keep track of the score
-
-        Runnable runScoreAccumulator = new runScoreAccumulatorThread(this);
-        new Thread(runScoreAccumulator).start();
-
         // Create the main drawing panel and place it in the center of the gameBoard JFrame
 
-        GameDrawingPanel gamePanel = new GameDrawingPanel(this);
-        this.add(gamePanel, BorderLayout.CENTER);
+        GameDrawingPanel gameDrawingPanel = new GameDrawingPanel(this);
+        this.add(gameDrawingPanel, BorderLayout.CENTER);
+
+        // Keep track of the score
+
+        Runnable runScoreAccumulator = new runScoreAccumulatorThread(this, gameDrawingPanel);
+        new Thread(runScoreAccumulator).start();
 
         // Set up user input
 
@@ -409,10 +409,11 @@ class runScoreAccumulatorThread implements Runnable{
     // FIELDS
 
     private GameBoard gameBoard;
+    private GameDrawingPanel gameDrawingPanel;
 
     // CONSTRUCTOR
 
-    runScoreAccumulatorThread(GameBoard gameBoard) {
+    runScoreAccumulatorThread(GameBoard gameBoard, GameDrawingPanel gameDrawingPanel) {
         this.gameBoard = gameBoard;
 
     } // END OF runScoreAccumulatorThread CONSTRUCTOR

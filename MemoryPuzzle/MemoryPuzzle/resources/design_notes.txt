@@ -1,0 +1,56 @@
+GameBoard:
+width
+height
+cardsInRow
+cardsInCol
+possibleColors  Arraylist
+possibleShapes  Arraylist
+cardsRevealed  Arraylist
+firstChoice
+
+
+GameBoard(numberOfPairsOfPatterns) {
+	Can support only up to so many patterns (Colors times patterns)
+
+	Set up JFrame and exit on close
+	populate
+	shuffle
+	
+  click listener might be here
+
+
+
+}
+
+populateList()
+shuffleList()
+clickedOnBox()
+
+
+
+
+GameOver:
+GameOver() {
+   clapping sound
+   message displayed
+   create new GameBoard
+}
+
+
+
+GameDrawingPanel :
+paint()
+	loop through and draw either card or pattern based on revealed.	
+
+
+draw(shape,color)
+
+
+
+
+MainGameLoop:
+MainGameLoop() {
+  click listener might be here
+  repaint();
+  ALL Input commands should work here.
+}

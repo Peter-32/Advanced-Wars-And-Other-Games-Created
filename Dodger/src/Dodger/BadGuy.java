@@ -11,8 +11,6 @@ public class BadGuy {
 
     private int topLeftXPos, topLeftYPos, xVelocity, yVelocity, size;
 
-    // GameDrawingPanel is used to remove BadGuys from the Bad Guy array when they fall down off the screen.
-
     GameBoard gameBoard;
 
     //// CONSTRUCTOR
