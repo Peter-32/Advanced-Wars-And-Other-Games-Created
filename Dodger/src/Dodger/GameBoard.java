@@ -185,7 +185,7 @@ public class GameBoard extends JFrame {
         readLock.lock();
         try {
             return new ArrayList<BadGuy>(badGuys).iterator();
-            // we iterator over a snapshot of our list
+            // we iterate over a snapshot of our list
         } finally {
             readLock.unlock();
         }

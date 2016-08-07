@@ -52,5 +52,5 @@ MainGameLoop:
 MainGameLoop() {
   click listener might be here
   repaint();
-  ALL Input commands should work here.
+  ALL Input commands should be checked here
 }

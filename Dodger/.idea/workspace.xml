@@ -25,11 +25,10 @@
       <file leaf-file-name="GameBoard.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Dodger/GameBoard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-54">
-              <caret line="373" column="6" selection-start-line="373" selection-start-column="6" selection-end-line="373" selection-end-column="44" />
+            <state relative-caret-position="497">
+              <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="199" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -57,6 +56,8 @@
                 <element signature="e#1031#1032#0" expanded="false" />
                 <element signature="e#1054#1055#0" expanded="false" />
                 <element signature="e#1104#1105#0" expanded="false" />
+                <element signature="e#1187#1188#0" expanded="false" />
+                <element signature="e#1258#1259#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -92,6 +93,8 @@
                 <element signature="e#1451#1452#0" expanded="false" />
                 <element signature="e#1474#1475#0" expanded="false" />
                 <element signature="e#1524#1525#0" expanded="false" />
+                <element signature="e#1606#1607#0" expanded="false" />
+                <element signature="e#1677#1678#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -121,10 +124,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1696" />
-    <option name="height" value="1026" />
+    <option name="x" value="-1928" />
+    <option name="y" value="73" />
+    <option name="width" value="1936" />
+    <option name="height" value="1096" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -151,7 +154,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -213,11 +215,12 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../MemoryPuzzle" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/Peter/Java Projects/Game_Clones/Dodger/src/Dodger/GameBoard.java" />
   </component>
   <component name="RunManager" selected="Application.GameBoard">
@@ -556,7 +559,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
+    <frame x="-1928" y="73" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -568,7 +571,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21845238" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19114584" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -597,7 +600,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -612,7 +615,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -638,6 +640,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -671,6 +675,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -681,7 +687,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -707,6 +712,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -740,6 +747,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -750,7 +759,78 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Dodger/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="2" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="2" />
+          <folding>
+            <element signature="e#541#542#0" expanded="false" />
+            <element signature="e#575#576#0" expanded="false" />
+            <element signature="e#625#626#0" expanded="false" />
+            <element signature="e#671#672#0" expanded="false" />
+            <element signature="e#705#706#0" expanded="false" />
+            <element signature="e#739#740#0" expanded="false" />
+            <element signature="e#789#790#0" expanded="false" />
+            <element signature="e#835#836#0" expanded="false" />
+            <element signature="e#862#863#0" expanded="false" />
+            <element signature="e#889#890#0" expanded="false" />
+            <element signature="e#926#927#0" expanded="false" />
+            <element signature="e#958#959#0" expanded="false" />
+            <element signature="e#981#982#0" expanded="false" />
+            <element signature="e#1031#1032#0" expanded="false" />
+            <element signature="e#1054#1055#0" expanded="false" />
+            <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Dodger/BadGuy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="69" selection-start-line="11" selection-start-column="69" selection-end-line="11" selection-end-column="69" />
+          <folding>
+            <element signature="e#656#657#0" expanded="false" />
+            <element signature="e#690#691#0" expanded="false" />
+            <element signature="e#740#741#0" expanded="false" />
+            <element signature="e#786#787#0" expanded="false" />
+            <element signature="e#820#821#0" expanded="false" />
+            <element signature="e#854#855#0" expanded="false" />
+            <element signature="e#904#905#0" expanded="false" />
+            <element signature="e#950#951#0" expanded="false" />
+            <element signature="e#982#983#0" expanded="false" />
+            <element signature="e#1014#1015#0" expanded="false" />
+            <element signature="e#1060#1061#0" expanded="false" />
+            <element signature="e#1102#1103#0" expanded="false" />
+            <element signature="e#1134#1135#0" expanded="false" />
+            <element signature="e#1166#1167#0" expanded="false" />
+            <element signature="e#1213#1214#0" expanded="false" />
+            <element signature="e#1255#1256#0" expanded="false" />
+            <element signature="e#1282#1283#0" expanded="false" />
+            <element signature="e#1309#1310#0" expanded="false" />
+            <element signature="e#1346#1347#0" expanded="false" />
+            <element signature="e#1378#1379#0" expanded="false" />
+            <element signature="e#1401#1402#0" expanded="false" />
+            <element signature="e#1451#1452#0" expanded="false" />
+            <element signature="e#1474#1475#0" expanded="false" />
+            <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Dodger/GameBoard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -776,6 +856,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -809,6 +891,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -819,7 +903,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -845,6 +928,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -878,6 +963,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -888,7 +975,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -914,6 +1000,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -947,6 +1035,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -957,7 +1047,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -983,6 +1072,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1016,6 +1107,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1026,7 +1119,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1052,6 +1144,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1085,6 +1179,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1095,7 +1191,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1129,6 +1224,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1139,7 +1236,6 @@
           <caret line="253" column="0" selection-start-line="253" selection-start-column="0" selection-end-line="253" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1173,6 +1269,8 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1214,6 +1312,8 @@
             <element signature="e#1031#1032#0" expanded="false" />
             <element signature="e#1054#1055#0" expanded="false" />
             <element signature="e#1104#1105#0" expanded="false" />
+            <element signature="e#1187#1188#0" expanded="false" />
+            <element signature="e#1258#1259#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1247,17 +1347,18 @@
             <element signature="e#1451#1452#0" expanded="false" />
             <element signature="e#1474#1475#0" expanded="false" />
             <element signature="e#1524#1525#0" expanded="false" />
+            <element signature="e#1606#1607#0" expanded="false" />
+            <element signature="e#1677#1678#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Dodger/GameBoard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-54">
-          <caret line="373" column="6" selection-start-line="373" selection-start-column="6" selection-end-line="373" selection-end-column="44" />
+        <state relative-caret-position="497">
+          <caret line="192" column="0" selection-start-line="192" selection-start-column="0" selection-end-line="199" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#badGuyIterator#0;class#GameBoard#0" expanded="false" />
           </folding>
         </state>
       </provider>
