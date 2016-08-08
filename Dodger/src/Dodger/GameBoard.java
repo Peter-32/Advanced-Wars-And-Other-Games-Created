@@ -286,16 +286,6 @@ class MainGameLoop implements Runnable {
         movePlayer();
         moveBadGuys();
 
-        /*
-        // check for collision
-
-        gameBoard.getPlayer().getBounds();
-
-        tempIterator = gameBoard.badGuyIterator();
-        while(tempIterator.hasNext()) {
-            tempIterator.next().getBounds();
-        } */
-
         // Redraws the game board
 
         gameBoard.repaint();
@@ -339,17 +329,17 @@ class GameDrawingPanel extends JComponent {
 
     // Bad Guy fields.  All bad guys created in a collection, icons, and images.
 
-    ImageIcon badGuyIcon = null;
-    Image badGuyImg = null;
-    Image resizedBadGuyImg = null;
-    ImageIcon resizedBadGuyIcon = null;
-    Image playerImg = null;
-    Image resizedPlayerImg = null;
-    ImageIcon resizedPlayerIcon = null;
+    private ImageIcon badGuyIcon = null;
+    private Image badGuyImg = null;
+    private Image resizedBadGuyImg = null;
+    private ImageIcon resizedBadGuyIcon = null;
+    private Image playerImg = null;
+    private Image resizedPlayerImg = null;
+    private ImageIcon resizedPlayerIcon = null;
 
     // The player icon
 
-    ImageIcon playerIcon = null;
+    private ImageIcon playerIcon = null;
 
     //// CONSTRUCTOR
 

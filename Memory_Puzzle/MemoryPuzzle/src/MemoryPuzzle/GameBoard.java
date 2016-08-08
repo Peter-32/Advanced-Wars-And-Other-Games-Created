@@ -1,9 +1,13 @@
 package MemoryPuzzle;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,14 +24,17 @@ public class GameBoard extends JFrame {
 
     //// FIELDS
 
-    private int width;
-    private int height;
+    private int width = 1200;
+    private int height = 900;
     private int numCardsInRow;
     private int numCardsInCol;
+    private int northAndSouthMargin = 200;
+    private int eastAndWestMargin = 200;
     private int cardWidth = 30;
     private int cardHeight = 30;
     private int cardsHorizontalMargin = 5;
     private int cardsVerticalMargin = 5;
+    private int turnNumber = 0;
     private int numberOfPairsOfPatterns;
     private int numberOfPatterns;
     private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","indigo","purple","yellow","orange"));
@@ -40,11 +47,20 @@ public class GameBoard extends JFrame {
 
     // A player chooses two cards to see if they match, this is the idx of the first choice
 
-    private int firstChoiceIdx;
+    private int firstChoiceIdx = -1;
 
-    // A player chooses two cards to see if they match, if one is chosen this will be true
+    // This is the idx of the second choice
+
+    private int secondChoiceIdx = -1;
+
+    // If one box is clicked on this should be true
 
     private boolean madeFirstChoice = false;
+
+    // sound files
+
+    private String backgroundMusic = "file:./resources/game_music.wav";
+    private Clip clip = null;
 
     // use this to lock for write operations like add/remove
 
@@ -54,17 +70,16 @@ public class GameBoard extends JFrame {
 
     private final Lock writeLock;
 
+
     //// CONSTRUCTOR
 
     GameBoard(int numberOfPairsOfPatterns) {
 
         // initialize the JFrame
 
-        this.numberOfPairsOfPatterns = (numberOfPairsOfPatterns > 49) ? 49 : numberOfPairsOfPatterns;
-
-        this.numberOfPairsOfPatterns = (this.numberOfPairsOfPatterns < 1) ? 1 : this.numberOfPairsOfPatterns;
-
-        this.numberOfPatterns = numberOfPairsOfPatterns * 2;
+        this.setSize(width, height);
+        this.setTitle("Memory Puzzle");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // locks
 
@@ -72,6 +87,22 @@ public class GameBoard extends JFrame {
         readLock = rwLock.readLock();
         writeLock = rwLock.writeLock();
 
+        // Start the background music
+
+        playMusic(backgroundMusic, true);
+
+        // Create the main drawing panel and place it in the center of the gameBoard JFrame
+
+        GameDrawingPanel gameDrawingPanel = new GameDrawingPanel(this);
+        this.add(gameDrawingPanel, BorderLayout.CENTER);
+
+        // Set up some field values
+
+        this.numberOfPairsOfPatterns = (numberOfPairsOfPatterns > 49) ? 49 : numberOfPairsOfPatterns;
+
+        this.numberOfPairsOfPatterns = (this.numberOfPairsOfPatterns < 1) ? 1 : this.numberOfPairsOfPatterns;
+
+        this.numberOfPatterns = numberOfPairsOfPatterns * 2;
 
         // populate the arraylists
 
@@ -137,6 +168,12 @@ public class GameBoard extends JFrame {
     public int getNumCardsInCol() {
         return numCardsInCol;
     }
+    public int getNorthAndSouthMargin() {
+        return northAndSouthMargin;
+    }
+    public int getEastAndWestMargin() {
+        return eastAndWestMargin;
+    }
     public int getCardWidth() {
         return cardWidth;
     }
@@ -148,6 +185,12 @@ public class GameBoard extends JFrame {
     }
     public int getCardsVerticalMargin() {
         return cardsVerticalMargin;
+    }
+    public int getTurnNumber() {
+        return turnNumber;
+    }
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
     }
     public int getNumberOfPairsOfPatterns() {
         return numberOfPairsOfPatterns;
@@ -187,6 +230,12 @@ public class GameBoard extends JFrame {
     public void setFirstChoiceIdx(int firstChoiceIdx) {
         this.firstChoiceIdx = firstChoiceIdx;
     }
+    public int getSecondChoiceIdx() {
+        return secondChoiceIdx;
+    }
+    public void setSecondChoiceIdx(int secondChoiceIdx) {
+        this.secondChoiceIdx = secondChoiceIdx;
+    }
     public boolean getMadeFirstChoice() {
         return madeFirstChoice;
     }
@@ -195,23 +244,63 @@ public class GameBoard extends JFrame {
     }
 
     //// METHODS
+
+    public void playMusic(String soundToPlay, boolean loop) {
+
+        int numLoops = (loop) ? Clip.LOOP_CONTINUOUSLY : 0;
+        URL soundLocation;
+
+        try {
+            soundLocation = new URL(soundToPlay);
+
+            // end any existing clips
+
+            if (clip != null) {
+                if (clip.isActive()) {
+                    clip.stop();
+                }
+            }
+
+
+            // start a new clip
+
+            clip = AudioSystem.getClip();
+
+            AudioInputStream inputStream;
+
+            inputStream = AudioSystem.getAudioInputStream(soundLocation);
+
+            clip.open(inputStream);
+            clip.loop(numLoops);
+            clip.start();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     void populateArrayLists() {
+
         // populate the combinations
 
-
+        for (String color : possibleColors) {
+            for (String shape : possibleShapes) {
+                combinations.add(color + "-" + shape);
+            }
+        }
 
         // do shuffling on combinations
 
-
+        Collections.shuffle(combinations);
 
         // All cards are unrevealed at the start
 
-        cardsRevealed = new ArrayList<Boolean> (Collections.nCopies(10, false));
-
-
-        // populate the cardsRevealed
-
-
+        cardsRevealed = new ArrayList<Boolean> (Collections.nCopies(numberOfPatterns, false));
 
     }
 
@@ -230,17 +319,21 @@ class GameDrawingPanel extends JComponent {
     //// FIELDS
 
     private GameBoard gameBoard;
-
+    private int idx = 0;
+    private int xPos = 0;
+    private int yPos = 0;
+    private int xCutoffPoint = gameBoard.getWidth() - gameBoard.getEastAndWestMargin();
+    private Iterator<Boolean> tempCardsRevealedIterator;
 
     //// CONSTRUCTOR
 
     GameDrawingPanel(GameBoard gameBoard) {
 
+        this.gameBoard = gameBoard;
+        this.xPos = gameBoard.getEastAndWestMargin();
+        this.yPos = gameBoard.getNorthAndSouthMargin();
+
     } // END OF GameDrawingPanel CONSTRUCTOR
-
-
-
-
 
     public void paint(Graphics g) {
 
@@ -248,14 +341,62 @@ class GameDrawingPanel extends JComponent {
 
         graphicSettings.setColor(Color.GRAY);
         graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
+
+
+        tempCardsRevealedIterator = gameBoard.cardsRevealedIterator();
+        while(tempCardsRevealedIterator.hasNext()) {
+            if (tempCardsRevealedIterator.next()) {
+
+                // find the shape and color
+
+                ///////////////////////gameBoard.combinationsIterator().
+
+                // draw pattern and no card
+
+                ///////drawShapeWithColor(String shape, String color)
+
+                updateXPosYPosForNextDrawing();
+
+            } else {
+
+                // draw card
+
+                graphicSettings.setColor(Color.BLACK);
+                graphicSettings.fillRect(xPos,yPos, gameBoard.getCardWidth(), gameBoard.getCardsHeight());
+
+                updateXPosYPosForNextDrawing();
+            }
+
+            idx++;
+        }
+        gameBoard.cardsRevealedIterator()
+
+        idx = 0;
     }
 
-    void drawShapeWithColor(String shape, String color) {
+    void drawShapeWithColor(Graphics2D graphicSettings, String shape, String color) {
 
         // change color
 
+
         // switch statement for shape
 
+    }
+
+    // Updates X and Y positions based on side margins.
+
+    void updateXPosYPosForNextDrawing() {
+
+        xPos += gameBoard.getCardWidth() + gameBoard.getCardsHorizontalMargin();
+
+        // if we can fit another spot on this line, then we don't need a new line
+
+        if (xPos + gameBoard.getCardWidth() + gameBoard.getCardsHorizontalMargin() < xCutoffPoint) {
+            return;
+        } else {
+            xPos = gameBoard.getEastAndWestMargin();
+            yPos += yPos + gameBoard.getCardsHeight() + gameBoard.getCardsVerticalMargin();
+        }
     }
 
 

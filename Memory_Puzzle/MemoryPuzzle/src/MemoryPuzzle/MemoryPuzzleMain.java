@@ -5,6 +5,6 @@ package MemoryPuzzle;
  */
 public class MemoryPuzzleMain {
     public static void main(String[] args) {
-
+        new GameBoard(50);
     }
 }
