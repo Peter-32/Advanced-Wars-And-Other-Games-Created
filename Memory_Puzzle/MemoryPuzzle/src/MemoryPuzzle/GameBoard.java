@@ -5,6 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,8 +40,8 @@ public class GameBoard extends JFrame {
     private int turnNumber = 0;
     private int numberOfPairsOfPatterns;
     private int numberOfPatterns;
-    private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","indigo","purple","yellow","orange"));
-    private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","line","circle","square","triangle","pentagon","star"));
+    private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","dark_gray","pink","yellow","orange"));
+    private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","lines","circle","square","triangle","pentagon","star"));
     private ArrayList<String> combinations = new ArrayList<String> ();
 
     // The indices of the arrayList "combinations" where the cards are revealed to the player
@@ -207,6 +210,9 @@ public class GameBoard extends JFrame {
             readLock.unlock();
         }
     }
+    public Object[] cloneCombinations() {
+        return combinations.toArray();
+    }
     public Iterator<Boolean> cardsRevealedIterator() {
         readLock.lock();
         try {
@@ -319,11 +325,18 @@ class GameDrawingPanel extends JComponent {
     //// FIELDS
 
     private GameBoard gameBoard;
+    private Object[] combinations;
+    private int cardWidth;
+    private int cardHeight;
     private int idx = 0;
     private int xPos = 0;
     private int yPos = 0;
     private int xCutoffPoint = gameBoard.getWidth() - gameBoard.getEastAndWestMargin();
     private Iterator<Boolean> tempCardsRevealedIterator;
+    String combinationsElement;
+    String shape;
+    String color;
+    Graphics2D graphicSettings;
 
     //// CONSTRUCTOR
 
@@ -332,12 +345,18 @@ class GameDrawingPanel extends JComponent {
         this.gameBoard = gameBoard;
         this.xPos = gameBoard.getEastAndWestMargin();
         this.yPos = gameBoard.getNorthAndSouthMargin();
+        cardWidth = this.gameBoard.getCardWidth();
+        cardHeight = this.gameBoard.getCardsHeight();
 
     } // END OF GameDrawingPanel CONSTRUCTOR
 
     public void paint(Graphics g) {
 
-        Graphics2D graphicSettings = (Graphics2D)g;
+        // Cloning each frame because the program is using threading.  Probably could do without threading.
+
+        combinations = gameBoard.cloneCombinations();
+
+        graphicSettings = (Graphics2D)g;
 
         graphicSettings.setColor(Color.GRAY);
         graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
@@ -348,12 +367,15 @@ class GameDrawingPanel extends JComponent {
             if (tempCardsRevealedIterator.next()) {
 
                 // find the shape and color
+                combinationsElement = (String) combinations[idx];
+                color = combinationsElement.split("-")[0];
+                shape = combinationsElement.split("-")[1];
 
-                ///////////////////////gameBoard.combinationsIterator().
+                // draw pattern
 
-                // draw pattern and no card
+                drawColoredShape();
 
-                ///////drawShapeWithColor(String shape, String color)
+                // this method finds the next xPos and yPos
 
                 updateXPosYPosForNextDrawing();
 
@@ -362,45 +384,113 @@ class GameDrawingPanel extends JComponent {
                 // draw card
 
                 graphicSettings.setColor(Color.BLACK);
-                graphicSettings.fillRect(xPos,yPos, gameBoard.getCardWidth(), gameBoard.getCardsHeight());
+                graphicSettings.draw(new Rectangle2D.Double(xPos, yPos,cardWidth, cardHeight));
+                //graphicSettings.fillRect(xPos,yPos, cardWidth, cardHeight);
+
+                // this method finds the next xPos and yPos
 
                 updateXPosYPosForNextDrawing();
             }
 
             idx++;
-        }
-        gameBoard.cardsRevealedIterator()
+        } // END OF WHILE LOOP INSIDE paint() METHOD
 
         idx = 0;
-    }
+    } // END OF paint() METHOD
 
-    void drawShapeWithColor(Graphics2D graphicSettings, String shape, String color) {
+    void drawColoredShape() {
 
         // change color
 
+        switch(color)
+        {
+            case "red":
+                graphicSettings.setColor(Color.RED);
+                break;
+            case "blue":
+                graphicSettings.setColor(Color.BLUE);
+                break;
+            case "green":
+                graphicSettings.setColor(Color.GREEN);
+                break;
+            case "dark_gray":
+                graphicSettings.setColor(Color.DARK_GRAY);
+                break;
+            case "pink":
+                graphicSettings.setColor(Color.PINK);
+                break;
+            case "yellow":
+                graphicSettings.setColor(Color.YELLOW);
+                break;
+            case "orange":
+                graphicSettings.setColor(Color.ORANGE);
+                break;
+        }
 
-        // switch statement for shape
+        // draw the shape
 
-    }
+        switch(shape)
+        {
+            case "donut":
+                graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/6, yPos + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
+                graphicSettings.setColor(Color.GRAY);
+                graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/3, yPos + cardHeight/3,cardWidth - cardWidth*2/3, cardHeight - cardHeight*2/3));
+                break;
+            case "lines":
+                graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.25, yPos + cardHeight/6,xPos + cardWidth*.25, yPos + cardHeight*5/6));
+                graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.5, yPos + cardHeight/6,xPos + cardWidth*.50, yPos + cardHeight*5/6));
+                graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.75, yPos + cardHeight/6,xPos + cardWidth*.75, yPos + cardHeight*5/6));
+                break;
+            case "circle":
+                graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/6, yPos + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
+                break;
+            case "square":
+                graphicSettings.fill(new Rectangle2D.Double(xPos + cardWidth/6, yPos + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
+                break;
+            case "triangle":
+                int[] xArray = {xPos + cardWidth/2, xPos + cardWidth/6, xPos + cardWidth*5/6};
+                int[] yArray = {yPos + cardHeight/6, yPos + cardHeight*5/6, yPos + cardHeight*5/6};
+                Polygon p = new Polygon(xArray,yArray,3);
+                graphicSettings.fillPolygon(p);
+                break;
+            case "pentagon":
+                int[] xArray2 = {};/////////////////////////UNIMPLEMENTED
+                int[] yArray2 = {};/////////////////////////UNIMPLEMENTED
+                Polygon p2 = new Polygon(xArray2,yArray2,5);
+                graphicSettings.fillPolygon(p2);
+                break;
+            case "star":
+                int[] xArray3 = {};/////////////////////////UNIMPLEMENTED
+                int[] yArray3 = {};/////////////////////////UNIMPLEMENTED
+                Polygon p3 = new Polygon(xArray3,yArray3,3);
+                graphicSettings.fillPolygon(p3);
+                break;
+        }
+
+                /*
+            private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","dark_gray","purple","yellow","orange"));
+            private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","line","circle","square","triangle","pentagon","star"));
+         */
+    } // END OF drawColoredShape() METHOD
 
     // Updates X and Y positions based on side margins.
 
     void updateXPosYPosForNextDrawing() {
 
-        xPos += gameBoard.getCardWidth() + gameBoard.getCardsHorizontalMargin();
+        xPos += cardWidth + gameBoard.getCardsHorizontalMargin();
 
         // if we can fit another spot on this line, then we don't need a new line
 
-        if (xPos + gameBoard.getCardWidth() + gameBoard.getCardsHorizontalMargin() < xCutoffPoint) {
+        if (xPos + cardWidth + gameBoard.getCardsHorizontalMargin() < xCutoffPoint) {
             return;
         } else {
             xPos = gameBoard.getEastAndWestMargin();
-            yPos += yPos + gameBoard.getCardsHeight() + gameBoard.getCardsVerticalMargin();
+            yPos += yPos + cardHeight + gameBoard.getCardsVerticalMargin();
         }
     }
 
 
-}
+} // END OF GameDrawingPanel CLASS
 
 
 
