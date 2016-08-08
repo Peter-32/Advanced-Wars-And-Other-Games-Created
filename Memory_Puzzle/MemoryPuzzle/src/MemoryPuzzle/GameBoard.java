@@ -37,16 +37,20 @@ public class GameBoard extends JFrame {
     private int cardHeight = 50;
     private int cardsHorizontalMargin = 5;
     private int cardsVerticalMargin = 5;
+    private int yClicked;
+    private int xClicked;
     private int turnNumber = 0;
     private int numberOfPairsOfPatterns;
+    private int numberOfPairsOfPatternsGuessedCorrectly = 0;
     private int numberOfPatterns;
     private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","gray","pink","yellow","orange"));
     private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","vlines","circle","square","triangle","diamond","hlines"));
     private ArrayList<String> combinations = new ArrayList<String> ();
 
-    // The indices of the arrayList "combinations" where the cards are revealed to the player
+    // The indices of the arrayList "combinations" where the cards are fully revealed to the player.
+    // True means that index was guessed correctly already.
 
-    private ArrayList<Boolean> cardsRevealed;
+    private ArrayList<Boolean> cardsGuessedCorrect;
 
     // A player chooses two cards to see if they match, this is the idx of the first choice
 
@@ -55,10 +59,6 @@ public class GameBoard extends JFrame {
     // This is the idx of the second choice
 
     private int secondChoiceIdx = -1;
-
-    // If one box is clicked on this should be true
-
-    private boolean madeFirstChoice = false;
 
     // sound files
 
@@ -126,7 +126,8 @@ public class GameBoard extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                xClicked = getX();
+                yClicked = getY();
             }
 
             @Override
@@ -198,6 +199,18 @@ public class GameBoard extends JFrame {
     public int getCardsVerticalMargin() {
         return cardsVerticalMargin;
     }
+    public int getXClicked() {
+        return xClicked;
+    }
+    public void setXClicked(int xClicked) {
+        this.xClicked = xClicked;
+    }
+    public int getYClicked() {
+        return yClicked;
+    }
+    public void setYClicked(int yClicked) {
+        this.yClicked = yClicked;
+    }
     public int getTurnNumber() {
         return turnNumber;
     }
@@ -206,6 +219,12 @@ public class GameBoard extends JFrame {
     }
     public int getNumberOfPairsOfPatterns() {
         return numberOfPairsOfPatterns;
+    }
+    public int getNumberOfPairsOfPatternsGuessedCorrectly() {
+        return numberOfPairsOfPatternsGuessedCorrectly;
+    }
+    public void setNumberOfPairsOfPatternsGuessedCorrectly(int numberOfPairsOfPatternsGuessedCorrectly) {
+        this.numberOfPairsOfPatternsGuessedCorrectly = numberOfPairsOfPatternsGuessedCorrectly;
     }
     public int getNumberOfPatterns() {
         return numberOfPatterns;
@@ -222,19 +241,19 @@ public class GameBoard extends JFrame {
     public Object[] cloneCombinations() {
         return combinations.toArray();
     }
-    public Iterator<Boolean> cardsRevealedIterator() {
+    public Iterator<Boolean> cardsGuessedCorrectIterator() {
         readLock.lock();
         try {
-            return new ArrayList<Boolean>(cardsRevealed).iterator();
+            return new ArrayList<Boolean>(cardsGuessedCorrect).iterator();
             // we iterate over a snapshot of our list
         } finally {
             readLock.unlock();
         }
     }
-    public void updateCardsRevealed(int index, boolean isRevealed) {
+    public void updateCardsGuessedCorrect(int index, boolean isRevealed) {
         writeLock.lock();
         try {
-            cardsRevealed.set(index, isRevealed);
+            cardsGuessedCorrect.set(index, isRevealed);
         } finally{
             writeLock.unlock();
         }
@@ -250,12 +269,6 @@ public class GameBoard extends JFrame {
     }
     public void setSecondChoiceIdx(int secondChoiceIdx) {
         this.secondChoiceIdx = secondChoiceIdx;
-    }
-    public boolean getMadeFirstChoice() {
-        return madeFirstChoice;
-    }
-    public void setMadeFirstChoice(boolean madeFirstChoice) {
-        this.madeFirstChoice = madeFirstChoice;
     }
 
     //// METHODS
@@ -329,7 +342,7 @@ public class GameBoard extends JFrame {
 
         // All cards are unrevealed at the start
 
-        cardsRevealed = new ArrayList<Boolean> (Collections.nCopies(numberOfPatterns, false));
+        cardsGuessedCorrect = new ArrayList<Boolean> (Collections.nCopies(numberOfPatterns, false));
 
     }
 
@@ -354,8 +367,10 @@ class GameDrawingPanel extends JComponent {
     private int idx = 0;
     private int xPos = 0;
     private int yPos = 0;
+    int xClicked;
+    int yClicked;
     private int xCutoffPoint;
-    private Iterator<Boolean> tempCardsRevealedIterator;
+    private Iterator<Boolean> tempCardsGuessedCorrectIterator;
     String combinationsElement;
     String shape;
     String color;
@@ -386,23 +401,25 @@ class GameDrawingPanel extends JComponent {
         graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
         graphicSettings.setStroke(new BasicStroke(3));
 
-        tempCardsRevealedIterator = gameBoard.cardsRevealedIterator();
+        // get the most recent click location
+        xClicked = gameBoard.getXClicked();
+        yClicked = gameBoard.getYClicked();
+        gameBoard.setXClicked(0);
+        gameBoard.setYClicked(0);
 
-        while(tempCardsRevealedIterator.hasNext()) {
-            if (tempCardsRevealedIterator.next()) {
+        tempCardsGuessedCorrectIterator = gameBoard.cardsGuessedCorrectIterator();
 
-                // find the shape and color
-                combinationsElement = (String) combinations[idx];
-                color = combinationsElement.split("-")[0];
-                shape = combinationsElement.split("-")[1];
+        while(tempCardsGuessedCorrectIterator.hasNext()) {
 
-                // draw pattern
+            checkForNewlyClickedOnCards();
 
-                drawColoredShape();
+            // Check if it is already gusesed correctly and show be revealed
 
-                // this method finds the next xPos and yPos
+            if (tempCardsGuessedCorrectIterator.next()) {
 
-                updateXPosYPosForNextDrawing();
+                // show the pattern to the user, these have already been guessed correctly
+
+                processShowingPattern();
 
             } else {
 
@@ -411,14 +428,14 @@ class GameDrawingPanel extends JComponent {
                 graphicSettings.setColor(Color.WHITE);
                 graphicSettings.fill(new Rectangle2D.Double(xPos, yPos,cardWidth, cardHeight));
 
-                //graphicSettings.fillRect(xPos,yPos, cardWidth, cardHeight);
-
                 // this method finds the next xPos and yPos
 
                 updateXPosYPosForNextDrawing();
+
             }
 
             idx++;
+
         } // END OF WHILE LOOP INSIDE paint() METHOD
 
         idx = 0;
@@ -512,13 +529,90 @@ class GameDrawingPanel extends JComponent {
         }
     }
 
+    // check if the click occurred inside a card
+
+    boolean cardContainsClick(int mouseX, int mouseY, int rectMinX, int rectMinY, int rectWidth, int rectHeight) {
+        return (mouseX >= rectMinX && mouseX <= rectMinX + rectWidth) && (mouseY >= rectMinY && mouseY <= rectMinY + rectHeight);
+    }
+
+    // This method deals with the event in which two choices are made.  Either it is correct or incorrect
+
+    void processGuessChoices(int guessIdx1, int guessIdx2) {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // increment turns by 1 because a guess has been made
+
+        gameBoard.setTurnNumber(gameBoard.getTurnNumber()+1);
+
+        // sleep for 1 second
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // set both guesses in gameBoard to -1.  By setting to -1 threads will continue to redraw again.
+
+        gameBoard.setFirstChoiceIdx(-1);
+        gameBoard.setSecondChoiceIdx(-1);
+
+        // if correct, give these true values in cardsGuessedCorrect.  Increment correct guesses variable
+
+        //////////if ()   FINISH IF STATEMENT HERE//////////////////
+        gameBoard.setNumberOfPairsOfPatternsGuessedCorrectly(gameBoard.getNumberOfPairsOfPatternsGuessedCorrectly() + 1);
+        gameBoard.updateCardsGuessedCorrect(guessIdx1, true);
+        gameBoard.updateCardsGuessedCorrect(guessIdx2, true);
+
+        // otherwise it is an incorrect guess and things go back to normal after the sleeping for 1 second
+        //////////ELSE PLACED HERE/////////
+
+    }
+
+    void processShowingPattern() {
+
+        // find the shape and color
+        combinationsElement = (String) combinations[idx];
+        color = combinationsElement.split("-")[0];
+        shape = combinationsElement.split("-")[1];
+
+        // draw pattern
+
+        drawColoredShape();
+
+        // this method finds the next xPos and yPos
+
+        updateXPosYPosForNextDrawing();
+
+    }
+
+    void checkForNewlyClickedOnCards() {///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // if it was just clicked on and hasn't been guessed correctly yet and wasn't the first choice index
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        if (cardContainsClick(xClicked, yClicked, xPos, yPos, cardWidth, cardHeight) && !isGuessedCorrectAlready
+                && gameBoard.getFirstChoiceIdx() != idx) {
+
+            // first show the pattern to the user
+
+            processShowingPattern();
+
+            // Check if it is the first or second guess
+
+            if (gameBoard.getFirstChoiceIdx() == -1) {
+                gameBoard.setFirstChoiceIdx(idx);
+            } else {
+                gameBoard.setSecondChoiceIdx(idx);  // Note: Redrawing takes no more threads until this is set back to -1
+                processGuessChoices(gameBoard.getFirstChoiceIdx(),gameBoard.getSecondChoiceIdx());  //this sets it to -1
+            }
+        } // END OF IF STATEMENT
+    }
+
 } // END OF GameDrawingPanel CLASS
 
 
 
 class MainGameLoop implements Runnable {
 
-    GameBoard gameBoard;
+    private GameBoard gameBoard;
 
     MainGameLoop(GameBoard gameBoard) {
 
@@ -531,8 +625,16 @@ class MainGameLoop implements Runnable {
 
         // check input/output
 
-        // repaint
-        gameBoard.repaint();
+        // Only repaint if the second guess isn't chosen yet.  This gets updated to a non-negative and back to a
+        // negative while inside the paint method.
+
+        if (gameBoard.getSecondChoiceIdx() == -1) {
+
+            // repaint
+
+            gameBoard.repaint();
+        }
+
     }
 
     /*
