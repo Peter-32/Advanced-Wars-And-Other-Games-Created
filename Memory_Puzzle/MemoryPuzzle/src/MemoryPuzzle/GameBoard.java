@@ -27,21 +27,21 @@ public class GameBoard extends JFrame {
 
     //// FIELDS
 
-    private int width = 1200;
-    private int height = 900;
+    private int width = 800;
+    private int height = 600;
     private int numCardsInRow;
     private int numCardsInCol;
-    private int northAndSouthMargin = 200;
-    private int eastAndWestMargin = 200;
-    private int cardWidth = 30;
-    private int cardHeight = 30;
+    private int northAndSouthMargin;
+    private int eastAndWestMargin = 50;
+    private int cardWidth = 50;
+    private int cardHeight = 50;
     private int cardsHorizontalMargin = 5;
     private int cardsVerticalMargin = 5;
     private int turnNumber = 0;
     private int numberOfPairsOfPatterns;
     private int numberOfPatterns;
-    private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","dark_gray","pink","yellow","orange"));
-    private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","lines","circle","square","triangle","pentagon","star"));
+    private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","gray","pink","yellow","orange"));
+    private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","vlines","circle","square","triangle","diamond","hlines"));
     private ArrayList<String> combinations = new ArrayList<String> ();
 
     // The indices of the arrayList "combinations" where the cards are revealed to the player
@@ -103,9 +103,18 @@ public class GameBoard extends JFrame {
 
         this.numberOfPairsOfPatterns = (numberOfPairsOfPatterns > 49) ? 49 : numberOfPairsOfPatterns;
 
-        this.numberOfPairsOfPatterns = (this.numberOfPairsOfPatterns < 1) ? 1 : this.numberOfPairsOfPatterns;
+        this.numberOfPairsOfPatterns = (this.numberOfPairsOfPatterns < 5) ? 5 : this.numberOfPairsOfPatterns;
 
-        this.numberOfPatterns = numberOfPairsOfPatterns * 2;
+        this.numberOfPatterns = this.numberOfPairsOfPatterns * 2;
+
+        System.out.println(this.numberOfPairsOfPatterns);
+
+        // Set up the north south margin based on input.  The 22 stands for the number of patterns in two rows.
+        // Expecting 11 patterns per row.  If there are less rows, we want more margin to center the cards.
+
+        northAndSouthMargin = 30 + ( 3 - (numberOfPatterns - 12) / 22) * (cardHeight + cardsVerticalMargin);
+
+        //northAndSouthMargin = 30;
 
         // populate the arraylists
 
@@ -143,7 +152,7 @@ public class GameBoard extends JFrame {
 
         // threads added for things such as MainGameLoop
         ScheduledThreadPoolExecutor executor = new  ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 1000L, TimeUnit.MILLISECONDS);
 
         // show the JFrame
 
@@ -292,13 +301,27 @@ public class GameBoard extends JFrame {
 
     void populateArrayLists() {
 
+        ArrayList<String> tempCombinations = new ArrayList<String> ();
+        ArrayList<String> tempCombinations2 = new ArrayList<String> ();
+
         // populate the combinations
+        // we need two of each combination that will be used
 
         for (String color : possibleColors) {
             for (String shape : possibleShapes) {
-                combinations.add(color + "-" + shape);
+                tempCombinations.add(color + "-" + shape);
             }
         }
+        Collections.shuffle(tempCombinations);
+
+        // only keep what is needed for the number of patterns used
+        for (int i = 0; i < numberOfPairsOfPatterns; i++) {
+            tempCombinations2.add(tempCombinations.get(i));
+        }
+
+        // double the number of records
+        combinations.addAll(tempCombinations2);
+        combinations.addAll(tempCombinations2);
 
         // do shuffling on combinations
 
@@ -331,7 +354,7 @@ class GameDrawingPanel extends JComponent {
     private int idx = 0;
     private int xPos = 0;
     private int yPos = 0;
-    private int xCutoffPoint = gameBoard.getWidth() - gameBoard.getEastAndWestMargin();
+    private int xCutoffPoint;
     private Iterator<Boolean> tempCardsRevealedIterator;
     String combinationsElement;
     String shape;
@@ -347,6 +370,7 @@ class GameDrawingPanel extends JComponent {
         this.yPos = gameBoard.getNorthAndSouthMargin();
         cardWidth = this.gameBoard.getCardWidth();
         cardHeight = this.gameBoard.getCardsHeight();
+        this.xCutoffPoint = gameBoard.getWidth() - gameBoard.getEastAndWestMargin();
 
     } // END OF GameDrawingPanel CONSTRUCTOR
 
@@ -358,11 +382,12 @@ class GameDrawingPanel extends JComponent {
 
         graphicSettings = (Graphics2D)g;
 
-        graphicSettings.setColor(Color.GRAY);
+        graphicSettings.setColor(Color.LIGHT_GRAY);
         graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
-
+        graphicSettings.setStroke(new BasicStroke(3));
 
         tempCardsRevealedIterator = gameBoard.cardsRevealedIterator();
+
         while(tempCardsRevealedIterator.hasNext()) {
             if (tempCardsRevealedIterator.next()) {
 
@@ -383,8 +408,9 @@ class GameDrawingPanel extends JComponent {
 
                 // draw card
 
-                graphicSettings.setColor(Color.BLACK);
-                graphicSettings.draw(new Rectangle2D.Double(xPos, yPos,cardWidth, cardHeight));
+                graphicSettings.setColor(Color.WHITE);
+                graphicSettings.fill(new Rectangle2D.Double(xPos, yPos,cardWidth, cardHeight));
+
                 //graphicSettings.fillRect(xPos,yPos, cardWidth, cardHeight);
 
                 // this method finds the next xPos and yPos
@@ -396,6 +422,8 @@ class GameDrawingPanel extends JComponent {
         } // END OF WHILE LOOP INSIDE paint() METHOD
 
         idx = 0;
+        this.xPos = gameBoard.getEastAndWestMargin();
+        this.yPos = gameBoard.getNorthAndSouthMargin();
     } // END OF paint() METHOD
 
     void drawColoredShape() {
@@ -413,8 +441,8 @@ class GameDrawingPanel extends JComponent {
             case "green":
                 graphicSettings.setColor(Color.GREEN);
                 break;
-            case "dark_gray":
-                graphicSettings.setColor(Color.DARK_GRAY);
+            case "gray":
+                graphicSettings.setColor(Color.GRAY);
                 break;
             case "pink":
                 graphicSettings.setColor(Color.PINK);
@@ -433,10 +461,10 @@ class GameDrawingPanel extends JComponent {
         {
             case "donut":
                 graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/6, yPos + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
-                graphicSettings.setColor(Color.GRAY);
+                graphicSettings.setColor(Color.LIGHT_GRAY);
                 graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/3, yPos + cardHeight/3,cardWidth - cardWidth*2/3, cardHeight - cardHeight*2/3));
                 break;
-            case "lines":
+            case "vlines":
                 graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.25, yPos + cardHeight/6,xPos + cardWidth*.25, yPos + cardHeight*5/6));
                 graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.5, yPos + cardHeight/6,xPos + cardWidth*.50, yPos + cardHeight*5/6));
                 graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.75, yPos + cardHeight/6,xPos + cardWidth*.75, yPos + cardHeight*5/6));
@@ -453,24 +481,19 @@ class GameDrawingPanel extends JComponent {
                 Polygon p = new Polygon(xArray,yArray,3);
                 graphicSettings.fillPolygon(p);
                 break;
-            case "pentagon":
-                int[] xArray2 = {};/////////////////////////UNIMPLEMENTED
-                int[] yArray2 = {};/////////////////////////UNIMPLEMENTED
-                Polygon p2 = new Polygon(xArray2,yArray2,5);
+            case "diamond":
+                int[] xArray2 = {xPos + cardWidth/2, xPos + cardWidth/6 , xPos + cardWidth/2, xPos + cardWidth*5/6};
+                int[] yArray2 = {yPos + cardHeight/6, yPos + cardHeight/2, yPos + cardHeight*5/6, yPos + cardHeight/2};
+                Polygon p2 = new Polygon(xArray2,yArray2,4);
                 graphicSettings.fillPolygon(p2);
                 break;
-            case "star":
-                int[] xArray3 = {};/////////////////////////UNIMPLEMENTED
-                int[] yArray3 = {};/////////////////////////UNIMPLEMENTED
-                Polygon p3 = new Polygon(xArray3,yArray3,3);
-                graphicSettings.fillPolygon(p3);
+            case "hlines":
+                graphicSettings.draw(new Line2D.Double(xPos + cardWidth/6, yPos + cardHeight*.25, xPos + cardWidth*5/6, yPos + cardHeight*.25));
+                graphicSettings.draw(new Line2D.Double(xPos + cardWidth/6, yPos + cardHeight*.50, xPos + cardWidth*5/6, yPos + cardHeight*.50));
+                graphicSettings.draw(new Line2D.Double(xPos + cardWidth/6, yPos + cardHeight*.75, xPos + cardWidth*5/6, yPos + cardHeight*.75));
                 break;
         }
 
-                /*
-            private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","dark_gray","purple","yellow","orange"));
-            private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","line","circle","square","triangle","pentagon","star"));
-         */
     } // END OF drawColoredShape() METHOD
 
     // Updates X and Y positions based on side margins.
@@ -485,10 +508,9 @@ class GameDrawingPanel extends JComponent {
             return;
         } else {
             xPos = gameBoard.getEastAndWestMargin();
-            yPos += yPos + cardHeight + gameBoard.getCardsVerticalMargin();
+            yPos += cardHeight + gameBoard.getCardsVerticalMargin();
         }
     }
-
 
 } // END OF GameDrawingPanel CLASS
 
