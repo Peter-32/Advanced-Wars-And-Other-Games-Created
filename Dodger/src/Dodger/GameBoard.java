@@ -141,6 +141,8 @@ public class GameBoard extends JFrame {
 
         // Show the JFrame
 
+        setResizable(false);
+
         this.setVisible(true);
 
     } // END OF GameBoard CONSTRUCTOR

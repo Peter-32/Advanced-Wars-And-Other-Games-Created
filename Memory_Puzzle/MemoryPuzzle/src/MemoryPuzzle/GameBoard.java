@@ -48,6 +48,7 @@ public class GameBoard extends JFrame {
     private ArrayList<String> possibleColors = new ArrayList<String> (Arrays.asList("red","blue","green","gray","pink","yellow","orange"));
     private ArrayList<String> possibleShapes = new ArrayList<String> (Arrays.asList("donut","vlines","circle","square","triangle","diamond","hlines"));
     private ArrayList<String> combinations = new ArrayList<String> ();
+    private CardStateChanges cardStateChanges;
 
     // The indices of the arrayList "combinations" where the cards are fully revealed to the player.
     // True means that index was guessed correctly already.
@@ -126,6 +127,10 @@ public class GameBoard extends JFrame {
 
         populateArrayLists();
 
+        // Create object for use in MainGameLoop
+
+        cardStateChanges =  new CardStateChanges(this);
+
         // click listener added
 
         addMouseListener(new MouseListener() {
@@ -133,13 +138,17 @@ public class GameBoard extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                // Account for the size of the left border
+                // Only register clicks when in this state
 
-                xClicked = e.getX() - leftFrameBorderWidth;
+                if (cardStateChanges.getIterationsUntilReset() == -1) {
+                    // Account for the size of the left border
 
-                // Account for the size of the top border
+                    xClicked = e.getX() - leftFrameBorderWidth;
 
-                yClicked = e.getY() - titleBarHeight;
+                    // Account for the size of the top border
+
+                    yClicked = e.getY() - titleBarHeight;
+                }
             }
 
             @Override
@@ -163,9 +172,12 @@ public class GameBoard extends JFrame {
             }
         });
 
+
         // threads added for things such as MainGameLoop
         ScheduledThreadPoolExecutor executor = new  ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(new MainGameLoop(this, cardStateChanges), 0L, 20L, TimeUnit.MILLISECONDS);
+
+        setResizable(false);
 
         // show the JFrame
 
@@ -363,15 +375,203 @@ public class GameBoard extends JFrame {
 
 }
 
+class CardStateChanges {
+
+    //// FIELDS
+    GameBoard gameBoard;
+    private Object[] combinations;
+    private int cardWidth;
+    private int cardHeight;
+    private int idx = 0;
+    private int xLoc = 0;
+    private int yLoc = 0;
+    private int xClicked;
+    private int yClicked;
+    private int xCutoffPoint;
+    private Iterator<Boolean> tempCardsGuessedCorrectIterator;
+    private boolean isGuessedCorrectAlready;
+    private int iterationsUntilReset = -1;
+
+    //// CONSTRUCTOR
+
+    CardStateChanges(GameBoard gameBoard) {
+        this.gameBoard = gameBoard;
+        this.xLoc = gameBoard.getEastAndWestMargin();
+        this.yLoc = gameBoard.getNorthAndSouthMargin();
+        cardWidth = this.gameBoard.getCardWidth();
+        cardHeight = this.gameBoard.getCardsHeight();
+        this.xCutoffPoint = gameBoard.getWidth() - gameBoard.getEastAndWestMargin();
+
+    }
+    public int getIterationsUntilReset() {
+        return iterationsUntilReset;
+    }
+
+
+
+    void update() {
+
+
+        if (iterationsUntilReset != -1) {
+
+            iterationsUntilReset--;
+
+            if (iterationsUntilReset == 0) {
+                // Reset the choices
+
+                gameBoard.setFirstChoiceIdx(-1);
+                gameBoard.setSecondChoiceIdx(-1);
+                iterationsUntilReset = -1;
+            }
+
+
+        }
+
+        // Cloning each frame because the program is using threading.  Probably could do without threading.
+
+        combinations = gameBoard.cloneCombinations();
+
+        // get the most recent click location
+
+        xClicked = gameBoard.getXClicked();
+        yClicked = gameBoard.getYClicked();
+
+        tempCardsGuessedCorrectIterator = gameBoard.cardsGuessedCorrectIterator();
+
+        while(tempCardsGuessedCorrectIterator.hasNext()) {
+
+            isGuessedCorrectAlready = tempCardsGuessedCorrectIterator.next();
+
+            checkForNewlyClickedOnCards();
+
+            updatexLocyLocForNextDrawing();
+
+            idx++;
+
+        } // END OF WHILE LOOP INSIDE paint() METHOD
+
+        idx = 0;
+        this.xLoc = gameBoard.getEastAndWestMargin();
+        this.yLoc = gameBoard.getNorthAndSouthMargin();
+    } // END OF paint() METHOD
+
+
+    void updatexLocyLocForNextDrawing() {
+
+        xLoc += cardWidth + gameBoard.getCardsHorizontalMargin();
+
+        // if we can fit another spot on this line, then we don't need a new line
+
+        if (xLoc + cardWidth + gameBoard.getCardsHorizontalMargin() < xCutoffPoint) {
+            return;
+        } else {
+            xLoc = gameBoard.getEastAndWestMargin();
+            yLoc += cardHeight + gameBoard.getCardsVerticalMargin();
+        }
+    }
+
+
+    void processGuessChoices(int guessIdx1, int guessIdx2) {
+
+        // increment turns by 1 because a guess has been made
+
+        gameBoard.setTurnNumber(gameBoard.getTurnNumber()+1);
+
+        // if correct, give these true values in cardsGuessedCorrect.  Increment correct guesses variable
+
+        if (((String)combinations[guessIdx1]).equals((String)combinations[guessIdx2])) {
+
+            // We know that it was a correct guess, so we apply updates to gameBoard fields
+            // The drawing will view these new fields and should draw correctly
+
+            gameBoard.setNumberOfPairsOfPatternsGuessedCorrectly(gameBoard.getNumberOfPairsOfPatternsGuessedCorrectly() + 1);
+            gameBoard.updateCardsGuessedCorrect(guessIdx1, true);
+            gameBoard.updateCardsGuessedCorrect(guessIdx2, true);
+            gameBoard.setFirstChoiceIdx(-1);
+            gameBoard.setSecondChoiceIdx(-1);
+
+        } else {
+
+            // create some time to see what is under the second guess before reseting
+
+            iterationsUntilReset = 50;
+
+            // Perhaps add a sound file here later.
+
+        }
+
+    } // END OF processGuessChoices METHOD
+
+
+    // check if the click occurred inside a card
+
+    boolean cardContainsClick(int mouseX, int mouseY, int rectMinX, int rectMinY, int rectWidth, int rectHeight) {
+        return (mouseX >= rectMinX && mouseX <= rectMinX + rectWidth) && (mouseY >= rectMinY && mouseY <= rectMinY + rectHeight);
+    }
+
+
+    void checkForNewlyClickedOnCards() {
+        // if all of these happen: 1) just clicked on. 2) hasn't been guessed correctly yet. 3) wasn't the first choice index
+
+        //System.out.println(gameBoard.getFirstChoiceIdx());
+        //System.out.println(xClicked);
+
+        /* if (xClicked != 0) {
+            System.out.println("xClick = " + xClicked + " yClick = " + yClicked);
+            System.out.println("idx = " + idx + " first guess = " + gameBoard.getFirstChoiceIdx() + " second guess = " +
+                    gameBoard.getSecondChoiceIdx());
+            System.out.println("xLoc = " + xLoc + " yLoc = " + yLoc);
+            System.out.println("cardWidth = " + cardWidth + " cardHeight = "  + cardHeight);
+
+            System.out.println("was this contained?");
+            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
+                    && gameBoard.getFirstChoiceIdx() != idx);
+            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight));
+            System.out.println(!isGuessedCorrectAlready);
+            System.out.println(gameBoard.getFirstChoiceIdx() != idx);
+        } */
+        if (cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
+                && gameBoard.getFirstChoiceIdx() != idx) {
+
+            // Check if it is the first or second guess
+
+            if (gameBoard.getFirstChoiceIdx() == -1) {
+                gameBoard.setFirstChoiceIdx(idx);
+/*                System.out.println("first choice = " + gameBoard.getFirstChoiceIdx() +
+                        " second choice = " + gameBoard.getSecondChoiceIdx());*/
+            } else {
+                gameBoard.setSecondChoiceIdx(idx);
+/*                System.out.println("first choice = " + gameBoard.getFirstChoiceIdx() +
+                        " second choice = " + gameBoard.getSecondChoiceIdx());*/
+                processGuessChoices(gameBoard.getFirstChoiceIdx(),gameBoard.getSecondChoiceIdx());
+            }
+        } // END OF IF STATEMENT
+    }
+
+}
+
+
+
+
 class GameOver {
-    GameOver() {
+    GameOver(GameBoard gameBoard) {
         //clapping sound
+
         //message displayed
+
+        JOptionPane.showMessageDialog(gameBoard, "Game Over!");
+
         //create new GameBoard
+
+        //new GameBoard(gameBoard.getNumberOfPairsOfPatterns());
+
     }
 }
 
 class GameDrawingPanel extends JComponent {
+
+
+
 
     //// FIELDS
 
@@ -382,9 +582,6 @@ class GameDrawingPanel extends JComponent {
     private int idx = 0;
     private int xLoc = 0;
     private int yLoc = 0;
-    boolean sleep = false;
-    int xClicked;
-    int yClicked;
     private int xCutoffPoint;
     private Iterator<Boolean> tempCardsGuessedCorrectIterator;
     boolean isGuessedCorrectAlready;
@@ -408,8 +605,6 @@ class GameDrawingPanel extends JComponent {
 
     public void paint(Graphics g) {
 
-        if (sleep) { return; }
-
         // Cloning each frame because the program is using threading.  Probably could do without threading.
 
         combinations = gameBoard.cloneCombinations();
@@ -420,13 +615,6 @@ class GameDrawingPanel extends JComponent {
         graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
         graphicSettings.setStroke(new BasicStroke(3));
 
-        // get the most recent click location
-
-        xClicked = gameBoard.getXClicked();
-        yClicked = gameBoard.getYClicked();
-        gameBoard.setXClicked(0);
-        gameBoard.setYClicked(0);
-
         tempCardsGuessedCorrectIterator = gameBoard.cardsGuessedCorrectIterator();
 
         while(tempCardsGuessedCorrectIterator.hasNext()) {
@@ -434,9 +622,9 @@ class GameDrawingPanel extends JComponent {
             isGuessedCorrectAlready = tempCardsGuessedCorrectIterator.next();
 
 
-            checkForNewlyClickedOnCards();
+            //checkForNewlyClickedOnCards();
 
-            System.out.println(gameBoard.getSecondChoiceIdx());
+            //System.out.println(gameBoard.getSecondChoiceIdx());
             // Check if it is already guessed correctly, or if it is a current guess.
 
             if (isGuessedCorrectAlready ||
@@ -554,55 +742,9 @@ class GameDrawingPanel extends JComponent {
         }
     }
 
-    // check if the click occurred inside a card
-
-    boolean cardContainsClick(int mouseX, int mouseY, int rectMinX, int rectMinY, int rectWidth, int rectHeight) {
-        return (mouseX >= rectMinX && mouseX <= rectMinX + rectWidth) && (mouseY >= rectMinY && mouseY <= rectMinY + rectHeight);
-    }
-
     // This method deals with the event in which two choices are made.  Either it is correct or incorrect
 
-    void processGuessChoices(int guessIdx1, int guessIdx2) {
 
-        // increment turns by 1 because a guess has been made
-
-        gameBoard.setTurnNumber(gameBoard.getTurnNumber()+1);
-
-        // sleep for 1 second to give the player time to see what was chosen
-
-
-        // if correct, give these true values in cardsGuessedCorrect.  Increment correct guesses variable
-
-        if (((String)combinations[guessIdx1]).equals((String)combinations[guessIdx2])) {
-
-            // We know that it was a correct guess, so we apply updates to gameBoard fields
-            // The drawing will view these new fields and should draw correctly
-
-            gameBoard.setNumberOfPairsOfPatternsGuessedCorrectly(gameBoard.getNumberOfPairsOfPatternsGuessedCorrectly() + 1);
-            gameBoard.updateCardsGuessedCorrect(guessIdx1, true);
-            gameBoard.updateCardsGuessedCorrect(guessIdx2, true);
-        } else {
-
-            // It was an incorrect guess, no change needed
-
-            sleep = true;
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            sleep = false;
-
-            // Perhaps add a sound file here later.
-
-        }
-
-        // Reset the choices
-
-        gameBoard.setFirstChoiceIdx(-1);
-        gameBoard.setSecondChoiceIdx(-1);
-
-    } // END OF processGuessChoices METHOD
 
     void processShowingPattern() {
 
@@ -621,56 +763,10 @@ class GameDrawingPanel extends JComponent {
 
     }
 
-    void checkForNewlyClickedOnCards() {
-        // if all of these happen: 1) just clicked on. 2) hasn't been guessed correctly yet. 3) wasn't the first choice index
-
-        //System.out.println(gameBoard.getFirstChoiceIdx());
-        //System.out.println(xClicked);
-
-/*        if (xClicked != 0) {
-            System.out.println("xClick = " + xClicked + " yClick = " + yClicked);
-            System.out.println("idx = " + idx + " first guess = " + gameBoard.getFirstChoiceIdx() + " second guess = " +
-                    gameBoard.getSecondChoiceIdx());
-            System.out.println("xLoc = " + xLoc + " yLoc = " + yLoc);
-            System.out.println("cardWidth = " + cardWidth + " cardHeight = "  + cardHeight);
-
-            System.out.println("was this contained?");
-            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
-                    && gameBoard.getFirstChoiceIdx() != idx);
-            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight));
-            System.out.println(!isGuessedCorrectAlready);
-            System.out.println(gameBoard.getFirstChoiceIdx() != idx);
-        }*/
-        if (cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
-                && gameBoard.getFirstChoiceIdx() != idx) {
-
-            if (xClicked != 0) {
-                //System.out.println("this was contained");
 
 
-                // first show the pattern to the user
 
-                //System.out.println("Processing show pattern");
-            }
 
-            // first show the pattern to the user
-
-            processShowingPattern();
-
-            // Check if it is the first or second guess
-
-            if (gameBoard.getFirstChoiceIdx() == -1) {
-                gameBoard.setFirstChoiceIdx(idx);
-/*                System.out.println("first choice = " + gameBoard.getFirstChoiceIdx() +
-                        " second choice = " + gameBoard.getSecondChoiceIdx());*/
-            } else {
-                gameBoard.setSecondChoiceIdx(idx);
-/*                System.out.println("first choice = " + gameBoard.getFirstChoiceIdx() +
-                        " second choice = " + gameBoard.getSecondChoiceIdx());*/
-                processGuessChoices(gameBoard.getFirstChoiceIdx(),gameBoard.getSecondChoiceIdx());
-            }
-        } // END OF IF STATEMENT
-    }
 
 } // END OF GameDrawingPanel CLASS
 
@@ -679,10 +775,13 @@ class GameDrawingPanel extends JComponent {
 class MainGameLoop implements Runnable {
 
     private GameBoard gameBoard;
+    private CardStateChanges cardStateChanges;
+    private boolean gameOver = false;
 
-    MainGameLoop(GameBoard gameBoard) {
+    MainGameLoop(GameBoard gameBoard, CardStateChanges cardStateChanges) {
 
         this.gameBoard = gameBoard;
+        this.cardStateChanges = cardStateChanges;
 
     }
 
@@ -697,12 +796,27 @@ class MainGameLoop implements Runnable {
                     " second choice = " + gameBoard.getSecondChoiceIdx());
         }
 */
+        //System.out.println(gameBoard.getSecondChoiceIdx());
 
         // check input/output
+
+        cardStateChanges.update();
 
         // repaint
 
         gameBoard.repaint();
+
+        // reset the clicks after paint is done
+
+        gameBoard.setXClicked(0);
+        gameBoard.setYClicked(0);
+
+        // check if game is over
+
+        if (!gameOver && gameBoard.getNumberOfPairsOfPatterns() == gameBoard.getNumberOfPairsOfPatternsGuessedCorrectly()) {
+            gameOver = true;
+            new GameOver(gameBoard);
+        }
 
     }
 
