@@ -29,6 +29,8 @@ public class GameBoard extends JFrame {
 
     private int width = 800;
     private int height = 600;
+    private int titleBarHeight;
+    private int leftFrameBorderWidth;
     private int numCardsInRow;
     private int numCardsInCol;
     private int northAndSouthMargin;
@@ -78,11 +80,15 @@ public class GameBoard extends JFrame {
 
     GameBoard(int numberOfPairsOfPatterns) {
 
+
+
         // initialize the JFrame
 
         this.setSize(width, height);
         this.setTitle("Memory Puzzle");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        titleBarHeight = 30;
+        leftFrameBorderWidth = 8;
 
         // locks
 
@@ -107,7 +113,7 @@ public class GameBoard extends JFrame {
 
         this.numberOfPatterns = this.numberOfPairsOfPatterns * 2;
 
-        System.out.println(this.numberOfPairsOfPatterns);
+/*        System.out.println(this.numberOfPairsOfPatterns);*/
 
         // Set up the north south margin based on input.  The 22 stands for the number of patterns in two rows.
         // Expecting 11 patterns per row.  If there are less rows, we want more margin to center the cards.
@@ -126,8 +132,14 @@ public class GameBoard extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                xClicked = getX();
-                yClicked = getY();
+
+                // Account for the size of the left border
+
+                xClicked = e.getX() - leftFrameBorderWidth;
+
+                // Account for the size of the top border
+
+                yClicked = e.getY() - titleBarHeight;
             }
 
             @Override
@@ -153,7 +165,7 @@ public class GameBoard extends JFrame {
 
         // threads added for things such as MainGameLoop
         ScheduledThreadPoolExecutor executor = new  ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 1000L, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
 
         // show the JFrame
 
@@ -175,6 +187,9 @@ public class GameBoard extends JFrame {
     public void setHeight(int height) {
         this.height = height;
     }
+    public int getTitleBarHeight(int titleBarHeight) { return this.titleBarHeight = titleBarHeight; }
+    public int getLeftFrameBorderWidth(int leftFrameBorderWidth) { return this.leftFrameBorderWidth = leftFrameBorderWidth; }
+
     public int getNumCardsInRow() {
         return numCardsInRow;
     }
@@ -365,12 +380,14 @@ class GameDrawingPanel extends JComponent {
     private int cardWidth;
     private int cardHeight;
     private int idx = 0;
-    private int xPos = 0;
-    private int yPos = 0;
+    private int xLoc = 0;
+    private int yLoc = 0;
+    boolean sleep = false;
     int xClicked;
     int yClicked;
     private int xCutoffPoint;
     private Iterator<Boolean> tempCardsGuessedCorrectIterator;
+    boolean isGuessedCorrectAlready;
     String combinationsElement;
     String shape;
     String color;
@@ -381,8 +398,8 @@ class GameDrawingPanel extends JComponent {
     GameDrawingPanel(GameBoard gameBoard) {
 
         this.gameBoard = gameBoard;
-        this.xPos = gameBoard.getEastAndWestMargin();
-        this.yPos = gameBoard.getNorthAndSouthMargin();
+        this.xLoc = gameBoard.getEastAndWestMargin();
+        this.yLoc = gameBoard.getNorthAndSouthMargin();
         cardWidth = this.gameBoard.getCardWidth();
         cardHeight = this.gameBoard.getCardsHeight();
         this.xCutoffPoint = gameBoard.getWidth() - gameBoard.getEastAndWestMargin();
@@ -390,6 +407,8 @@ class GameDrawingPanel extends JComponent {
     } // END OF GameDrawingPanel CONSTRUCTOR
 
     public void paint(Graphics g) {
+
+        if (sleep) { return; }
 
         // Cloning each frame because the program is using threading.  Probably could do without threading.
 
@@ -402,6 +421,7 @@ class GameDrawingPanel extends JComponent {
         graphicSettings.setStroke(new BasicStroke(3));
 
         // get the most recent click location
+
         xClicked = gameBoard.getXClicked();
         yClicked = gameBoard.getYClicked();
         gameBoard.setXClicked(0);
@@ -411,11 +431,16 @@ class GameDrawingPanel extends JComponent {
 
         while(tempCardsGuessedCorrectIterator.hasNext()) {
 
+            isGuessedCorrectAlready = tempCardsGuessedCorrectIterator.next();
+
+
             checkForNewlyClickedOnCards();
 
-            // Check if it is already gusesed correctly and show be revealed
+            System.out.println(gameBoard.getSecondChoiceIdx());
+            // Check if it is already guessed correctly, or if it is a current guess.
 
-            if (tempCardsGuessedCorrectIterator.next()) {
+            if (isGuessedCorrectAlready ||
+                    gameBoard.getFirstChoiceIdx() == idx || gameBoard.getSecondChoiceIdx() == idx) {
 
                 // show the pattern to the user, these have already been guessed correctly
 
@@ -426,11 +451,11 @@ class GameDrawingPanel extends JComponent {
                 // draw card
 
                 graphicSettings.setColor(Color.WHITE);
-                graphicSettings.fill(new Rectangle2D.Double(xPos, yPos,cardWidth, cardHeight));
+                graphicSettings.fill(new Rectangle2D.Double(xLoc, yLoc,cardWidth, cardHeight));
 
-                // this method finds the next xPos and yPos
+                // this method finds the next xLoc and yLoc
 
-                updateXPosYPosForNextDrawing();
+                updatexLocyLocForNextDrawing();
 
             }
 
@@ -439,8 +464,8 @@ class GameDrawingPanel extends JComponent {
         } // END OF WHILE LOOP INSIDE paint() METHOD
 
         idx = 0;
-        this.xPos = gameBoard.getEastAndWestMargin();
-        this.yPos = gameBoard.getNorthAndSouthMargin();
+        this.xLoc = gameBoard.getEastAndWestMargin();
+        this.yLoc = gameBoard.getNorthAndSouthMargin();
     } // END OF paint() METHOD
 
     void drawColoredShape() {
@@ -477,37 +502,37 @@ class GameDrawingPanel extends JComponent {
         switch(shape)
         {
             case "donut":
-                graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/6, yPos + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
+                graphicSettings.fill(new Ellipse2D.Double(xLoc + cardWidth/6, yLoc + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
                 graphicSettings.setColor(Color.LIGHT_GRAY);
-                graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/3, yPos + cardHeight/3,cardWidth - cardWidth*2/3, cardHeight - cardHeight*2/3));
+                graphicSettings.fill(new Ellipse2D.Double(xLoc + cardWidth/3, yLoc + cardHeight/3,cardWidth - cardWidth*2/3, cardHeight - cardHeight*2/3));
                 break;
             case "vlines":
-                graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.25, yPos + cardHeight/6,xPos + cardWidth*.25, yPos + cardHeight*5/6));
-                graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.5, yPos + cardHeight/6,xPos + cardWidth*.50, yPos + cardHeight*5/6));
-                graphicSettings.draw(new Line2D.Double(xPos + cardWidth*.75, yPos + cardHeight/6,xPos + cardWidth*.75, yPos + cardHeight*5/6));
+                graphicSettings.draw(new Line2D.Double(xLoc + cardWidth*.25, yLoc + cardHeight/6,xLoc + cardWidth*.25, yLoc + cardHeight*5/6));
+                graphicSettings.draw(new Line2D.Double(xLoc + cardWidth*.5, yLoc + cardHeight/6,xLoc + cardWidth*.50, yLoc + cardHeight*5/6));
+                graphicSettings.draw(new Line2D.Double(xLoc + cardWidth*.75, yLoc + cardHeight/6,xLoc + cardWidth*.75, yLoc + cardHeight*5/6));
                 break;
             case "circle":
-                graphicSettings.fill(new Ellipse2D.Double(xPos + cardWidth/6, yPos + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
+                graphicSettings.fill(new Ellipse2D.Double(xLoc + cardWidth/6, yLoc + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
                 break;
             case "square":
-                graphicSettings.fill(new Rectangle2D.Double(xPos + cardWidth/6, yPos + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
+                graphicSettings.fill(new Rectangle2D.Double(xLoc + cardWidth/6, yLoc + cardHeight/6,cardWidth - cardWidth/3, cardHeight - cardHeight/3));
                 break;
             case "triangle":
-                int[] xArray = {xPos + cardWidth/2, xPos + cardWidth/6, xPos + cardWidth*5/6};
-                int[] yArray = {yPos + cardHeight/6, yPos + cardHeight*5/6, yPos + cardHeight*5/6};
+                int[] xArray = {xLoc + cardWidth/2, xLoc + cardWidth/6, xLoc + cardWidth*5/6};
+                int[] yArray = {yLoc + cardHeight/6, yLoc + cardHeight*5/6, yLoc + cardHeight*5/6};
                 Polygon p = new Polygon(xArray,yArray,3);
                 graphicSettings.fillPolygon(p);
                 break;
             case "diamond":
-                int[] xArray2 = {xPos + cardWidth/2, xPos + cardWidth/6 , xPos + cardWidth/2, xPos + cardWidth*5/6};
-                int[] yArray2 = {yPos + cardHeight/6, yPos + cardHeight/2, yPos + cardHeight*5/6, yPos + cardHeight/2};
+                int[] xArray2 = {xLoc + cardWidth/2, xLoc + cardWidth/6 , xLoc + cardWidth/2, xLoc + cardWidth*5/6};
+                int[] yArray2 = {yLoc + cardHeight/6, yLoc + cardHeight/2, yLoc + cardHeight*5/6, yLoc + cardHeight/2};
                 Polygon p2 = new Polygon(xArray2,yArray2,4);
                 graphicSettings.fillPolygon(p2);
                 break;
             case "hlines":
-                graphicSettings.draw(new Line2D.Double(xPos + cardWidth/6, yPos + cardHeight*.25, xPos + cardWidth*5/6, yPos + cardHeight*.25));
-                graphicSettings.draw(new Line2D.Double(xPos + cardWidth/6, yPos + cardHeight*.50, xPos + cardWidth*5/6, yPos + cardHeight*.50));
-                graphicSettings.draw(new Line2D.Double(xPos + cardWidth/6, yPos + cardHeight*.75, xPos + cardWidth*5/6, yPos + cardHeight*.75));
+                graphicSettings.draw(new Line2D.Double(xLoc + cardWidth/6, yLoc + cardHeight*.25, xLoc + cardWidth*5/6, yLoc + cardHeight*.25));
+                graphicSettings.draw(new Line2D.Double(xLoc + cardWidth/6, yLoc + cardHeight*.50, xLoc + cardWidth*5/6, yLoc + cardHeight*.50));
+                graphicSettings.draw(new Line2D.Double(xLoc + cardWidth/6, yLoc + cardHeight*.75, xLoc + cardWidth*5/6, yLoc + cardHeight*.75));
                 break;
         }
 
@@ -515,17 +540,17 @@ class GameDrawingPanel extends JComponent {
 
     // Updates X and Y positions based on side margins.
 
-    void updateXPosYPosForNextDrawing() {
+    void updatexLocyLocForNextDrawing() {
 
-        xPos += cardWidth + gameBoard.getCardsHorizontalMargin();
+        xLoc += cardWidth + gameBoard.getCardsHorizontalMargin();
 
         // if we can fit another spot on this line, then we don't need a new line
 
-        if (xPos + cardWidth + gameBoard.getCardsHorizontalMargin() < xCutoffPoint) {
+        if (xLoc + cardWidth + gameBoard.getCardsHorizontalMargin() < xCutoffPoint) {
             return;
         } else {
-            xPos = gameBoard.getEastAndWestMargin();
-            yPos += cardHeight + gameBoard.getCardsVerticalMargin();
+            xLoc = gameBoard.getEastAndWestMargin();
+            yLoc += cardHeight + gameBoard.getCardsVerticalMargin();
         }
     }
 
@@ -538,35 +563,46 @@ class GameDrawingPanel extends JComponent {
     // This method deals with the event in which two choices are made.  Either it is correct or incorrect
 
     void processGuessChoices(int guessIdx1, int guessIdx2) {
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         // increment turns by 1 because a guess has been made
 
         gameBoard.setTurnNumber(gameBoard.getTurnNumber()+1);
 
-        // sleep for 1 second
+        // sleep for 1 second to give the player time to see what was chosen
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+        // if correct, give these true values in cardsGuessedCorrect.  Increment correct guesses variable
+
+        if (((String)combinations[guessIdx1]).equals((String)combinations[guessIdx2])) {
+
+            // We know that it was a correct guess, so we apply updates to gameBoard fields
+            // The drawing will view these new fields and should draw correctly
+
+            gameBoard.setNumberOfPairsOfPatternsGuessedCorrectly(gameBoard.getNumberOfPairsOfPatternsGuessedCorrectly() + 1);
+            gameBoard.updateCardsGuessedCorrect(guessIdx1, true);
+            gameBoard.updateCardsGuessedCorrect(guessIdx2, true);
+        } else {
+
+            // It was an incorrect guess, no change needed
+
+            sleep = true;
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sleep = false;
+
+            // Perhaps add a sound file here later.
+
         }
 
-        // set both guesses in gameBoard to -1.  By setting to -1 threads will continue to redraw again.
+        // Reset the choices
 
         gameBoard.setFirstChoiceIdx(-1);
         gameBoard.setSecondChoiceIdx(-1);
 
-        // if correct, give these true values in cardsGuessedCorrect.  Increment correct guesses variable
-
-        //////////if ()   FINISH IF STATEMENT HERE//////////////////
-        gameBoard.setNumberOfPairsOfPatternsGuessedCorrectly(gameBoard.getNumberOfPairsOfPatternsGuessedCorrectly() + 1);
-        gameBoard.updateCardsGuessedCorrect(guessIdx1, true);
-        gameBoard.updateCardsGuessedCorrect(guessIdx2, true);
-
-        // otherwise it is an incorrect guess and things go back to normal after the sleeping for 1 second
-        //////////ELSE PLACED HERE/////////
-
-    }
+    } // END OF processGuessChoices METHOD
 
     void processShowingPattern() {
 
@@ -579,17 +615,43 @@ class GameDrawingPanel extends JComponent {
 
         drawColoredShape();
 
-        // this method finds the next xPos and yPos
+        // this method finds the next xLoc and yLoc
 
-        updateXPosYPosForNextDrawing();
+        updatexLocyLocForNextDrawing();
 
     }
 
-    void checkForNewlyClickedOnCards() {///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // if it was just clicked on and hasn't been guessed correctly yet and wasn't the first choice index
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        if (cardContainsClick(xClicked, yClicked, xPos, yPos, cardWidth, cardHeight) && !isGuessedCorrectAlready
+    void checkForNewlyClickedOnCards() {
+        // if all of these happen: 1) just clicked on. 2) hasn't been guessed correctly yet. 3) wasn't the first choice index
+
+        //System.out.println(gameBoard.getFirstChoiceIdx());
+        //System.out.println(xClicked);
+
+/*        if (xClicked != 0) {
+            System.out.println("xClick = " + xClicked + " yClick = " + yClicked);
+            System.out.println("idx = " + idx + " first guess = " + gameBoard.getFirstChoiceIdx() + " second guess = " +
+                    gameBoard.getSecondChoiceIdx());
+            System.out.println("xLoc = " + xLoc + " yLoc = " + yLoc);
+            System.out.println("cardWidth = " + cardWidth + " cardHeight = "  + cardHeight);
+
+            System.out.println("was this contained?");
+            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
+                    && gameBoard.getFirstChoiceIdx() != idx);
+            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight));
+            System.out.println(!isGuessedCorrectAlready);
+            System.out.println(gameBoard.getFirstChoiceIdx() != idx);
+        }*/
+        if (cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
                 && gameBoard.getFirstChoiceIdx() != idx) {
+
+            if (xClicked != 0) {
+                //System.out.println("this was contained");
+
+
+                // first show the pattern to the user
+
+                //System.out.println("Processing show pattern");
+            }
 
             // first show the pattern to the user
 
@@ -599,9 +661,13 @@ class GameDrawingPanel extends JComponent {
 
             if (gameBoard.getFirstChoiceIdx() == -1) {
                 gameBoard.setFirstChoiceIdx(idx);
+/*                System.out.println("first choice = " + gameBoard.getFirstChoiceIdx() +
+                        " second choice = " + gameBoard.getSecondChoiceIdx());*/
             } else {
-                gameBoard.setSecondChoiceIdx(idx);  // Note: Redrawing takes no more threads until this is set back to -1
-                processGuessChoices(gameBoard.getFirstChoiceIdx(),gameBoard.getSecondChoiceIdx());  //this sets it to -1
+                gameBoard.setSecondChoiceIdx(idx);
+/*                System.out.println("first choice = " + gameBoard.getFirstChoiceIdx() +
+                        " second choice = " + gameBoard.getSecondChoiceIdx());*/
+                processGuessChoices(gameBoard.getFirstChoiceIdx(),gameBoard.getSecondChoiceIdx());
             }
         } // END OF IF STATEMENT
     }
@@ -623,17 +689,20 @@ class MainGameLoop implements Runnable {
     @Override
     public void run() {
 
+        // logging
+        /*
+        if (gameBoard.getXClicked() != 0) {
+            System.out.println("xClick = " + gameBoard.getXClicked() + " yClick = " + gameBoard.getYClicked());
+            System.out.println("first choice = " + gameBoard.getFirstChoiceIdx() +
+                    " second choice = " + gameBoard.getSecondChoiceIdx());
+        }
+*/
+
         // check input/output
 
-        // Only repaint if the second guess isn't chosen yet.  This gets updated to a non-negative and back to a
-        // negative while inside the paint method.
+        // repaint
 
-        if (gameBoard.getSecondChoiceIdx() == -1) {
-
-            // repaint
-
-            gameBoard.repaint();
-        }
+        gameBoard.repaint();
 
     }
 
