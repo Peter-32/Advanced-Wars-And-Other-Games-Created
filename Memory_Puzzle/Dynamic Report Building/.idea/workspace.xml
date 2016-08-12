@@ -71,8 +71,8 @@
       <file leaf-file-name="LearnColumns.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/SQL/Learning/LearnColumns.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="62" column="28" selection-start-line="62" selection-start-column="15" selection-end-line="62" selection-end-column="28" />
+            <state relative-caret-position="357">
+              <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1163#1171#0" expanded="true" />
@@ -296,8 +296,8 @@
   <component name="PropertiesComponent">
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="Groovy JUnit" />
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -307,7 +307,7 @@
       <recent name="groovy.util.GroovyTestCase" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.LearnColumnsTest">
+  <component name="RunManager" selected="JUnit.LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest">
     <configuration default="false" name="Run_Report_Builder" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -687,8 +687,8 @@
     </list>
     <recent_temporary>
       <list size="4">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.LearnColumnsTest" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.LearnColumnsTest" />
         <item index="2" class="java.lang.String" itemvalue="Application.RunLearning" />
         <item index="3" class="java.lang.String" itemvalue="Application.Run_Report_Builder" />
       </list>
@@ -730,14 +730,11 @@
     <history-entry file="LearnColumnsTest - 2016.08.11 at 22h 57m 09s.xml">
       <configuration name="LearnColumnsTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="LearnColumnsTest_getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest - 2016.08.11 at 22h 50m 10s.xml">
-      <configuration name="LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" configurationId="JUnit" />
+    <history-entry file="LearnColumnsTest - 2016.08.11 at 22h 59m 41s.xml">
+      <configuration name="LearnColumnsTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="LearnColumnsTest_getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest - 2016.08.11 at 22h 50m 39s.xml">
-      <configuration name="LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="LearnColumnsTest_getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest - 2016.08.11 at 22h 51m 53s.xml">
-      <configuration name="LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" configurationId="JUnit" />
+    <history-entry file="LearnColumnsTest - 2016.08.11 at 23h 01m 02s.xml">
+      <configuration name="LearnColumnsTest" configurationId="JUnit" />
     </history-entry>
     <history-entry file="LearnColumnsTest_getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest - 2016.08.11 at 22h 53m 57s.xml">
       <configuration name="LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" configurationId="JUnit" />
@@ -748,10 +745,13 @@
     <history-entry file="LearnColumnsTest_getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest - 2016.08.11 at 22h 55m 34s.xml">
       <configuration name="LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="LearnColumnsTest_getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest - 2016.08.11 at 23h 01m 09s.xml">
+      <configuration name="LearnColumnsTest.getSelectStatementsFromAlreadySplitSqlStatementsByTildeTest" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-1928" y="73" width="1936" height="1096" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -760,7 +760,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32928064" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32928064" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1096,8 +1096,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SQL/Learning/LearnColumns.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="62" column="28" selection-start-line="62" selection-start-column="15" selection-end-line="62" selection-end-column="28" />
+        <state relative-caret-position="357">
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1163#1171#0" expanded="true" />
@@ -1135,6 +1135,7 @@
       </state>
       <state key="GlobalLibrariesConfigurable.UI">
         <settings>
+          <last-edited>groovy-2.4.7</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
