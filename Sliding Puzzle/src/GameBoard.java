@@ -5,6 +5,10 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -24,7 +28,12 @@ public class GameBoard extends JFrame {
     private int height = 600;
     private int titleBarHeight;
     private int leftFrameBorderWidth;
-    private Tile[] tiles = new Tile[15];
+    private ArrayList<Tile> tiles = new ArrayList<Tile>();
+    private int tileSideMargin = 5;
+    private int boxStartX = 225;
+    private int boxStartY = 125;
+    private int tileSideLength = 35;
+    private int boxSideLength = (4 * tileSideLength) + (5 * tileSideLength);
 
     // sound files
 
@@ -61,7 +70,7 @@ public class GameBoard extends JFrame {
         playMusic(backgroundMusic, true);
 
         // Create all 15 tiles in random locations
-        createTiles();
+        populateTilesArray();
 
         // Start the key/mouse listener class
         // his prompts the main game loop each time there is user input
@@ -95,52 +104,43 @@ public class GameBoard extends JFrame {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
     public int getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
     public int getLeftFrameBorderWidth() {
         return leftFrameBorderWidth;
     }
-
-    public void setLeftFrameBorderWidth(int leftFrameBorderWidth) {
-        this.leftFrameBorderWidth = leftFrameBorderWidth;
-    }
-
     public int getTitleBarHeight() {
         return titleBarHeight;
     }
-
-    public void setTitleBarHeight(int titleBarHeight) {
-        this.titleBarHeight = titleBarHeight;
+    public int getTileSideMargin() {
+        return tileSideMargin;
     }
-    public Tile[] getTiles() {
-        return tiles;
-    }
-
-    public void setTiles(Tile[] tiles) {
-        this.tiles = tiles;
+    public int getBoxStartX() {
+        return boxStartX;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    private void createTiles() {
+    public int getBoxStartY() {
+        return boxStartY;
+    }
+    public int getTileSideLength() {
+        return tileSideLength;
+    }
+    public int getBoxSideLength() {
+        return boxSideLength;
+    }
+    public Object[] cloneTiles() {
+        return tiles.toArray();
+    }
+    public Iterator<Tile> tileIterator() {
+        readLock.lock();
+        try {
+            return new ArrayList<Tile>(tiles).iterator();
+            // we iterate over a snapshot of our list
+        } finally {
+            readLock.unlock();
+        }
     }
 
     //// METHODS
@@ -181,6 +181,26 @@ public class GameBoard extends JFrame {
             e.printStackTrace();
         } catch(IOException e) {
             e.printStackTrace();
+        }
+    } // END OF PlayMusic METHOD
+
+    /*
+    Places a randomized x, y location for the tiles numbered 1 to 15.
+    x can be any number between 0 and 3 and y can be any number between 0 and 3.
+    No tile can take the same location twice.
+    Loops through the 15 locations and creates a tile with a random number from 1 to 15.
+     */
+    private void populateTilesArray() {
+
+        // shuffle the ordering of the numbers that will be on the tiles
+
+        int[] randNumberArray = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+        Collections.shuffle(Arrays.asList(randNumberArray));
+
+        // create the tiles and use the random number array
+
+        for(int i = 0; i < 15; i++) {
+            tiles.add(new Tile(this, i%4, i/4, randNumberArray[i]));
         }
     }
 
@@ -230,30 +250,14 @@ public class GameBoard extends JFrame {
     }
 }
 
-
-class InputListener {
-
-    //// FIELDS
-
-    //// CONSTRUCTOR
-
-    InputListener() {
-        // keyboard input
-
-        // click input
-
-        // change the state of things.
-
-    }
-
-}
-
-
 class GameDrawingPanel extends JComponent {
 
     //// FIELDS
-    GameBoard gameBoard;
-    Tile[] tileArray;
+    private GameBoard gameBoard;
+
+    private Iterator<Tile> tempTileIterator;
+    private Tile currentTile;
+
 
 
     //// CONSTRUCTOR
@@ -261,25 +265,62 @@ class GameDrawingPanel extends JComponent {
     GameDrawingPanel(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
 
+
     }
 
     // when repainting add animation so that the tiles slide rather than swap locations
 
     public void paint(Graphics g) {
+
         // draw the border
 
-        // draw all the tiles based on their X, Y location
+        Graphics2D graphicSettings = (Graphics2D) g;
 
-    }
-}
+        graphicSettings.setColor(Color.CYAN);
+        graphicSettings.fillRect(0, 0, gameBoard.getWidth(), gameBoard.getHeight());
+
+        graphicSettings.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Draw border
+
+        graphicSettings.setStroke(new BasicStroke(5));
+        graphicSettings.setColor(Color.BLUE);
+        graphicSettings.drawRect(gameBoard.getBoxStartX(), gameBoard.getBoxStartY(), gameBoard.getBoxSideLength(),
+                gameBoard.getBoxSideLength());
+
+        // Get iterator
+
+        tempTileIterator = gameBoard.tileIterator();
+
+        // start iterating
+
+        while (tempTileIterator.hasNext()) {
+
+            currentTile = tempTileIterator.next();
+
+            // draw green tile each iteration
+
+            graphicSettings.setColor(Color.GREEN);
+            graphicSettings.fillRect(currentTile.getTopLeftXPos(), currentTile.getTopLeftYPos(), gameBoard.getTileSideLength(),
+                    gameBoard.getTileSideLength());
+
+            // draw white text
+
+            graphicSettings.setColor(Color.WHITE);
+            // ???
+
+        } // END OF WHILE LOOP
+
+    } // END OF Paint() METHOD
+
+} // END OF GameDrawingPanel
 
 // This loop only is run when the InputListener tells it to run.
 
-class MainGameLoop {
+class MainGameLoop implements Runnable {
 
     //// FIELDS
-    GameBoard gameBoard;
-    Tile
+    private GameBoard gameBoard;
 
     //// CONSTRUCTOR
 
@@ -287,8 +328,12 @@ class MainGameLoop {
 
         this.gameBoard = gameBoard;
 
+    }
+
+    @Override
+    public void run() {
         // move based on user input
-        for ()
+
 
         // repaint using animation
         gameBoard.repaint();
@@ -299,16 +344,48 @@ class MainGameLoop {
 class Tile {
 
     //// FIELDS
-    int xPos;
-    int yPos;
-    int numberOnTile;
+    private GameBoard gameBoard;
+    private int row;
+    private int col;
+    private int topLeftXPos;
+    private int topLeftYPos;
+    private int numberOnTile;
+
 
     //// CONSTRUCTOR
-    Tile(int xPos, int yPos, int numberOnTile) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+    Tile(GameBoard gameBoard, int row, int col, int numberOnTile) {
+        this.row = row;
+        this.col = col;
         this.numberOnTile = numberOnTile;
 
+        // Initialize the X, Y position on the screen at start up
+
+        this.topLeftXPos = gameBoard.getBoxStartX() + ((col + 1) * gameBoard.getTileSideMargin()) +
+                (col * gameBoard.getTileSideLength());
+        this.topLeftYPos = gameBoard.getBoxStartY() + ((row + 1) * gameBoard.getTileSideMargin()) +
+                (col * gameBoard.getTileSideLength());
+    }
+
+    //// GETTERS AND SETTERS
+
+    public int getNumberOnTile() {
+        return numberOnTile;
+    }
+
+    public int getTopLeftYPos() {
+        return topLeftYPos;
+    }
+
+    public int getTopLeftXPos() {
+        return topLeftXPos;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public int getRow() {
+        return row;
     }
 
     ////METHODS
@@ -316,14 +393,17 @@ class Tile {
     // constrained movement changes X and Y location
 
     void move() {
-        // If colliding with wall correct
+        // If colliding with wall correct; USE tile margin for any corrections
 
         // move; if clicked on move at a certain speed in the right direction until colliding
         // if keyboard is used move in the right direction until colliding
 
 
-        // If colliding with tile correct
+        // If colliding with tile correct;  USE tile Margin for any corrections
+
 
 
     }
+
+
 }
