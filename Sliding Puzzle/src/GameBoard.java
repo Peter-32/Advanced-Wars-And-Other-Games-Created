@@ -2,6 +2,7 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -283,14 +284,15 @@ class GameDrawingPanel extends JComponent {
 
         // Draw border
 
-        graphicSettings.setStroke(new BasicStroke(5));
+        graphicSettings.setStroke(new BasicStroke(gameBoard.getTileSideMargin()));
         graphicSettings.setColor(Color.BLUE);
         graphicSettings.drawRect(gameBoard.getBoxStartX(), gameBoard.getBoxStartY(), gameBoard.getBoxSideLength(),
                 gameBoard.getBoxSideLength());
 
-        // Get iterator
+        // Prepare for iterating on the tile array
 
         tempTileIterator = gameBoard.tileIterator();
+        graphicSettings.setStroke(new BasicStroke(gameBoard.getTileSideMargin() - 1));
 
         // start iterating
 
@@ -298,12 +300,25 @@ class GameDrawingPanel extends JComponent {
 
             currentTile = tempTileIterator.next();
 
-            // draw green tile each iteration
+            // get the recontangle
 
-            graphicSettings.setColor(Color.GREEN);
-            graphicSettings.fillRect(currentTile.getTopLeftXPos(), currentTile.getTopLeftYPos(), gameBoard.getTileSideLength(),
+            Shape newRectangle = new Rectangle2D.Float(currentTile.getTopLeftXPos(), currentTile.getTopLeftYPos(), gameBoard.getTileSideLength(),
                     gameBoard.getTileSideLength());
 
+            // draw the border
+
+            graphicSettings.setPaint(Color.BLACK);
+            graphicSettings.draw(newRectangle);
+
+            // fill in the rectangle
+
+            graphicSettings.setPaint(Color.GREEN);
+            graphicSettings.fill(newRectangle);
+
+            /*
+            graphicSettings.fillRect(currentTile.getTopLeftXPos(), currentTile.getTopLeftYPos(), gameBoard.getTileSideLength(),
+                    gameBoard.getTileSideLength());
+            */
             // draw white text
 
             graphicSettings.setColor(Color.WHITE);
