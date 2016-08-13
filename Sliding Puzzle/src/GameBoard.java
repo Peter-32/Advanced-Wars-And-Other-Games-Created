@@ -195,7 +195,7 @@ public class GameBoard extends JFrame {
 
         // shuffle the ordering of the numbers that will be on the tiles
 
-        int[] randNumberArray = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+        String[] randNumberArray = {"01","02","03","04","05","06","07","08","09","10","11","12","13","14","15"};
         Collections.shuffle(Arrays.asList(randNumberArray));
 
         // create the tiles and use the random number array
@@ -321,7 +321,11 @@ class GameDrawingPanel extends JComponent {
             */
             // draw white text
 
+            graphicSettings.setFont(new Font("TimesRoman", Font.PLAIN, 25));
             graphicSettings.setColor(Color.WHITE);
+            graphicSettings.drawString((String) currentTile.getNumberOnTile(),
+                    (int) (currentTile.getTopLeftXPos() + gameBoard.getTileSideLength() * .30),
+                    (int) (currentTile.getTopLeftYPos() + gameBoard.getTileSideLength() * .60));
             // ???
 
         } // END OF WHILE LOOP
@@ -336,6 +340,9 @@ class MainGameLoop implements Runnable {
 
     //// FIELDS
     private GameBoard gameBoard;
+    private Iterator<Tile> tempTileIterator;
+    private Tile currentTile;
+    private boolean boolResult;
 
     //// CONSTRUCTOR
 
@@ -347,13 +354,101 @@ class MainGameLoop implements Runnable {
 
     @Override
     public void run() {
+        // Check to see if the game is won
+        if (didPlayerWin()) {
+            new GameOver();
+        }
+
+
         // move based on user input
 
 
         // repaint using animation
         gameBoard.repaint();
     }
-}
+
+    private boolean didPlayerWin() {
+        tempTileIterator = gameBoard.tileIterator();
+
+        // start iterating
+
+        while (tempTileIterator.hasNext()) {
+
+            currentTile = tempTileIterator.next();
+            if (currentTile.getRow() == 0) {
+                switch (currentTile.getCol()) {
+                    case 0:
+                        boolResult = currentTile.getNumberOnTile() == "01";
+                        break;
+                    case 1:
+                        boolResult = currentTile.getNumberOnTile() == "02";
+                        break;
+                    case 2:
+                        boolResult = currentTile.getNumberOnTile() == "03";
+                        break;
+                    default:
+                        boolResult = currentTile.getNumberOnTile() == "04";
+                        break;
+                }
+            } else if (currentTile.getRow() == 1) {
+                switch (currentTile.getCol()) {
+                    case 0:
+                        boolResult = currentTile.getNumberOnTile() == "05";
+                        break;
+                    case 1:
+                        boolResult = currentTile.getNumberOnTile() == "06";
+                        break;
+                    case 2:
+                        boolResult = currentTile.getNumberOnTile() == "07";
+                        break;
+                    default:
+                        boolResult = currentTile.getNumberOnTile() == "08";
+                        break;
+                }
+            } else if (currentTile.getRow() == 2) {
+                switch (currentTile.getCol()) {
+                    case 0:
+                        boolResult = currentTile.getNumberOnTile() == "09";
+                        break;
+                    case 1:
+                        boolResult = currentTile.getNumberOnTile() == "10";
+                        break;
+                    case 2:
+                        boolResult = currentTile.getNumberOnTile() == "11";
+                        break;
+                    default:
+                        boolResult = currentTile.getNumberOnTile() == "12";
+                        break;
+                }
+            } else {
+                switch (currentTile.getCol()) {
+                    case 0:
+                        boolResult = currentTile.getNumberOnTile() == "13";
+                        break;
+                    case 1:
+                        boolResult = currentTile.getNumberOnTile() == "14";
+                        break;
+                    case 2:
+                        boolResult = currentTile.getNumberOnTile() == "15";
+                        break;
+                    default:
+                        boolResult = false;
+                        break;
+                }
+            }
+
+
+            if (!boolResult) {
+                return false;
+            }
+
+        }
+        // no contradiction so it's a winning puzzle state
+
+        return true;
+    } // END OF didPlayerWin METHOD
+
+} // END OF MainGameLoop CLASS
 
 
 class Tile {
@@ -364,11 +459,11 @@ class Tile {
     private int col;
     private int topLeftXPos;
     private int topLeftYPos;
-    private int numberOnTile;
+    private String numberOnTile;
 
 
     //// CONSTRUCTOR
-    Tile(GameBoard gameBoard, int row, int col, int numberOnTile) {
+    Tile(GameBoard gameBoard, int row, int col, String numberOnTile) {
         this.row = row;
         this.col = col;
         this.numberOnTile = numberOnTile;
@@ -383,7 +478,7 @@ class Tile {
 
     //// GETTERS AND SETTERS
 
-    public int getNumberOnTile() {
+    public String getNumberOnTile() {
         return numberOnTile;
     }
 
@@ -417,8 +512,24 @@ class Tile {
         // If colliding with tile correct;  USE tile Margin for any corrections
 
 
+        // moving will change the row/column of the box when it locks into the new spot
 
     }
 
 
+}
+
+class GameOver {
+    GameOver(GameBoard gameBoard) {
+        //clapping sound
+
+        //message displayed
+
+        JOptionPane.showMessageDialog(gameBoard, "Game Over!");
+
+        //create new GameBoard
+
+        //new GameBoard(gameBoard.getNumberOfPairsOfPatterns());
+
+    }
 }
