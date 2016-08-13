@@ -32,8 +32,8 @@ public class GameBoard extends JFrame {
     private int tileSideMargin = 5;
     private int boxStartX = 225;
     private int boxStartY = 125;
-    private int tileSideLength = 35;
-    private int boxSideLength = (4 * tileSideLength) + (5 * tileSideLength);
+    private int tileSideLength = 75;
+    private int boxSideLength = (4 * tileSideLength) + (5 * tileSideMargin);
 
     // sound files
 
@@ -363,7 +363,7 @@ class Tile {
         this.topLeftXPos = gameBoard.getBoxStartX() + ((col + 1) * gameBoard.getTileSideMargin()) +
                 (col * gameBoard.getTileSideLength());
         this.topLeftYPos = gameBoard.getBoxStartY() + ((row + 1) * gameBoard.getTileSideMargin()) +
-                (col * gameBoard.getTileSideLength());
+                (row * gameBoard.getTileSideLength());
     }
 
     //// GETTERS AND SETTERS

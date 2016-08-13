@@ -259,7 +259,7 @@ public class GameBoard extends JFrame {
     public Iterator<String> combinationsIterator() {
         readLock.lock();
         try {
-            return new ArrayList<String>(combinations).iterator();
+            return combinations.iterator();
             // we iterate over a snapshot of our list
         } finally {
             readLock.unlock();
@@ -271,7 +271,7 @@ public class GameBoard extends JFrame {
     public Iterator<Boolean> cardsGuessedCorrectIterator() {
         readLock.lock();
         try {
-            return new ArrayList<Boolean>(cardsGuessedCorrect).iterator();
+            return cardsGuessedCorrect.iterator();
             // we iterate over a snapshot of our list
         } finally {
             readLock.unlock();
