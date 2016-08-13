@@ -7,6 +7,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by peterjmyers on 8/11/16.
@@ -20,18 +24,20 @@ public class GameBoard extends JFrame {
     private int height = 600;
     private int titleBarHeight;
     private int leftFrameBorderWidth;
-
-
-
-
+    private Tile[] tiles = new Tile[15];
 
     // sound files
 
     private String backgroundMusic = "file:./resources/Puzzle Theme1.wav";
     private Clip clip = null;
 
+    // use this to lock for write operations like add/remove
 
+    private final Lock readLock;
 
+    // use this to lock for read operations like get/iterator/contains..
+
+    private final Lock writeLock;
 
     //// CONSTRUCTOR
 
@@ -44,6 +50,11 @@ public class GameBoard extends JFrame {
         titleBarHeight = 30;
         leftFrameBorderWidth = 8;
 
+        // locks
+
+        ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+        readLock = rwLock.readLock();
+        writeLock = rwLock.writeLock();
 
         // Start the background music
 
@@ -67,7 +78,7 @@ public class GameBoard extends JFrame {
 
         // Add multi-threading for the game loop
         ScheduledThreadPoolExecutor executor = new  ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new MainGameLoop(this, MainGameLoop), 0L, 20L, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
 
 
         // final changes to JFrame
@@ -79,6 +90,55 @@ public class GameBoard extends JFrame {
     }
 
     // GETTERS AND SETTERS
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+    public int getLeftFrameBorderWidth() {
+        return leftFrameBorderWidth;
+    }
+
+    public void setLeftFrameBorderWidth(int leftFrameBorderWidth) {
+        this.leftFrameBorderWidth = leftFrameBorderWidth;
+    }
+
+    public int getTitleBarHeight() {
+        return titleBarHeight;
+    }
+
+    public void setTitleBarHeight(int titleBarHeight) {
+        this.titleBarHeight = titleBarHeight;
+    }
+    public Tile[] getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(Tile[] tiles) {
+        this.tiles = tiles;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void createTiles() {
     }
@@ -218,13 +278,20 @@ class GameDrawingPanel extends JComponent {
 class MainGameLoop {
 
     //// FIELDS
+    GameBoard gameBoard;
+    Tile
 
     //// CONSTRUCTOR
 
-    MainGameLoop() {
-        // update states without threads
+    MainGameLoop(GameBoard gameBoard) {
 
-        // repaint using animation without threads
+        this.gameBoard = gameBoard;
+
+        // move based on user input
+        for ()
+
+        // repaint using animation
+        gameBoard.repaint();
     }
 }
 
