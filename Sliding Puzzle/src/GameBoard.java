@@ -35,7 +35,7 @@ public class GameBoard extends JFrame {
     private int boxStartY = 125;
     private int tileSideLength = 75;
     private int boxSideLength = (4 * tileSideLength) + (5 * tileSideMargin);
-    private boolean lockInput = false;
+    private boolean lockInput = false; // this isn't a feature that is used.  It can be used to animate the sliding.
     private int yClicked = -1;
     private int xClicked = -1;
     private boolean keyUpPressed = false;
@@ -219,21 +219,7 @@ public class GameBoard extends JFrame {
             readLock.unlock();
         }
     }
-    public boolean isKeyUpPressed() {
-        return keyUpPressed;
-    }
 
-    public boolean isKeyRightPressed() {
-        return keyRightPressed;
-    }
-
-    public boolean isKeyDownPressed() {
-        return keyDownPressed;
-    }
-
-    public boolean isKeyLeftPressed() {
-        return keyLeftPressed;
-    }
 
     public int getRowOfBlankTile() {
         return rowOfBlankTile;
@@ -249,6 +235,38 @@ public class GameBoard extends JFrame {
         this.colOfBlankTile = colOfBlankTile;
     }
 
+    public boolean isKeyUpPressed() {
+        return keyUpPressed;
+    }
+
+    public void setKeyUpPressed(boolean keyUpPressed) {
+        this.keyUpPressed = keyUpPressed;
+    }
+
+    public boolean isKeyRightPressed() {
+        return keyRightPressed;
+    }
+
+    public void setKeyRightPressed(boolean keyRightPressed) {
+        this.keyRightPressed = keyRightPressed;
+    }
+
+    public boolean isKeyDownPressed() {
+        return keyDownPressed;
+    }
+
+    public void setKeyDownPressed(boolean keyDownPressed) {
+        this.keyDownPressed = keyDownPressed;
+    }
+
+    public boolean isKeyLeftPressed() {
+        return keyLeftPressed;
+    }
+
+    public void setKeyLeftPressed(boolean keyLeftPressed) {
+        this.keyLeftPressed = keyLeftPressed;
+    }
+
     private class ListenForButton implements KeyListener {
 
         @Override
@@ -258,6 +276,11 @@ public class GameBoard extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
             if (e.getKeyCode() == 87 || e.getKeyCode() == 38) {
                 keyUpPressed = true;
             } else if (e.getKeyCode() == 68 || e.getKeyCode() == 39) {
@@ -266,19 +289,6 @@ public class GameBoard extends JFrame {
                 keyDownPressed = true;
             } else if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
                 keyLeftPressed = true;
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == 87 || e.getKeyCode() == 38) {
-                keyUpPressed = false;
-            } else if (e.getKeyCode() == 68 || e.getKeyCode() == 39) {
-                keyRightPressed = false;
-            } else if (e.getKeyCode() == 83 || e.getKeyCode() == 40) {
-                keyDownPressed = false;
-            } else if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
-                keyLeftPressed = false;
             }
         }
     }
@@ -447,44 +457,20 @@ class MainGameLoop implements Runnable {
 
             // find the row / column we're looking for based on the input used and the missing tile location
             if (gameBoard.isKeyDownPressed()) {
+                gameBoard.setKeyDownPressed(false);
                 tryMovingDown();
             } else if (gameBoard.isKeyUpPressed()) {
+                gameBoard.setKeyUpPressed(false);
                 tryMovingUp();
             } else if (gameBoard.isKeyLeftPressed()) {
+                gameBoard.setKeyLeftPressed(false);
                 tryMovingLeft();
             } else if (gameBoard.isKeyRightPressed()) {
+                gameBoard.setKeyRightPressed(false);
                 tryMovingRight();
             }
+
         }
-
-
-        // iterate on the tiles to find the tile in the one row / column we're looking for
-        // then call the move function so it will move to the blank square
-        // after it finishes moving we give the user the ability to use input again.
-
-
-
-        // if there is something we have to find the right tile to move
-
-
-
-
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-        // AFTER MOVING UNLOCK THE INPUT !!!!!! ALSO SET THE XCLICK TO -1, YCLICK to -1 and keypressed = false!!!
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-        //////////////////////////
-
-
-
 
     } // END OF moveTiles METHOD
 
@@ -510,20 +496,20 @@ class MainGameLoop implements Runnable {
     } // END OF tryMovingLeft Method
 
     private void tryMovingDown() {
-        int searchTileWithRow = gameBoard.getRowOfBlankTile();
-        int searchTileWithCol = gameBoard.getColOfBlankTile() - 1;
+        int searchTileWithRow = gameBoard.getRowOfBlankTile() - 1;
+        int searchTileWithCol = gameBoard.getColOfBlankTile();
 
-        if (searchTileWithCol < 0) { return; } // right isn't possible
+        if (searchTileWithRow < 0) { return; } // right isn't possible
 
         searchForTileAndMoveIt(searchTileWithRow, searchTileWithCol);
 
     } // END OF tryMovingDown Method
 
     private void tryMovingUp() {
-        int searchTileWithRow = gameBoard.getRowOfBlankTile();
-        int searchTileWithCol = gameBoard.getColOfBlankTile() - 1;
+        int searchTileWithRow = gameBoard.getRowOfBlankTile() + 1;
+        int searchTileWithCol = gameBoard.getColOfBlankTile();
 
-        if (searchTileWithCol < 0) { return; } // right isn't possible
+        if (searchTileWithRow > 3) { return; } // right isn't possible
 
         searchForTileAndMoveIt(searchTileWithRow, searchTileWithCol);
 
@@ -549,6 +535,7 @@ class MainGameLoop implements Runnable {
                 currentTile.move();
             }
         }
+
     } // END OF searchForTileAndMoveIt METHOD
 
     private boolean didPlayerWin() {
@@ -650,6 +637,7 @@ class Tile {
 
     //// CONSTRUCTOR
     Tile(GameBoard gameBoard, int row, int col, String numberOnTile) {
+        this.gameBoard = gameBoard;
         this.row = row;
         this.col = col;
         this.numberOnTile = numberOnTile;
@@ -690,23 +678,27 @@ class Tile {
 
     void move() {
         // OLD: // move slowly in the direction towards the blank tile
-        // Just swap the tile with the blank tile, then
+        System.out.println("Tile " + numberOnTile + " moved.");
 
-        row =;
-        col = ;
-        gameBoard.set;
-        gameboard.set;
+        // swap
+        // save temps
 
+        int tempRow = gameBoard.getRowOfBlankTile();
+        int tempCol = gameBoard.getColOfBlankTile();
 
+        // update gameBoard
+
+        gameBoard.setRowOfBlankTile(row);
+        gameBoard.setColOfBlankTile(col);
+
+        // swap temps into this row and col
+
+        row = tempRow;
+        col = tempCol;
 
         //update the X and Y similar to the constructor above
 
         updateXYPos(row, col);
-
-
-        // update the row / column of this tile to the new value.
-
-        // update the blank row and column in gameBoard
 
     }
 
