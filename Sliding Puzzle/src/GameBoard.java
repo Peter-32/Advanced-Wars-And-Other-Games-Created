@@ -44,6 +44,9 @@ public class GameBoard extends JFrame {
     private boolean keyLeftPressed = false;
     private int rowOfBlankTile = 3;
     private int colOfBlankTile = 3;
+    private boolean GameOver = false;
+    private boolean autuSolve = false;
+    private int computerLevel;
 
     // sound files
 
@@ -60,9 +63,10 @@ public class GameBoard extends JFrame {
 
     //// CONSTRUCTOR
 
-    GameBoard() {
+    GameBoard(Boolean autoSolve, int computerLevel) {
         // initialize JFrame
 
+        this.autuSolve = autoSolve;
         this.setSize(width, height);
         this.setTitle("Sliding Puzzle");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,18 +99,24 @@ public class GameBoard extends JFrame {
         GameDrawingPanel gameDrawingPanel = new GameDrawingPanel(this);
         this.add(gameDrawingPanel, BorderLayout.CENTER);
 
-        // Add multi-threading for the game loop
-        ScheduledThreadPoolExecutor executor = new  ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
-
-
         // final changes to JFrame
 
         setResizable(false);
 
         this.setVisible(true);
 
+        // Add multi-threading for the game loop
+        if (!autoSolve) {
+            ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5);
+            executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
+        } else {
+
+            new AutoSolve(this, computerLevel);
+
+        }
+
     }
+
 
     //// METHODS
 
@@ -157,15 +167,18 @@ public class GameBoard extends JFrame {
      */
     private void populateTilesArray() {
 
-        // shuffle the ordering of the numbers that will be on the tiles
+        // create the random number array.  In this case it is always the same order
+        String[] randNumberArray = {"05","08","15","09","01","14","06","03","12","11","02","13","04","10","07"};
 
-        String[] randNumberArray = {"01","02","03","04","05","06","07","08","09","10","11","12","13","14","15"};
-        Collections.shuffle(Arrays.asList(randNumberArray));
+        /* BEWARE Shuffling will create invalid puzzles.  Not sure of how to scramble it easily at the moment
+        //String[] randNumberArray = {"01","02","03","04","05","06","07","08","09","10","11","12","13","14","15"};
+        //Collections.shuffle(Arrays.asList(randNumberArray));
+        */
 
         // create the tiles and use the random number array
 
         for(int i = 0; i < 15; i++) {
-            tiles.add(new Tile(this, i%4, i/4, randNumberArray[i]));
+            tiles.add(new Tile(this, i/4, i%4, randNumberArray[i]));
         }
     }
 
@@ -265,6 +278,14 @@ public class GameBoard extends JFrame {
 
     public void setKeyLeftPressed(boolean keyLeftPressed) {
         this.keyLeftPressed = keyLeftPressed;
+    }
+
+    public boolean isGameOver() {
+        return GameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        GameOver = gameOver;
     }
 
     private class ListenForButton implements KeyListener {
@@ -434,7 +455,12 @@ class MainGameLoop implements Runnable {
     public void run() {
         // Check to see if the game is won
         if (didPlayerWin()) {
-            new GameOver(gameBoard);
+
+            // Check if we've already found it to be gave over
+
+            if (!gameBoard.isGameOver()) {
+                new GameOver(gameBoard);
+            }
         }
 
         // move based on user input
@@ -474,7 +500,7 @@ class MainGameLoop implements Runnable {
 
     } // END OF moveTiles METHOD
 
-    private void tryMovingRight() {
+    public void tryMovingRight() {
         int searchTileWithRow = gameBoard.getRowOfBlankTile();
         int searchTileWithCol = gameBoard.getColOfBlankTile() - 1;
 
@@ -484,7 +510,7 @@ class MainGameLoop implements Runnable {
 
     } // END OF tryMovingRight Method
 
-    private void tryMovingLeft() {
+    public void tryMovingLeft() {
 
         int searchTileWithRow = gameBoard.getRowOfBlankTile();
         int searchTileWithCol = gameBoard.getColOfBlankTile() + 1;
@@ -495,7 +521,7 @@ class MainGameLoop implements Runnable {
 
     } // END OF tryMovingLeft Method
 
-    private void tryMovingDown() {
+    public void tryMovingDown() {
         int searchTileWithRow = gameBoard.getRowOfBlankTile() - 1;
         int searchTileWithCol = gameBoard.getColOfBlankTile();
 
@@ -505,7 +531,7 @@ class MainGameLoop implements Runnable {
 
     } // END OF tryMovingDown Method
 
-    private void tryMovingUp() {
+    public void tryMovingUp() {
         int searchTileWithRow = gameBoard.getRowOfBlankTile() + 1;
         int searchTileWithCol = gameBoard.getColOfBlankTile();
 
@@ -715,7 +741,7 @@ class GameOver {
         //clapping sound
 
         //message displayed
-
+        gameBoard.setGameOver(true);
         JOptionPane.showMessageDialog(gameBoard, "Game Over!");
 
         //create new GameBoard
@@ -724,3 +750,4 @@ class GameOver {
 
     }
 }
+
