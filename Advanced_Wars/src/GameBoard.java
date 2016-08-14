@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -23,11 +24,15 @@ public class GameBoard extends JFrame {
 
     //// FIELDS
 
+    private enum TerrainTiles {
+
+    }
+
     private final int width = 1200;
     private final int height = 800;
     private final int titleBarHeight = 30;
     private final int leftFrameBorderWidth = 8;
-    private TerrainTile[][] tiles = new TerrainTile[16][10];
+
     SpriteSheet ssBuildings;
     SpriteSheet ssUnits;
     private int menuStartX = 125;
@@ -36,14 +41,59 @@ public class GameBoard extends JFrame {
     private int menuHeight = 150;
     private int mapStartX = 450;
     private int mapStartY = 225;
-    private int tileSideLength = 75;
+    private int tileLength = 75;
     private boolean lockInput = false; // not sure if this still be used
     private int yClicked = -1;
     private int xClicked = -1;
     private boolean GameOver = false;
-// sound files
 
-    private String backgroundMusic = "file:./resources/Puzzle Theme1.wav";
+    // Sprites and enums
+
+    private enum terrainTile {
+        MOUNTAIN, GRASS,
+        ROAD_VERTICAL, ROAD_HORIZONTAL, ROAD_TURN_UL, ROAD_TURN_UR, ROAD_TURN_DL, ROAD_TURN_DR
+    }
+    private enum buildingTile {
+        GRAY_HQ, GRAY_BASE, GRAY_CITY,
+        RED_HQ, RED_BASE, RED_CITY,
+        BLUE_HQ, BLUE_BASE, BLUE_CITY
+    }
+    private terrainTile[][] terrainTiles = new terrainTile[16][10];
+    private buildingTile[][] buildingTiles = new buildingTile[16][10];
+
+    ImageIcon mountainIcon = new ImageIcon("resources/mountain.png");
+    ImageIcon roadTurnULIcon = new ImageIcon("resources/road_turn_ul.png");
+    ImageIcon roadTurnURIcon = new ImageIcon("resources/road_turn_ur.png");
+    ImageIcon roadTurnDLIcon = new ImageIcon("resources/road_turn_dl.png");
+    ImageIcon roadTurnDRIcon = new ImageIcon("resources/road_turn_dr.png");
+    ImageIcon roadUpIcon = new ImageIcon("resources/road_up.png");
+    ImageIcon roadRightIcon = new ImageIcon("resources/road_right.png");
+    ImageIcon grassIcon = new ImageIcon("resources/grass.png");
+
+    Image mountainImage = mountainIcon.getImage();
+    Image roadTurnULImage = roadTurnULIcon.getImage();
+    Image roadTurnURImage = roadTurnURIcon.getImage();
+    Image roadTurnDLImage = roadTurnDLIcon.getImage();
+    Image roadTurnDRImage = roadTurnDRIcon.getImage();
+    Image roadUpImage = roadUpIcon.getImage();
+    Image roadRightImage = roadRightIcon.getImage();
+    Image grassImage = grassIcon.getImage();
+
+    Image resizedMountainImage = mountainImage.getScaledInstance(tileLength, (int) (tileLength * 1.2), java.awt.Image.SCALE_SMOOTH);
+    Image resizedRoadTurnULImage = roadTurnULImage.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+    Image resizedRoadTurnURImage = roadTurnURImage.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+    Image resizedRoadTurnDLImage = roadTurnDLImage.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+    Image resizedRoadTurnDRImage = roadTurnDRImage.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+    Image resizedRoadUpImage = roadUpImage.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+    Image resizedRoadRightImage = roadRightImage.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+    Image resizedGrassImage = grassImage.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+
+
+
+
+    // sound files
+
+    private String backgroundMusic = "file:./resources/David_Szesztay_-_Morning_Four.wav";
     private Clip clip = null;
 
     // use this to lock for write operations like add/remove
@@ -73,7 +123,7 @@ public class GameBoard extends JFrame {
 
         // Start the background music
 
-        //////////////////////////////////////////playMusic(backgroundMusic, true);
+        playMusic(backgroundMusic, true);
 
         // load sprite sheets
 
@@ -202,6 +252,22 @@ class GameDrawingPanel extends JComponent {
         this.gameBoard = gameBoard;
     }
 
+    // METHODS
+
+    public void paint(Graphics g) {
+
+        Graphics2D graphicSettings = (Graphics2D)g;
+
+        graphicSettings.setColor(Color.WHITE);
+        graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
+
+        graphicSettings.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // draw terrain, then buildings, then units.  See if they can stack!
+
+
+
+    }
 }
 
 class GameOver {
@@ -235,5 +301,9 @@ class MainGameLoop implements Runnable {
 }
 
 class TerrainTile {
+
+}
+
+class BuildingTile {
 
 }

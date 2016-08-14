@@ -391,6 +391,7 @@ class GameDrawingPanel extends JComponent {
         resizedPlayerIcon.paintIcon(this, g, gameBoard.getPlayer().getTopLeftXPos(), gameBoard.getPlayer().getTopLeftYPos());
 
     }
+
 } // END OF GameDrawingPanel CLASS
 
 
