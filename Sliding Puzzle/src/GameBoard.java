@@ -226,7 +226,8 @@ public class GameBoard extends JFrame {
     public Iterator<Tile> tileIterator() {
         readLock.lock();
         try {
-            return new ArrayList<Tile>(tiles).iterator();
+            //return new ArrayList<Tile>(tiles).iterator();     took this out and it seems fine
+            return tiles.iterator();
             // we iterate over a snapshot of our list
         } finally {
             readLock.unlock();

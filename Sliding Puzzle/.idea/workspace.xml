@@ -25,8 +25,8 @@
       <file leaf-file-name="GameBoard.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="526">
-              <caret line="154" column="46" selection-start-line="154" selection-start-column="46" selection-end-line="154" selection-end-column="46" />
+            <state relative-caret-position="3468">
+              <caret line="228" column="95" selection-start-line="228" selection-start-column="95" selection-end-line="228" selection-end-column="95" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -183,8 +183,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="51" />
-    <option name="y" value="172" />
+    <option name="x" value="19" />
+    <option name="y" value="71" />
     <option name="width" value="1696" />
     <option name="height" value="1026" />
   </component>
@@ -727,7 +727,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="51" y="172" width="1696" height="1026" extended-state="0" />
+    <frame x="19" y="71" width="1696" height="1026" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1241,8 +1241,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="526">
-          <caret line="154" column="46" selection-start-line="154" selection-start-column="46" selection-end-line="154" selection-end-column="46" />
+        <state relative-caret-position="3468">
+          <caret line="228" column="95" selection-start-line="228" selection-start-column="95" selection-end-line="228" selection-end-column="95" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

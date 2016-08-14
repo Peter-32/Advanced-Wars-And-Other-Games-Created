@@ -24,6 +24,14 @@ public class GameBoard extends JFrame {
 
     //// GETTERS AND SETTERS
 
+    public TerrainTile[][] cloneTerrainTilesGrid() {
+
+        TerrainTile[][] clonedTerrainTilesGrid = new TerrainTile[10][16];
+        for(int i = 0; i < terrainTilesGrid.length; i++) {
+            clonedTerrainTilesGrid[i] = terrainTilesGrid[i].clone();
+        }
+        return clonedTerrainTilesGrid;
+    }
     public ImageIcon getResizedMountainIcon() {
         return resizedMountainIcon;
     }
@@ -103,28 +111,19 @@ public class GameBoard extends JFrame {
     public int getMapStartY() {
         return mapStartY;
     }
+    public int getTileLength() {
+        return tileLength;
+    }
     public int getLeftFrameBorderWidth() {
         return leftFrameBorderWidth;
     }
     public int getTitleBarHeight() {
         return titleBarHeight;
     }
-    public int getWidth() {
-        return width;
-    }
-    public int getHeight() {
-        return height;
-    }
 
 
     //// FIELDS
 
-    private enum TerrainTiles {
-
-    }
-
-    private final int width = 1200;
-    private final int height = 800;
     private final int titleBarHeight = 30;
     private final int leftFrameBorderWidth = 8;
     private final int tileLength = 75;
@@ -134,6 +133,8 @@ public class GameBoard extends JFrame {
     private final int menuHeight = 150;
     private final int mapStartX = 450;
     private final int mapStartY = 225;
+    private final int mapWidth = 1200;
+    private final int mapHeight = 750;
 
     SpriteSheet ssBuildings;
     SpriteSheet ssUnits;
@@ -144,19 +145,27 @@ public class GameBoard extends JFrame {
     private int xClicked = -1;
     private boolean GameOver = false;
 
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+    public int getMapHeight() {
+        return mapHeight;
+    }
+
     // Sprites and enums
 
-    private enum TerrainTile {
+    public enum TerrainTile {
         MOUNTAIN, GRASS,
         ROAD_VERTICAL, ROAD_HORIZONTAL, ROAD_TURN_UL, ROAD_TURN_UR, ROAD_TURN_DL, ROAD_TURN_DR
     }
-    private enum BuildingTile {
+    public enum BuildingTile {
         GRAY_HQ, GRAY_BASE, GRAY_CITY,
         RED_HQ, RED_BASE, RED_CITY,
         BLUE_HQ, BLUE_BASE, BLUE_CITY
     }
-    private TerrainTile[][] terrainTilesGrid = new TerrainTile[16][10];
-    private BuildingTile[][] buildingTilesGrid = new BuildingTile[16][10];
+    private TerrainTile[][] terrainTilesGrid = new TerrainTile[10][16];
+    private BuildingTile[][] buildingTilesGrid = new BuildingTile[10][16];
 
     private ImageIcon mountainIcon = new ImageIcon("resources/mountain.png");
     private ImageIcon roadTurnULIcon = new ImageIcon("resources/road_turn_ul.png");
@@ -214,7 +223,7 @@ public class GameBoard extends JFrame {
     //// CONSTRUCTOR
     GameBoard() {
 
-        this.setSize(width, height);
+        this.setSize(mapWidth, mapHeight);
         this.setTitle("Sliding Puzzle");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -266,7 +275,7 @@ public class GameBoard extends JFrame {
         // Add multi-threading for the game loop
 
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 100000L, TimeUnit.MILLISECONDS);
     } //// END OF GameBoard CONSTRUCTOR
 
     //// METHODS
@@ -373,11 +382,30 @@ class GameDrawingPanel extends JComponent {
     //// FIELDS
 
     GameBoard gameBoard;
+    int terrainDrawingTopLeftXPos = 0;
+    int terrainDrawingTopLeftYPos = 0;
 
+    /*
+        private final int menuStartX = 125;
+    private final int menuStartY = 50;
+    private final int menuWidth = 250;
+    private final int menuHeight = 150;
+    private final int mapStartX = 450;
+    private final int mapStartY = 225;
+    private final int mapWidth = 1200;
+    private final int mapHeight = 750;
+
+
+
+
+    ACCOUNT FOR MAP START LOCATION!!!!!!!!!!!!!!
+    ACCOUNT FOR BORDERS OF JFRAME!!!!!!!!!
+     */
     //// CONSTRUCTOR
 
     GameDrawingPanel(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
+
     }
 
     // METHODS
@@ -387,14 +415,44 @@ class GameDrawingPanel extends JComponent {
         Graphics2D graphicSettings = (Graphics2D)g;
 
         graphicSettings.setColor(Color.WHITE);
-        graphicSettings.fillRect(0,0, gameBoard.getWidth(), gameBoard.getHeight());
+        graphicSettings.fillRect(0,0, gameBoard.getMapWidth(), gameBoard.getMapHeight());
 
         graphicSettings.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // draw terrain, then buildings, then units.  See if they can stack!
+        /// draw terrain, then buildings, then units.  See if they can stack!
+
+        // draw terrain
+
+        GameBoard.TerrainTile[][] tempTerrainTilesGrid = gameBoard.cloneTerrainTilesGrid();
 
 
+        for (GameBoard.TerrainTile[] row : tempTerrainTilesGrid) {
+            for (int j = 0; j < row.length; j++) {
+                /* switch(row[j]) {
+                    case GRASS:
+                        gameBoard.getResizedGrassIcon().paintIcon(this, g, topLeftXPos, topLeftYPos);
+                        break;
+                } */
+                gameBoard.getResizedGrassIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                updateXYPositionForMapDrawing();
+            }
+        }
+        //cloneTerrainTilesGrid
 
+    } // END OF paint METHOD
+
+    public void updateXYPositionForMapDrawing() {
+        System.out.println("xPos = " + terrainDrawingTopLeftXPos);
+        System.out.println("yPos = " + terrainDrawingTopLeftYPos);
+        if (terrainDrawingTopLeftXPos < gameBoard.getMapWidth() - gameBoard.getTileLength()) {
+            terrainDrawingTopLeftXPos += gameBoard.getTileLength();
+        } else if (terrainDrawingTopLeftYPos < gameBoard.getMapHeight() - gameBoard.getTileLength()) {
+            terrainDrawingTopLeftXPos = 0;
+            terrainDrawingTopLeftYPos += gameBoard.getTileLength();
+        } else {
+            terrainDrawingTopLeftXPos = 0;
+            terrainDrawingTopLeftYPos = 0;
+        }
     }
 }
 
