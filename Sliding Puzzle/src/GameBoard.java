@@ -678,7 +678,6 @@ class Tile {
 
     void move() {
         // OLD: // move slowly in the direction towards the blank tile
-        System.out.println("Tile " + numberOnTile + " moved.");
 
         // swap
         // save temps
