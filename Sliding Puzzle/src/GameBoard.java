@@ -35,6 +35,15 @@ public class GameBoard extends JFrame {
     private int boxStartY = 125;
     private int tileSideLength = 75;
     private int boxSideLength = (4 * tileSideLength) + (5 * tileSideMargin);
+    private boolean lockInput = false;
+    private int yClicked = -1;
+    private int xClicked = -1;
+    private boolean keyUpPressed = false;
+    private boolean keyRightPressed = false;
+    private boolean keyDownPressed = false;
+    private boolean keyLeftPressed = false;
+    private int rowOfBlankTile = 3;
+    private int colOfBlankTile = 3;
 
     // sound files
 
@@ -99,51 +108,6 @@ public class GameBoard extends JFrame {
 
     }
 
-    // GETTERS AND SETTERS
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getLeftFrameBorderWidth() {
-        return leftFrameBorderWidth;
-    }
-    public int getTitleBarHeight() {
-        return titleBarHeight;
-    }
-    public int getTileSideMargin() {
-        return tileSideMargin;
-    }
-    public int getBoxStartX() {
-        return boxStartX;
-    }
-
-    public int getBoxStartY() {
-        return boxStartY;
-    }
-    public int getTileSideLength() {
-        return tileSideLength;
-    }
-    public int getBoxSideLength() {
-        return boxSideLength;
-    }
-    public Object[] cloneTiles() {
-        return tiles.toArray();
-    }
-    public Iterator<Tile> tileIterator() {
-        readLock.lock();
-        try {
-            return new ArrayList<Tile>(tiles).iterator();
-            // we iterate over a snapshot of our list
-        } finally {
-            readLock.unlock();
-        }
-    }
-
     //// METHODS
 
     public void playMusic(String soundToPlay, boolean loop) {
@@ -205,6 +169,86 @@ public class GameBoard extends JFrame {
         }
     }
 
+    // GETTERS AND SETTERS
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getLeftFrameBorderWidth() {
+        return leftFrameBorderWidth;
+    }
+    public int getTitleBarHeight() {
+        return titleBarHeight;
+    }
+    public int getTileSideMargin() {
+        return tileSideMargin;
+    }
+    public int getBoxStartX() {
+        return boxStartX;
+    }
+
+    public int getBoxStartY() {
+        return boxStartY;
+    }
+    public int getTileSideLength() {
+        return tileSideLength;
+    }
+    public int getBoxSideLength() {
+        return boxSideLength;
+    }
+    public int getXClicked() {
+        return xClicked;
+    }
+    public int getYClicked() {
+        return yClicked;
+    }
+    public Object[] cloneTiles() {
+        return tiles.toArray();
+    }
+    public Iterator<Tile> tileIterator() {
+        readLock.lock();
+        try {
+            return new ArrayList<Tile>(tiles).iterator();
+            // we iterate over a snapshot of our list
+        } finally {
+            readLock.unlock();
+        }
+    }
+    public boolean isKeyUpPressed() {
+        return keyUpPressed;
+    }
+
+    public boolean isKeyRightPressed() {
+        return keyRightPressed;
+    }
+
+    public boolean isKeyDownPressed() {
+        return keyDownPressed;
+    }
+
+    public boolean isKeyLeftPressed() {
+        return keyLeftPressed;
+    }
+
+    public int getRowOfBlankTile() {
+        return rowOfBlankTile;
+    }
+    public void setRowOfBlankTile(int rowOfBlankTile) {
+        this.rowOfBlankTile = rowOfBlankTile;
+    }
+
+    public int getColOfBlankTile() {
+        return colOfBlankTile;
+    }
+    public void setColOfBlankTile(int colOfBlankTile) {
+        this.colOfBlankTile = colOfBlankTile;
+    }
+
     private class ListenForButton implements KeyListener {
 
         @Override
@@ -214,19 +258,44 @@ public class GameBoard extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent e) {
-
+            if (e.getKeyCode() == 87 || e.getKeyCode() == 38) {
+                keyUpPressed = true;
+            } else if (e.getKeyCode() == 68 || e.getKeyCode() == 39) {
+                keyRightPressed = true;
+            } else if (e.getKeyCode() == 83 || e.getKeyCode() == 40) {
+                keyDownPressed = true;
+            } else if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
+                keyLeftPressed = true;
+            }
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-
+            if (e.getKeyCode() == 87 || e.getKeyCode() == 38) {
+                keyUpPressed = false;
+            } else if (e.getKeyCode() == 68 || e.getKeyCode() == 39) {
+                keyRightPressed = false;
+            } else if (e.getKeyCode() == 83 || e.getKeyCode() == 40) {
+                keyDownPressed = false;
+            } else if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
+                keyLeftPressed = false;
+            }
         }
     }
 
     private class ListenForMouse implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            System.out.println(e.getButton());
+            if (!lockInput && e.getButton() == 1) {// lock is off & left click
+
+                // Account for the size of the left border
+
+                xClicked = e.getX() - leftFrameBorderWidth;
+
+                // Account for the size of the top border
+
+                yClicked = e.getY() - titleBarHeight;
+            }
         }
 
         @Override
@@ -341,7 +410,6 @@ class MainGameLoop implements Runnable {
     //// FIELDS
     private GameBoard gameBoard;
     private Iterator<Tile> tempTileIterator;
-    private Tile currentTile;
     private boolean boolResult;
 
     //// CONSTRUCTOR
@@ -356,18 +424,136 @@ class MainGameLoop implements Runnable {
     public void run() {
         // Check to see if the game is won
         if (didPlayerWin()) {
-            new GameOver();
+            new GameOver(gameBoard);
         }
 
-
         // move based on user input
-
+        moveTiles();
 
         // repaint using animation
         gameBoard.repaint();
     }
 
+    /*
+    This method will move the tiles if the user has used inputs (asdw keys, arrow keys, or mouse)
+    After checking and responding with a possible movement, the inputs are reset to false, xClick = -1, and yClick = -1
+     */
+    private void moveTiles() {
+
+        // check for any user input; if two keys are pressed at once it will prioritize certain keys over others
+
+        if (gameBoard.isKeyDownPressed() || gameBoard.isKeyLeftPressed() || gameBoard.isKeyRightPressed() ||
+                gameBoard.isKeyUpPressed() || gameBoard.getXClicked() != -1 || gameBoard.getYClicked() != -1) {
+
+            // find the row / column we're looking for based on the input used and the missing tile location
+            if (gameBoard.isKeyDownPressed()) {
+                tryMovingDown();
+            } else if (gameBoard.isKeyUpPressed()) {
+                tryMovingUp();
+            } else if (gameBoard.isKeyLeftPressed()) {
+                tryMovingLeft();
+            } else if (gameBoard.isKeyRightPressed()) {
+                tryMovingRight();
+            }
+        }
+
+
+        // iterate on the tiles to find the tile in the one row / column we're looking for
+        // then call the move function so it will move to the blank square
+        // after it finishes moving we give the user the ability to use input again.
+
+
+
+        // if there is something we have to find the right tile to move
+
+
+
+
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+        // AFTER MOVING UNLOCK THE INPUT !!!!!! ALSO SET THE XCLICK TO -1, YCLICK to -1 and keypressed = false!!!
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+        //////////////////////////
+
+
+
+
+    } // END OF moveTiles METHOD
+
+    private void tryMovingRight() {
+        int searchTileWithRow = gameBoard.getRowOfBlankTile();
+        int searchTileWithCol = gameBoard.getColOfBlankTile() - 1;
+
+        if (searchTileWithCol < 0) { return; } // right isn't possible
+
+        searchForTileAndMoveIt(searchTileWithRow, searchTileWithCol);
+
+    } // END OF tryMovingRight Method
+
+    private void tryMovingLeft() {
+
+        int searchTileWithRow = gameBoard.getRowOfBlankTile();
+        int searchTileWithCol = gameBoard.getColOfBlankTile() + 1;
+
+        if (searchTileWithCol > 3) { return; } // right isn't possible
+
+        searchForTileAndMoveIt(searchTileWithRow, searchTileWithCol);
+
+    } // END OF tryMovingLeft Method
+
+    private void tryMovingDown() {
+        int searchTileWithRow = gameBoard.getRowOfBlankTile();
+        int searchTileWithCol = gameBoard.getColOfBlankTile() - 1;
+
+        if (searchTileWithCol < 0) { return; } // right isn't possible
+
+        searchForTileAndMoveIt(searchTileWithRow, searchTileWithCol);
+
+    } // END OF tryMovingDown Method
+
+    private void tryMovingUp() {
+        int searchTileWithRow = gameBoard.getRowOfBlankTile();
+        int searchTileWithCol = gameBoard.getColOfBlankTile() - 1;
+
+        if (searchTileWithCol < 0) { return; } // right isn't possible
+
+        searchForTileAndMoveIt(searchTileWithRow, searchTileWithCol);
+
+    } // END OF tryMovingUp Method
+
+    /*
+    This method will find the tile in a specific row and column and call the Tile.move() method
+     */
+
+    private void searchForTileAndMoveIt(int searchTileWithRow, int searchTileWithCol) {
+        Tile currentTile;
+        tempTileIterator = gameBoard.tileIterator();
+
+        // start iterating
+
+        while (tempTileIterator.hasNext()) {
+
+            currentTile = tempTileIterator.next();
+
+            // Search for the tile that can move into the blank tile area.  Once found call move.
+
+            if (currentTile.getRow() == searchTileWithRow && currentTile.getCol() == searchTileWithCol) {
+                currentTile.move();
+            }
+        }
+    } // END OF searchForTileAndMoveIt METHOD
+
     private boolean didPlayerWin() {
+        Tile currentTile;
+
         tempTileIterator = gameBoard.tileIterator();
 
         // start iterating
@@ -378,58 +564,58 @@ class MainGameLoop implements Runnable {
             if (currentTile.getRow() == 0) {
                 switch (currentTile.getCol()) {
                     case 0:
-                        boolResult = currentTile.getNumberOnTile() == "01";
+                        boolResult = currentTile.getNumberOnTile().equals("01");
                         break;
                     case 1:
-                        boolResult = currentTile.getNumberOnTile() == "02";
+                        boolResult = currentTile.getNumberOnTile().equals("02");
                         break;
                     case 2:
-                        boolResult = currentTile.getNumberOnTile() == "03";
+                        boolResult = currentTile.getNumberOnTile().equals("03");
                         break;
                     default:
-                        boolResult = currentTile.getNumberOnTile() == "04";
+                        boolResult = currentTile.getNumberOnTile().equals("04");
                         break;
                 }
             } else if (currentTile.getRow() == 1) {
                 switch (currentTile.getCol()) {
                     case 0:
-                        boolResult = currentTile.getNumberOnTile() == "05";
+                        boolResult = currentTile.getNumberOnTile().equals("05");
                         break;
                     case 1:
-                        boolResult = currentTile.getNumberOnTile() == "06";
+                        boolResult = currentTile.getNumberOnTile().equals("06");
                         break;
                     case 2:
-                        boolResult = currentTile.getNumberOnTile() == "07";
+                        boolResult = currentTile.getNumberOnTile().equals("07");
                         break;
                     default:
-                        boolResult = currentTile.getNumberOnTile() == "08";
+                        boolResult = currentTile.getNumberOnTile().equals("08");
                         break;
                 }
             } else if (currentTile.getRow() == 2) {
                 switch (currentTile.getCol()) {
                     case 0:
-                        boolResult = currentTile.getNumberOnTile() == "09";
+                        boolResult = currentTile.getNumberOnTile().equals("09");
                         break;
                     case 1:
-                        boolResult = currentTile.getNumberOnTile() == "10";
+                        boolResult = currentTile.getNumberOnTile().equals("10");
                         break;
                     case 2:
-                        boolResult = currentTile.getNumberOnTile() == "11";
+                        boolResult = currentTile.getNumberOnTile().equals("11");
                         break;
                     default:
-                        boolResult = currentTile.getNumberOnTile() == "12";
+                        boolResult = currentTile.getNumberOnTile().equals("12");
                         break;
                 }
             } else {
                 switch (currentTile.getCol()) {
                     case 0:
-                        boolResult = currentTile.getNumberOnTile() == "13";
+                        boolResult = currentTile.getNumberOnTile().equals("13");
                         break;
                     case 1:
-                        boolResult = currentTile.getNumberOnTile() == "14";
+                        boolResult = currentTile.getNumberOnTile().equals("14");
                         break;
                     case 2:
-                        boolResult = currentTile.getNumberOnTile() == "15";
+                        boolResult = currentTile.getNumberOnTile().equals("15");
                         break;
                     default:
                         boolResult = false;
@@ -470,10 +656,8 @@ class Tile {
 
         // Initialize the X, Y position on the screen at start up
 
-        this.topLeftXPos = gameBoard.getBoxStartX() + ((col + 1) * gameBoard.getTileSideMargin()) +
-                (col * gameBoard.getTileSideLength());
-        this.topLeftYPos = gameBoard.getBoxStartY() + ((row + 1) * gameBoard.getTileSideMargin()) +
-                (row * gameBoard.getTileSideLength());
+        updateXYPos(row, col);
+
     }
 
     //// GETTERS AND SETTERS
@@ -500,22 +684,38 @@ class Tile {
 
     ////METHODS
 
-    // constrained movement changes X and Y location
+    /*
+     constrained movement changes X and Y location
+    */
 
     void move() {
-        // If colliding with wall correct; USE tile margin for any corrections
+        // OLD: // move slowly in the direction towards the blank tile
+        // Just swap the tile with the blank tile, then
 
-        // move; if clicked on move at a certain speed in the right direction until colliding
-        // if keyboard is used move in the right direction until colliding
+        row =;
+        col = ;
+        gameBoard.set;
+        gameboard.set;
 
 
-        // If colliding with tile correct;  USE tile Margin for any corrections
+
+        //update the X and Y similar to the constructor above
+
+        updateXYPos(row, col);
 
 
-        // moving will change the row/column of the box when it locks into the new spot
+        // update the row / column of this tile to the new value.
+
+        // update the blank row and column in gameBoard
 
     }
 
+    void updateXYPos(int row, int col) {
+        this.topLeftXPos = gameBoard.getBoxStartX() + ((col + 1) * gameBoard.getTileSideMargin()) +
+                (col * gameBoard.getTileSideLength());
+        this.topLeftYPos = gameBoard.getBoxStartY() + ((row + 1) * gameBoard.getTileSideMargin()) +
+                (row * gameBoard.getTileSideLength());
+    }
 
 }
 
