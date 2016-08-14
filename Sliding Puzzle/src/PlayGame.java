@@ -6,23 +6,23 @@ import java.util.Scanner;
 public class PlayGame {
     public static void main(String[] args) {
         Boolean autoSolve = false;
-        int computerLevel = 0;
+        int computerSpeed = 0;
 
         Scanner scanner = new Scanner(System.in);
 
         // Ask for user input
 
-        System.out.print("Would you like to auto solve the puzzle? (Y/N): ");
+        System.out.print("Would you like to auto solve the pre-made puzzle? (Y/N): ");
         String answer = scanner.next();
-        if (answer.equals("Y")) {
+        if (answer.equalsIgnoreCase("Y")) {
             autoSolve = true;
-            System.out.print("What level computer should solve the puzzle? (1 to " + Integer.MAX_VALUE + ") ");
+            System.out.print("Approximately how many moves should the computer make each second? (1 to 1000) ");
             while (!scanner.hasNextInt()) {
                 scanner.next();
             }
-            computerLevel = scanner.nextInt();
+            computerSpeed = scanner.nextInt();
         }
 
-        new GameBoard(autoSolve, computerLevel);
+        new GameBoard(autoSolve, computerSpeed);
     }
 }

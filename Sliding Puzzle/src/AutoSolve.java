@@ -8,40 +8,15 @@ import java.util.Iterator;
  */
 public class AutoSolve {
     GameBoard gameBoard;
-    int computerLevel;
+    int computerSpeed;
     int sleepInterval;
     private Iterator<Tile> tempTileIterator;
 
-    AutoSolve(GameBoard gameBoard, int computerLevel) {
+    AutoSolve(GameBoard gameBoard, int computerSpeed) {
         this.gameBoard = gameBoard;
-        this.computerLevel = computerLevel;
+        this.computerSpeed = computerSpeed;
 
-        if (computerLevel > 100000000) {
-            sleepInterval = 25;
-        } else if (computerLevel > 100000) {
-            sleepInterval = 40;
-        } else if (computerLevel > 10000) {
-            sleepInterval = 50;
-        } else if (computerLevel > 1000) {
-            sleepInterval = 60;
-        } else if (computerLevel > 100) {
-            sleepInterval = 70;
-        } else if (computerLevel > 10) {
-            sleepInterval = 80;
-        } else if (computerLevel > 5) {
-            sleepInterval = 300;
-        } else if (computerLevel > 1) {
-            sleepInterval = 400;
-        } else {
-            sleepInterval = 1000;
-        }
-
-
-
-
-
-
-
+        sleepInterval = 1000 / computerSpeed;
 
         // repaint using animation
         gameBoard.repaint();

@@ -46,7 +46,7 @@ public class GameBoard extends JFrame {
     private int colOfBlankTile = 3;
     private boolean GameOver = false;
     private boolean autuSolve = false;
-    private int computerLevel;
+    private int computerSpeed;
 
     // sound files
 
@@ -63,7 +63,7 @@ public class GameBoard extends JFrame {
 
     //// CONSTRUCTOR
 
-    GameBoard(Boolean autoSolve, int computerLevel) {
+    GameBoard(Boolean autoSolve, int computerSpeed) {
         // initialize JFrame
 
         this.autuSolve = autoSolve;
@@ -111,7 +111,7 @@ public class GameBoard extends JFrame {
             executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
         } else {
 
-            new AutoSolve(this, computerLevel);
+            new AutoSolve(this, computerSpeed);
 
         }
 
