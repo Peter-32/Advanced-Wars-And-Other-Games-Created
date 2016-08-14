@@ -1,3 +1,6 @@
+import javax.swing.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Iterator;
 
 /**
@@ -6,77 +9,53 @@ import java.util.Iterator;
 public class AutoSolve {
     GameBoard gameBoard;
     int computerLevel;
+    int sleepInterval;
     private Iterator<Tile> tempTileIterator;
 
     AutoSolve(GameBoard gameBoard, int computerLevel) {
         this.gameBoard = gameBoard;
         this.computerLevel = computerLevel;
+
+        if (computerLevel > 100000000) {
+            sleepInterval = 25;
+        } else if (computerLevel > 100000) {
+            sleepInterval = 40;
+        } else if (computerLevel > 10000) {
+            sleepInterval = 50;
+        } else if (computerLevel > 1000) {
+            sleepInterval = 60;
+        } else if (computerLevel > 100) {
+            sleepInterval = 70;
+        } else if (computerLevel > 10) {
+            sleepInterval = 80;
+        } else if (computerLevel > 5) {
+            sleepInterval = 300;
+        } else if (computerLevel > 1) {
+            sleepInterval = 400;
+        } else {
+            sleepInterval = 1000;
+        }
+
+
+
+
+
+
+
+
         // repaint using animation
         gameBoard.repaint();
         try {
-            Thread.sleep(4000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
+        Instant starts = Instant.now();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingDown();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingDown();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -84,7 +63,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -92,7 +71,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -100,23 +79,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingLeft();
+        tryMovingRight();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -124,7 +95,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -132,39 +103,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingUp();
+        tryMovingLeft();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -172,15 +119,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingLeft();
+        tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -188,7 +135,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -196,7 +143,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -204,7 +159,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -212,7 +167,39 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -220,7 +207,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -228,7 +215,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -236,7 +223,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -244,7 +231,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -252,7 +239,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -260,31 +255,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -292,7 +263,23 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -300,7 +287,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -308,7 +295,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -316,7 +303,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -324,7 +311,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -332,23 +327,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -356,31 +335,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -388,7 +343,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -396,15 +351,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -412,7 +359,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -420,7 +367,23 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -428,7 +391,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -436,7 +399,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -444,7 +407,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -452,23 +415,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -476,7 +423,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -484,7 +431,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -492,7 +439,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -500,7 +447,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -508,7 +455,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -516,7 +463,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -524,7 +471,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -532,23 +479,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -556,7 +487,23 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -564,15 +511,23 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingLeft();
+        tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -580,23 +535,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -604,15 +543,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -620,31 +551,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -652,7 +559,31 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -660,15 +591,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -676,15 +599,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingRight();
+        tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -692,7 +615,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -700,7 +623,31 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -708,7 +655,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -716,7 +663,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -724,7 +679,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -732,23 +687,23 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingRight();
+        tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingRight();
+        tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -756,31 +711,31 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingLeft();
+        tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingLeft();
+        tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingLeft();
+        tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -788,39 +743,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -828,15 +751,39 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // repaint using animation
         gameBoard.repaint();
-        tryMovingLeft();
+        tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -844,7 +791,31 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -852,7 +823,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -860,7 +831,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -868,7 +839,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -876,7 +847,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -884,7 +855,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -892,7 +863,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -900,31 +879,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -932,31 +887,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -964,7 +895,39 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -972,31 +935,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingUp();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1004,7 +943,23 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1012,7 +967,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1020,7 +975,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1028,7 +991,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1036,15 +999,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1052,7 +1007,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1060,7 +1015,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1068,7 +1023,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1076,7 +1031,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1084,15 +1039,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingRight();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1100,7 +1047,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1108,15 +1055,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // repaint using animation
-        gameBoard.repaint();
-        tryMovingLeft();
-        try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1124,7 +1063,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1132,7 +1071,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingRight();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1140,7 +1087,7 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingDown();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1148,7 +1095,15 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingLeft();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -1156,11 +1111,96 @@ public class AutoSolve {
         gameBoard.repaint();
         tryMovingUp();
         try {
-            Thread.sleep(400);
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingDown();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingRight();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingDown();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingLeft();
+        try {
+            Thread.sleep(sleepInterval);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        // repaint using animation
+        gameBoard.repaint();
+        tryMovingUp();
+        try {
+            Thread.sleep(sleepInterval);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         gameBoard.repaint();
+
+        Instant ends = Instant.now();
+
+        JOptionPane.showMessageDialog(gameBoard, "Time taken: " + Duration.between(starts, ends));
+
     } // END OF CONSTRUCTOR
 
     public void tryMovingRight() {
