@@ -28,5 +28,6 @@ public class tests {
         } */
 
         System.out.println(terrainTilesGrid.length);
+        System.out.println("hello".substring(10,10));
     }
 }
