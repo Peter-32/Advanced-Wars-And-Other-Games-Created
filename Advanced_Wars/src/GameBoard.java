@@ -414,11 +414,10 @@ public class GameBoard extends JFrame {
         ListenForMouse lForMouse = new ListenForMouse();
         addMouseListener(lForMouse);
 
-        // start the GameDrawingPanel
+        // create the GameDrawingPanel
 
         GameDrawingPanel gameDrawingPanel = new GameDrawingPanel(this);
         this.add(gameDrawingPanel, BorderLayout.CENTER);
-
 
         // final changes to JFrame
 
@@ -428,7 +427,7 @@ public class GameBoard extends JFrame {
         // Add multi-threading for the game loop
 
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5);
-        executor.scheduleAtFixedRate(new MainGameLoop(this), 0L, 20L, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(new MainGameLoop(this, gameDrawingPanel), 0L, 20L, TimeUnit.MILLISECONDS);
     } //// END OF GameBoard CONSTRUCTOR
 
     //// METHODS
@@ -700,7 +699,7 @@ public class GameBoard extends JFrame {
 
 } // END OF GameBoard CLASS
 
-class GameDrawingPanel extends JComponent {
+class GameDrawingPanel extends JPanel {
 
     //// FIELDS
 
@@ -716,19 +715,28 @@ class GameDrawingPanel extends JComponent {
     //// CONSTRUCTOR
 
     GameDrawingPanel(GameBoard gameBoard) {
+        /////////////////// Next game place the different sections into grid bags, but for this it should be okay not to.
         this.gameBoard = gameBoard;
         drawingTopLeftXPos = gameBoard.getMapStartX();
         drawingTopLeftYPos = gameBoard.getMapStartY();
 
         menuTitleLabel = new JLabel("Advance Wars");
-        menuTitleLabel.setLocation(0,0);
-        this.add(menuTitleLabel);
         redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
-        redPlayerBankLabel.setLocation(0,675);
-        this.add(redPlayerBankLabel);
         player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
-        player2BankLabel.setLocation(75,750);
-        this.add(player2BankLabel);
+////////////////////////////////////////////////////////////////////////DONT USE LABELS USE DRAWSTRING!!!!!!!!!
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // DRAW TEXT HERE.  Then make a mouse listener check if each was clicked!
+
+        graphicSettings.setFont(new Font("TimesRoman", Font.PLAIN, 25));
+        graphicSettings.setColor(Color.WHITE);
+        graphicSettings.drawString((String) currentTile.getNumberOnTile(),
+                (int) (currentTile.getTopLeftXPos() + gameBoard.getTileSideLength() * .30),
+                (int) (currentTile.getTopLeftYPos() + gameBoard.getTileSideLength() * .60));
+
+        // the text is based off this below.  Don't actually make buttons
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         redInfantryBtn = new JButton("1000 G");
         redMechBtn = new JButton("3000 G");
@@ -739,10 +747,28 @@ class GameDrawingPanel extends JComponent {
         blueMechBtn = new JButton("3000 G");
         blueArtilleryBtn = new JButton("6000 G");
         blueTankBtn = new JButton("7000 G");
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     // METHODS
+
+    private void addComp(JPanel thePanel, JComponent comp, int xPos, int yPos, int compWidth, int compHeight, int place, int stretch) {
+
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+        gridBagConstraints.gridx = xPos;
+        gridBagConstraints.gridy = yPos;
+        gridBagConstraints.gridwidth = compWidth;
+        gridBagConstraints.gridheight = compHeight;
+        gridBagConstraints.weightx = 0;
+        gridBagConstraints.weighty = 0;
+        gridBagConstraints.insets = new Insets(5,5,5,5);
+        gridBagConstraints.anchor = place;
+        gridBagConstraints.fill = stretch;
+
+        thePanel.add(comp, gridBagConstraints);
+
+    } // END OF addComp METHOD
 
     public void paint(Graphics g) {
 
@@ -968,11 +994,13 @@ class MainGameLoop implements Runnable {
     //// FIELDS
 
     GameBoard gameBoard;
+    GameDrawingPanel gameDrawingPanel;
 
     //// CONSTRUCTOR
 
-    MainGameLoop(GameBoard gameBoard) {
+    MainGameLoop(GameBoard gameBoard, GameDrawingPanel gameDrawingPanel) {
         this.gameBoard = gameBoard;
+        this.gameDrawingPanel = gameDrawingPanel;
     }
 
     @Override
@@ -983,7 +1011,7 @@ class MainGameLoop implements Runnable {
         // movement
 
         // repaint
-        gameBoard.repaint();
+        gameDrawingPanel.repaint();
 
 
     }
