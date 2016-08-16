@@ -80,6 +80,46 @@ public class GameBoard extends JFrame {
         return resizedGrassIcon;
     }
 
+    public ImageIcon getResizedGrayBaseIcon() {
+        return resizedGrayBaseIcon;
+    }
+
+    public ImageIcon getResizedGrayCityIcon() {
+        return resizedGrayCityIcon;
+    }
+
+    public ImageIcon getResizedRedHQIcon() {
+        return resizedRedHQIcon;
+    }
+
+    public ImageIcon getResizedRedBaseIcon() {
+        return resizedRedBaseIcon;
+    }
+
+    public ImageIcon getResizedRedCityIcon() {
+        return resizedRedCityIcon;
+    }
+
+    public ImageIcon getResizedBlueHQIcon() {
+        return resizedBlueHQIcon;
+    }
+
+    public ImageIcon getResizedBlueBaseIcon() {
+        return resizedBlueBaseIcon;
+    }
+
+    public ImageIcon getResizedBlueCityIcon() {
+        return resizedBlueCityIcon;
+    }
+
+    public int getjFrameHeight() {
+        return jFrameHeight;
+    }
+
+    public int getjFrameWidth() {
+        return jFrameWidth;
+    }
+
     public boolean isGameOver() {
         return GameOver;
     }
@@ -143,21 +183,79 @@ public class GameBoard extends JFrame {
         return mapHeight;
     }
 
-    //// FIELDS
+    public ImageIcon getResizedRedInfantry() {
+        return resizedRedInfantry;
+    }
 
+    public ImageIcon getResizedRedMech() {
+        return resizedRedMech;
+    }
+
+    public ImageIcon getResizedRedTank() {
+        return resizedRedTank;
+    }
+
+    public ImageIcon getResizedRedArtillery() {
+        return resizedRedArtillery;
+    }
+
+    public ImageIcon getResizedBlueInfantry() {
+        return resizedBlueInfantry;
+    }
+
+    public ImageIcon getResizedBlueMech() {
+        return resizedBlueMech;
+    }
+
+    public ImageIcon getResizedBlueTank() {
+        return resizedBlueTank;
+    }
+
+    public ImageIcon getResizedBlueArtillery() {
+        return resizedBlueArtillery;
+    }
+    public int getRedPlayerBank() {
+        return redPlayerBank;
+    }
+
+    public void setRedPlayerBank(int redPlayerBank) {
+        this.redPlayerBank = redPlayerBank;
+    }
+
+    public int getBluePlayerBank() {
+        return bluePlayerBank;
+    }
+
+    public void setBluePlayerBank(int bluePlayerBank) {
+        this.bluePlayerBank = bluePlayerBank;
+    }
+    public char getTurnColor() {
+        return turnColor;
+    }
+
+    public void setTurnColor(char turnColor) {
+        this.turnColor = turnColor;
+    }
+
+    //// FIELDS
+    private final int jFrameWidth = 1500;
+    private final int jFrameHeight = 780;
     private final int leftJFrameBorderLength = 8;
     private final int topJFrameBorderLength = 30;
-    private final int tileLength = 75;
-    private final int menuStartX = 125;// not too important, just where it shows up on screen you can move it
-    private final int menuStartY = 50;// not too important, just where it shows up on screen you can move it
+    private final int menuStartX = 125;
+    private final int menuStartY = 50;
     private final int menuWidth = 250;
     private final int menuHeight = 150;
-    private final int mapStartX = 450; // not too important, just where it shows up on screen you can move it
-    private final int mapStartY = 225;// not too important, just where it shows up on screen you can move it
-    //private final int mapWidth = 1200 + (2 * leftJFrameBorderLength);
-    //private final int mapHeight = 750 + topJFrameBorderLength + leftJFrameBorderLength;
+    private final int mapStartX = 300;
+    private final int mapStartY = 0;
     private final int mapWidth = 1200;
     private final int mapHeight = 750;
+    private final int tileLength = mapHeight / 10;
+
+    private int redPlayerBank = 5000;
+    private int bluePlayerBank = 5000;
+    private char turnColor = 'r'; // also 'b' is possible
+
 
     SpriteSheet ssBuildings;
     SpriteSheet ssUnits;
@@ -167,6 +265,7 @@ public class GameBoard extends JFrame {
     private int yClicked = -1;
     private int xClicked = -1;
     private boolean GameOver = false;
+
 
 
 
@@ -183,7 +282,7 @@ public class GameBoard extends JFrame {
         BLUE_HQ, BLUE_BASE, BLUE_CITY
     }
     public enum UnitTile {
-        INFANTRY, MECH, TANK, ARTILLERY
+        INFANTRY, MECH, ARTILLERY, TANK
     }
     private TerrainTile[][] terrainTilesGrid = new TerrainTile[10][16];
     private BuildingTile[][] buildingTilesGrid = new BuildingTile[10][16];
@@ -191,35 +290,36 @@ public class GameBoard extends JFrame {
 
     // Terrain
 
-    private ImageIcon resizedMountainIcon = getResizedImageFromFile("resources/mountain.png");
-    private ImageIcon resizedRoadTurnULIcon = getResizedImageFromFile("resources/road_turn_ul.png");
-    private ImageIcon resizedRoadTurnURIcon = getResizedImageFromFile("resources/road_turn_ur.png");
-    private ImageIcon resizedRoadTurnDLIcon = getResizedImageFromFile("resources/road_turn_dl.png");
-    private ImageIcon resizedRoadTurnDRIcon = getResizedImageFromFile("resources/road_turn_dr.png");
-    private ImageIcon resizedRoadVerticalIcon = getResizedImageFromFile("resources/road_vertical.png");
-    private ImageIcon resizedRoadHorizontalIcon = getResizedImageFromFile("resources/road_horizontal.png");
-    private ImageIcon resizedGrassIcon = getResizedImageFromFile("resources/grass.png");
+    private ImageIcon resizedMountainIcon;
+    private ImageIcon resizedRoadTurnULIcon;
+    private ImageIcon resizedRoadTurnURIcon;
+    private ImageIcon resizedRoadTurnDLIcon;
+    private ImageIcon resizedRoadTurnDRIcon;
+    private ImageIcon resizedRoadVerticalIcon;
+    private ImageIcon resizedRoadHorizontalIcon;
+    private ImageIcon resizedGrassIcon;
 
     // Buildings
-////////////////////////////////// FIX THIS IT ISN"T RIGHT.  NEED TO LOAD IN THE SPRITE SHEET and the right information
-    /* private ImageIcon resizedMountainIcon = getResizedImageFromSpriteSheet("resources/mountain.png",,);
-    private ImageIcon resizedRoadTurnULIcon = getResizedImageFromSpriteSheet("resources/road_turn_ul.png",,);
-    private ImageIcon resizedRoadTurnURIcon = getResizedImageFromSpriteSheet("resources/road_turn_ur.png",,);
-    private ImageIcon resizedRoadTurnDLIcon = getResizedImageFromSpriteSheet("resources/road_turn_dl.png",,);
-    private ImageIcon resizedRoadTurnDRIcon = getResizedImageFromSpriteSheet("resources/road_turn_dr.png",,);
-    private ImageIcon resizedRoadVerticalIcon = getResizedImageFromSpriteSheet("resources/road_vertical.png",,);
-    private ImageIcon resizedRoadHorizontalIcon = getResizedImageFromSpriteSheet("resources/road_horizontal.png",,);
-    private ImageIcon resizedGrassIcon = getResizedImageFromSpriteSheet("resources/grass.png",,); */
 
+    private ImageIcon resizedGrayBaseIcon;
+    private ImageIcon resizedGrayCityIcon;
+    private ImageIcon resizedRedHQIcon;
+    private ImageIcon resizedRedBaseIcon;
+    private ImageIcon resizedRedCityIcon;
+    private ImageIcon resizedBlueHQIcon;
+    private ImageIcon resizedBlueBaseIcon;
+    private ImageIcon resizedBlueCityIcon;
 
+    // Units
 
-
-
-
-
-
-
-
+    private ImageIcon resizedRedInfantry;
+    private ImageIcon resizedRedMech;
+    private ImageIcon resizedRedTank;
+    private ImageIcon resizedRedArtillery;
+    private ImageIcon resizedBlueInfantry;
+    private ImageIcon resizedBlueMech;
+    private ImageIcon resizedBlueTank;
+    private ImageIcon resizedBlueArtillery;
 
     // sound files
 
@@ -241,8 +341,8 @@ public class GameBoard extends JFrame {
     //// CONSTRUCTOR
     GameBoard() {
 
-        this.setSize(mapWidth, mapHeight);
-        this.setTitle("Sliding Puzzle");
+        this.setSize(jFrameWidth, jFrameHeight);
+        this.setTitle("Advance Wars");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // locks
@@ -268,6 +368,41 @@ public class GameBoard extends JFrame {
         }
         ssBuildings = new SpriteSheet(spriteSheetBuildings);
         ssUnits = new SpriteSheet(spriteSheetUnits);
+
+
+        // load terrain sprite icons
+
+        resizedMountainIcon = getResizedImageFromFile("resources/mountain.png");
+        resizedRoadTurnULIcon = getResizedImageFromFile("resources/road_turn_ul.png");
+        resizedRoadTurnURIcon = getResizedImageFromFile("resources/road_turn_ur.png");
+        resizedRoadTurnDLIcon = getResizedImageFromFile("resources/road_turn_dl.png");
+        resizedRoadTurnDRIcon = getResizedImageFromFile("resources/road_turn_dr.png");
+        resizedRoadVerticalIcon = getResizedImageFromFile("resources/road_vertical.png");
+        resizedRoadHorizontalIcon = getResizedImageFromFile("resources/road_horizontal.png");
+        resizedGrassIcon = getResizedImageFromFile("resources/grass.png");
+
+        // load buildings sprite icons
+
+        resizedGrayBaseIcon = getResizedImageFromSpriteSheet(ssBuildings,372,28,19,18);
+        resizedGrayCityIcon = getResizedImageFromSpriteSheet(ssBuildings,373,5,18,22);
+        resizedRedHQIcon = getResizedImageFromSpriteSheet(ssBuildings,24,3,18,32);
+        resizedRedBaseIcon = getResizedImageFromSpriteSheet(ssBuildings,24,196,18,18);
+        resizedRedCityIcon = getResizedImageFromSpriteSheet(ssBuildings,25,173,18,21);
+        resizedBlueHQIcon = getResizedImageFromSpriteSheet(ssBuildings,67,3,18,32);
+        resizedBlueBaseIcon = getResizedImageFromSpriteSheet(ssBuildings,68,196,18,18);
+        resizedBlueCityIcon = getResizedImageFromSpriteSheet(ssBuildings,68,173,18,21);
+
+        // load unit sprite icons
+
+        resizedRedInfantry = getResizedImageFromSpriteSheet(ssUnits,0,0,15,17);
+        resizedRedMech = getResizedImageFromSpriteSheet(ssUnits,15,0,17,17);
+        resizedRedTank = getResizedImageFromSpriteSheet(ssUnits,78,0,17,18);
+        resizedRedArtillery = getResizedImageFromSpriteSheet(ssUnits,143,0,17,16);
+        resizedBlueInfantry = getResizedImageFromSpriteSheet(ssUnits,0,16,15,16);
+        resizedBlueMech = getResizedImageFromSpriteSheet(ssUnits,15,16,17,16);
+        resizedBlueTank = getResizedImageFromSpriteSheet(ssUnits,80,17,16,15);
+        resizedBlueArtillery = getResizedImageFromSpriteSheet(ssUnits,144,16,16,16);
+
 
         // load map #1
 
@@ -411,11 +546,9 @@ public class GameBoard extends JFrame {
 
             while(line != null) {
 
-                System.out.println(line);
                 // This loops through each column.  If the text input is too short it skips that iteration.
 
                 for (int j = 0; j < terrainTilesGrid[0].length && j < line.length(); j++) {
-                    System.out.println(line.substring(j, j + 1));
                     switch(line.substring(j,j + 1)) {
                         case "g":
                             terrainTilesGrid[lineNumber][j] = TerrainTile.GRASS;
@@ -491,11 +624,9 @@ public class GameBoard extends JFrame {
 
             while(line != null) {
 
-                System.out.println(line);
                 // This loops through each column.  If the text input is too short it skips that iteration.
 
                 for (int j = 0; j < buildingTilesGrid[0].length && j < line.length(); j++) {
-                    System.out.println(line.substring(j, j + 1));
                     switch(line.substring(j,j + 1)) {
                         case "H":
                             buildingTilesGrid[lineNumber][j] = BuildingTile.RED_HQ;
@@ -551,16 +682,16 @@ public class GameBoard extends JFrame {
 
     ImageIcon getResizedImageFromFile(String fileLocation) {
 
-    ImageIcon originalIcon = new ImageIcon(fileLocation);
-    Image image = originalIcon.getImage();
-    Image resizedImage = image.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
-    ImageIcon resizedIcon = new ImageIcon(resizedImage);
-    return resizedIcon;
+        ImageIcon originalIcon = new ImageIcon(fileLocation);
+        Image image = originalIcon.getImage();
+        Image resizedImage = image.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+        return resizedIcon;
     } // END OF getResizedImageFromFile METHOD
 
-    ImageIcon getResizedImageFromSpriteSheet(String fileLocation, int topLeftX, int topLeftY, int width, int height) {
-///////////////////////////////////////////////////////////////////// NOT RIGHT!!!!!!!!!!!!!!!!!!
-        ImageIcon originalIcon = new ImageIcon(fileLocation);
+    ImageIcon getResizedImageFromSpriteSheet(SpriteSheet ss, int topLeftX, int topLeftY, int width, int height) {
+        BufferedImage sprite = ss.grabSprite(topLeftX, topLeftY, width, height);
+        ImageIcon originalIcon = new ImageIcon(sprite);
         Image image = originalIcon.getImage();
         Image resizedImage = image.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizedImage);
@@ -574,19 +705,41 @@ class GameDrawingPanel extends JComponent {
     //// FIELDS
 
     GameBoard gameBoard;
-    int terrainDrawingTopLeftXPos = 0;
-    int terrainDrawingTopLeftYPos = 0;
+    int drawingTopLeftXPos;
+    int drawingTopLeftYPos;
+    JLabel menuTitleLabel, redPlayerBankLabel, player2BankLabel;
+    JButton redInfantryBtn, redMechBtn, redTankBtn, redArtilleryBtn, blueInfantryBtn, blueMechBtn, blueTankBtn,
+            blueArtilleryBtn;
+    Boolean buttonsUpdatedAlready = false;
 
-/*
-    ACCOUNT FOR MAP START LOCATION!!!!!!!!!!!!!!
-    ACCOUNT FOR BORDERS OF JFRAME when clicking!!!!!!!!!
-     */
+
     //// CONSTRUCTOR
 
     GameDrawingPanel(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        terrainDrawingTopLeftXPos += 0;
-        terrainDrawingTopLeftYPos += 0;
+        drawingTopLeftXPos = gameBoard.getMapStartX();
+        drawingTopLeftYPos = gameBoard.getMapStartY();
+
+        menuTitleLabel = new JLabel("Advance Wars");
+        menuTitleLabel.setLocation(0,0);
+        this.add(menuTitleLabel);
+        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
+        redPlayerBankLabel.setLocation(0,675);
+        this.add(redPlayerBankLabel);
+        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
+        player2BankLabel.setLocation(75,750);
+        this.add(player2BankLabel);
+
+        redInfantryBtn = new JButton("1000 G");
+        redMechBtn = new JButton("3000 G");
+        redArtilleryBtn = new JButton("6000 G");
+        redTankBtn = new JButton("7000 G");
+
+        blueInfantryBtn = new JButton("1000 G");
+        blueMechBtn = new JButton("3000 G");
+        blueArtilleryBtn = new JButton("6000 G");
+        blueTankBtn = new JButton("7000 G");
+
     }
 
     // METHODS
@@ -596,7 +749,7 @@ class GameDrawingPanel extends JComponent {
         Graphics2D graphicSettings = (Graphics2D)g;
 
         graphicSettings.setColor(Color.WHITE);
-        graphicSettings.fillRect(0,0, gameBoard.getMapWidth(), gameBoard.getMapHeight());
+        graphicSettings.fillRect(0,0, gameBoard.getjFrameWidth(), gameBoard.getjFrameHeight());
 
         graphicSettings.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -608,11 +761,11 @@ class GameDrawingPanel extends JComponent {
 
         // draw buildings
 
-        /* drawBuildings(g);
-        ///////////////////////////////////////////////////// NOT DRAWING THIS FOR NOW.  Need to pull images from sprites and put the image in gameBoard
-         */
+        drawBuildings(g);
 
+        /// draw menu
 
+        drawMenu(g);
 
     } // END OF paint METHOD
 
@@ -624,28 +777,28 @@ class GameDrawingPanel extends JComponent {
             for (int j = 0; j < row.length; j++) {
                 switch(row[j]) {
                     case GRASS:
-                        gameBoard.getResizedGrassIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedGrassIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case MOUNTAIN:
-                        gameBoard.getResizedMountainIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedMountainIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case ROAD_HORIZONTAL:
-                        gameBoard.getResizedRoadHorizontalIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRoadHorizontalIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case ROAD_VERTICAL:
-                        gameBoard.getResizedRoadVerticalIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRoadVerticalIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case ROAD_TURN_DL:
-                        gameBoard.getResizedRoadTurnDLIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRoadTurnDLIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case ROAD_TURN_DR:
-                        gameBoard.getResizedRoadTurnDRIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRoadTurnDRIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case ROAD_TURN_UR:
-                        gameBoard.getResizedRoadTurnURIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRoadTurnURIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case ROAD_TURN_UL:
-                        gameBoard.getResizedRoadTurnULIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRoadTurnULIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                 }
                 updateXYPositionForMapDrawing();
@@ -668,31 +821,30 @@ class GameDrawingPanel extends JComponent {
             for (int j = 0; j < row.length; j++) {
                 switch(row[j]) {
                     case NONE:
-                        gameBoard.getResizedGrassIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
                         break;
                     case RED_HQ:
-                        gameBoard.getResizedMountainIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRedHQIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case RED_BASE:
-                        gameBoard.getResizedRoadHorizontalIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRedBaseIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case RED_CITY:
-                        gameBoard.getResizedRoadVerticalIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedRedCityIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case BLUE_HQ:
-                        gameBoard.getResizedRoadTurnDLIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedBlueHQIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case BLUE_BASE:
-                        gameBoard.getResizedRoadTurnDRIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedBlueBaseIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case BLUE_CITY:
-                        gameBoard.getResizedRoadTurnURIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedBlueCityIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case GRAY_BASE:
-                        gameBoard.getResizedRoadTurnULIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedGrayBaseIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                     case GRAY_CITY:
-                        gameBoard.getResizedRoadTurnULIcon().paintIcon(this, g, terrainDrawingTopLeftXPos, terrainDrawingTopLeftYPos);
+                        gameBoard.getResizedGrayCityIcon().paintIcon(this, g, drawingTopLeftXPos, drawingTopLeftYPos);
                         break;
                 }
                 updateXYPositionForMapDrawing();
@@ -701,7 +853,93 @@ class GameDrawingPanel extends JComponent {
         }
 
     } // END OF drawBuildings METHOD
+/*
+    public enum UnitTile {
+        INFANTRY, MECH, TANK, ARTILLERY
+    }
+ */
+    void drawMenu(Graphics g) {
 
+        gameBoard.getResizedRedInfantry().paintIcon(this, g, 0, 75);
+        gameBoard.getResizedRedMech().paintIcon(this, g, 0, 150);
+        gameBoard.getResizedRedArtillery().paintIcon(this, g, 0, 225);
+        gameBoard.getResizedRedTank().paintIcon(this, g, 0, 300);
+        gameBoard.getResizedBlueInfantry().paintIcon(this, g, 0, 375);
+        gameBoard.getResizedBlueMech().paintIcon(this, g, 0, 450);
+        gameBoard.getResizedBlueArtillery().paintIcon(this, g, 0, 525);
+        gameBoard.getResizedBlueTank().paintIcon(this, g, 0, 600);
+
+        // update bank numbers
+
+        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
+        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
+
+        this.add(menuTitleLabel);
+        this.add(redPlayerBankLabel);
+        this.add(player2BankLabel);
+
+        /*
+                menuTitleLabel = new JLabel("Advance Wars");
+        menuTitleLabel.setLocation(0,0);
+        this.add(menuTitleLabel);
+        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
+        redPlayerBankLabel.setLocation(0,675);
+        this.add(redPlayerBankLabel);
+        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
+        player2BankLabel.setLocation(75,750);
+        this.add(player2BankLabel);
+         */
+
+        // update buttons to enable / disable based on player's turn.  Update once per turn
+
+        if (!buttonsUpdatedAlready) {
+            updateButtonAccess(gameBoard.getTurnColor());
+        }
+
+
+        // draw labels
+
+
+
+/*
+        menuTitleLabel = new JLabel("Advance Wars");
+        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
+        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
+
+        redInfantryBtn = new JButton("1000 G");
+        redMechBtn = new JButton("3000 G");
+        redArtilleryBtn = new JButton("6000 G");
+        redTankBtn = new JButton("7000 G");
+
+        blueInfantryBtn = new JButton("1000 G");
+        blueMechBtn = new JButton("3000 G");
+        blueArtilleryBtn = new JButton("6000 G");
+        blueTankBtn = new JButton("7000 G");
+ */
+    }
+
+    void updateButtonAccess(char color) {
+        if (color == 'r') {
+            redInfantryBtn.setEnabled(true);
+            redMechBtn.setEnabled(true);
+            redArtilleryBtn.setEnabled(true);
+            redTankBtn.setEnabled(true);
+            blueInfantryBtn.setEnabled(false);
+            blueMechBtn.setEnabled(false);
+            blueArtilleryBtn.setEnabled(false);
+            blueTankBtn.setEnabled(false);
+        } else if (color == 'b') {
+            redInfantryBtn.setEnabled(false);
+            redMechBtn.setEnabled(false);
+            redArtilleryBtn.setEnabled(false);
+            redTankBtn.setEnabled(false);
+            blueInfantryBtn.setEnabled(true);
+            blueMechBtn.setEnabled(true);
+            blueArtilleryBtn.setEnabled(true);
+            blueTankBtn.setEnabled(true);
+        }
+        buttonsUpdatedAlready = true;
+    }
 
     /*
     This updates the XY position.
@@ -709,14 +947,14 @@ class GameDrawingPanel extends JComponent {
     the bottom of the screen.
      */
     public void updateXYPositionForMapDrawing() {
-        if (terrainDrawingTopLeftXPos < gameBoard.getMapWidth() - gameBoard.getTileLength()) {
-            terrainDrawingTopLeftXPos += gameBoard.getTileLength();
-        } else if (terrainDrawingTopLeftYPos < gameBoard.getMapHeight() - gameBoard.getTileLength()) {
-            terrainDrawingTopLeftXPos = 0;
-            terrainDrawingTopLeftYPos += gameBoard.getTileLength();
+        if (drawingTopLeftXPos < gameBoard.getMapWidth() + gameBoard.getMapStartX() - gameBoard.getTileLength()) {
+            drawingTopLeftXPos += gameBoard.getTileLength();
+        } else if (drawingTopLeftYPos < gameBoard.getMapHeight() + gameBoard.getMapStartY() - gameBoard.getTileLength()) {
+            drawingTopLeftXPos = gameBoard.getMapStartX();
+            drawingTopLeftYPos += gameBoard.getTileLength();
         } else {
-            terrainDrawingTopLeftXPos = 0;
-            terrainDrawingTopLeftYPos = 0;
+            drawingTopLeftXPos = gameBoard.getMapStartX();
+            drawingTopLeftYPos = gameBoard.getMapStartY();
         }
     }
 }

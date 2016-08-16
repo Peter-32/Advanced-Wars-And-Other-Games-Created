@@ -19,6 +19,7 @@ public class SpriteSheet {
 
         this.sheet = sheet;
 
+
     } // END OF Images.SpriteSheet CONSTRUCTOR
 
     public BufferedImage grabSprite(int x, int y, int width, int height) {
