@@ -25,10 +25,12 @@
       <file leaf-file-name="GameBoard.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/MemoryPuzzle/GameBoard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="590">
-              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="42" selection-end-column="25" />
+            <state relative-caret-position="650">
+              <caret line="453" column="0" selection-start-line="453" selection-start-column="0" selection-end-line="454" selection-end-column="55" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#8564#8565#0" expanded="true" />
+                <element signature="e#8601#8602#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -715,8 +717,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -791,7 +792,8 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="RunManager" selected="Application.MemoryPuzzleMain">
@@ -1130,7 +1132,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="73" width="1936" height="1096" extended-state="6" />
+    <frame x="-1928" y="73" width="1936" height="1096" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1277,6 +1279,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1837,6 +1841,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2397,6 +2403,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2957,6 +2965,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3517,6 +3527,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3673,6 +3685,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3829,6 +3843,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -4501,10 +4517,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/MemoryPuzzle/GameBoard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="590">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="42" selection-end-column="25" />
+        <state relative-caret-position="650">
+          <caret line="453" column="0" selection-start-line="453" selection-start-column="0" selection-end-line="454" selection-end-column="55" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8564#8565#0" expanded="true" />
+            <element signature="e#8601#8602#0" expanded="true" />
           </folding>
         </state>
       </provider>

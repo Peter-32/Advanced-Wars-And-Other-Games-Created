@@ -128,19 +128,19 @@ public class GameBoard extends JFrame {
         GameOver = gameOver;
     }
 
-    public int getxClicked() {
+    public int getXClicked() {
         return xClicked;
     }
 
-    public void setxClicked(int xClicked) {
+    public void setXClicked(int xClicked) {
         this.xClicked = xClicked;
     }
 
-    public int getyClicked() {
+    public int getYClicked() {
         return yClicked;
     }
 
-    public void setyClicked(int yClicked) {
+    public void setYClicked(int yClicked) {
         this.yClicked = yClicked;
     }
 
@@ -236,6 +236,86 @@ public class GameBoard extends JFrame {
     public void setTurnColor(char turnColor) {
         this.turnColor = turnColor;
     }
+    public ImageIcon getResizedCursor() {
+        return resizedCursor;
+    }
+    public int getCursorMapTileY() {
+        return cursorMapTileY;
+    }
+
+    public void setCursorMapTileY(int cursorMapTileY) {
+        this.cursorMapTileY = cursorMapTileY;
+    }
+
+    public int getCursorMapTileX() {
+        return cursorMapTileX;
+    }
+
+    public void setCursorMapTileX(int cursorMapTileX) {
+        this.cursorMapTileX = cursorMapTileX;
+    }
+    public boolean isUnitSelected() {
+        return unitSelected;
+    }
+
+    public void setUnitSelected(boolean unitSelected) {
+        this.unitSelected = unitSelected;
+    }
+    public int getClickType() {
+        return clickType;
+    }
+
+    public void setClickType(int clickType) {
+        this.clickType = clickType;
+    }
+    public int getEndTurnBtnHeight() {
+        return endTurnBtnHeight;
+    }
+
+    public int getEndTurnBtnWidth() {
+        return endTurnBtnWidth;
+    }
+
+    public int getEndTurnBtnStartY() {
+        return endTurnBtnStartY;
+    }
+
+    public int getEndTurnBtnStartX() {
+        return endTurnBtnStartX;
+    }
+    public ImageIcon getResizedRedButton() {
+        return resizedRedButton;
+    }
+
+    public ImageIcon getResizedBlueButton() {
+        return resizedBlueButton;
+    }
+
+    public ImageIcon getResizedWhiteButton() {
+        return resizedWhiteButton;
+    }
+
+    public ImageIcon getResizedGreenEndTurnButton() {
+        return resizedGreenEndTurnButton;
+    }
+    public int getPurchaseBtnsStartX() {
+        return purchaseBtnsStartX;
+    }
+
+    public int getPurchaseBtnsStartY() {
+        return purchaseBtnsStartY;
+    }
+
+    public int getPurchaseBtnsWidth() {
+        return purchaseBtnsWidth;
+    }
+
+    public int getPurchaseBtnsHeight() {
+        return purchaseBtnsHeight;
+    }
+    public int getPurchaseBtnsTopMargin() {
+        return purchaseBtnsTopMargin;
+    }
 
     //// FIELDS
     private final int jFrameWidth = 1500;
@@ -248,25 +328,39 @@ public class GameBoard extends JFrame {
     private final int menuHeight = 150;
     private final int mapStartX = 300;
     private final int mapStartY = 0;
-    private final int mapWidth = 1200;
     private final int mapHeight = 750;
+    private final int mapWidth = (int) (mapHeight * 16 / 10);
     private final int tileLength = mapHeight / 10;
+    private final int endTurnBtnStartX = 40;
+    private final int endTurnBtnStartY = (int) (1.46 * tileLength);
+    private final int endTurnBtnWidth = (int) (2.93 * tileLength);
+    private final int endTurnBtnHeight = (int) (0.5 * tileLength);
+    private final int purchaseBtnsStartX = tileLength;
+    private final int purchaseBtnsStartY = (int) (2.15 * tileLength);
+    private final int purchaseBtnsWidth = 2 * tileLength;
+    private final int purchaseBtnsHeight = (int) (0.8 * tileLength);
+    private final int purchaseBtnsTopMargin = (int) (0.2 * tileLength);
 
     private int redPlayerBank = 5000;
     private int bluePlayerBank = 5000;
     private char turnColor = 'r'; // also 'b' is possible
 
+    // this stores the tile that should hold the cursor.  -1 means don't show it at the moment
+    private int cursorMapTileX = -1;
+    private int cursorMapTileY = -1;
+
 
     SpriteSheet ssBuildings;
     SpriteSheet ssUnits;
+    SpriteSheet ssBtns;
 
 
     private boolean lockInput = false; // not sure if this still be used
     private int yClicked = -1;
     private int xClicked = -1;
+    private int clickType = -1;
     private boolean GameOver = false;
-
-
+    private boolean unitSelected = false;
 
 
     // Sprites and enums
@@ -321,6 +415,18 @@ public class GameBoard extends JFrame {
     private ImageIcon resizedBlueTank;
     private ImageIcon resizedBlueArtillery;
 
+    // cursor and movement
+
+    private ImageIcon resizedCursor;
+
+    // buttons
+
+    private ImageIcon resizedRedButton;
+    private ImageIcon resizedBlueButton;
+    private ImageIcon resizedWhiteButton;
+    private ImageIcon resizedGreenEndTurnButton;
+
+
     // sound files
 
     private String backgroundMusic = "file:./resources/David_Szesztay_-_Morning_Four.wav";
@@ -360,49 +466,61 @@ public class GameBoard extends JFrame {
         BufferedImageLoader loader = new BufferedImageLoader();
         BufferedImage spriteSheetBuildings = null;
         BufferedImage spriteSheetUnits = null;
+        BufferedImage spriteSheetBtns = null;
         try {
             spriteSheetBuildings = loader.loadImage("file:./resources/Game Boy Advance - Advance Wars 2 - Buildings.png");
             spriteSheetUnits = loader.loadImage("file:./resources/Map_units.png");
+            spriteSheetBtns = loader.loadImage("file:./resources/game_button_spritesheet.png");
         } catch (IOException e) {
             e.printStackTrace();
         }
         ssBuildings = new SpriteSheet(spriteSheetBuildings);
         ssUnits = new SpriteSheet(spriteSheetUnits);
+        ssBtns = new SpriteSheet(spriteSheetBtns);
 
 
         // load terrain sprite icons
 
-        resizedMountainIcon = getResizedImageFromFile("resources/mountain.png");
-        resizedRoadTurnULIcon = getResizedImageFromFile("resources/road_turn_ul.png");
-        resizedRoadTurnURIcon = getResizedImageFromFile("resources/road_turn_ur.png");
-        resizedRoadTurnDLIcon = getResizedImageFromFile("resources/road_turn_dl.png");
-        resizedRoadTurnDRIcon = getResizedImageFromFile("resources/road_turn_dr.png");
-        resizedRoadVerticalIcon = getResizedImageFromFile("resources/road_vertical.png");
-        resizedRoadHorizontalIcon = getResizedImageFromFile("resources/road_horizontal.png");
-        resizedGrassIcon = getResizedImageFromFile("resources/grass.png");
+        resizedMountainIcon = getResizedTilesizeImageFromFile("resources/mountain.png");
+        resizedRoadTurnULIcon = getResizedTilesizeImageFromFile("resources/road_turn_ul.png");
+        resizedRoadTurnURIcon = getResizedTilesizeImageFromFile("resources/road_turn_ur.png");
+        resizedRoadTurnDLIcon = getResizedTilesizeImageFromFile("resources/road_turn_dl.png");
+        resizedRoadTurnDRIcon = getResizedTilesizeImageFromFile("resources/road_turn_dr.png");
+        resizedRoadVerticalIcon = getResizedTilesizeImageFromFile("resources/road_vertical.png");
+        resizedRoadHorizontalIcon = getResizedTilesizeImageFromFile("resources/road_horizontal.png");
+        resizedGrassIcon = getResizedTilesizeImageFromFile("resources/grass.png");
 
         // load buildings sprite icons
 
-        resizedGrayBaseIcon = getResizedImageFromSpriteSheet(ssBuildings,372,28,19,18);
-        resizedGrayCityIcon = getResizedImageFromSpriteSheet(ssBuildings,373,5,18,22);
-        resizedRedHQIcon = getResizedImageFromSpriteSheet(ssBuildings,24,3,18,32);
-        resizedRedBaseIcon = getResizedImageFromSpriteSheet(ssBuildings,24,196,18,18);
-        resizedRedCityIcon = getResizedImageFromSpriteSheet(ssBuildings,25,173,18,21);
-        resizedBlueHQIcon = getResizedImageFromSpriteSheet(ssBuildings,67,3,18,32);
-        resizedBlueBaseIcon = getResizedImageFromSpriteSheet(ssBuildings,68,196,18,18);
-        resizedBlueCityIcon = getResizedImageFromSpriteSheet(ssBuildings,68,173,18,21);
+        resizedGrayBaseIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,372,28,19,18);
+        resizedGrayCityIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,373,5,18,22);
+        resizedRedHQIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,24,3,18,32);
+        resizedRedBaseIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,24,196,18,18);
+        resizedRedCityIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,25,173,18,21);
+        resizedBlueHQIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,67,3,18,32);
+        resizedBlueBaseIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,68,196,18,18);
+        resizedBlueCityIcon = getResizedTilesizeImageFromSpriteSheet(ssBuildings,68,173,18,21);
 
         // load unit sprite icons
 
-        resizedRedInfantry = getResizedImageFromSpriteSheet(ssUnits,0,0,15,17);
-        resizedRedMech = getResizedImageFromSpriteSheet(ssUnits,15,0,17,17);
-        resizedRedTank = getResizedImageFromSpriteSheet(ssUnits,78,0,17,18);
-        resizedRedArtillery = getResizedImageFromSpriteSheet(ssUnits,143,0,17,16);
-        resizedBlueInfantry = getResizedImageFromSpriteSheet(ssUnits,0,16,15,16);
-        resizedBlueMech = getResizedImageFromSpriteSheet(ssUnits,15,16,17,16);
-        resizedBlueTank = getResizedImageFromSpriteSheet(ssUnits,80,17,16,15);
-        resizedBlueArtillery = getResizedImageFromSpriteSheet(ssUnits,144,16,16,16);
+        resizedRedInfantry = getResizedTilesizeImageFromSpriteSheet(ssUnits,0,0,15,17);
+        resizedRedMech = getResizedTilesizeImageFromSpriteSheet(ssUnits,15,0,17,17);
+        resizedRedTank = getResizedTilesizeImageFromSpriteSheet(ssUnits,78,0,17,18);
+        resizedRedArtillery = getResizedTilesizeImageFromSpriteSheet(ssUnits,143,0,17,16);
+        resizedBlueInfantry = getResizedTilesizeImageFromSpriteSheet(ssUnits,0,16,15,16);
+        resizedBlueMech = getResizedTilesizeImageFromSpriteSheet(ssUnits,15,16,17,16);
+        resizedBlueTank = getResizedTilesizeImageFromSpriteSheet(ssUnits,80,17,16,15);
+        resizedBlueArtillery = getResizedTilesizeImageFromSpriteSheet(ssUnits,144,16,16,16);
 
+        // load button sprite icons
+        resizedRedButton = getResizedImageFromSpriteSheet(ssBtns,111,97,99,25, purchaseBtnsWidth, purchaseBtnsHeight);
+        resizedBlueButton = getResizedImageFromSpriteSheet(ssBtns,112,127,98,24, purchaseBtnsWidth, purchaseBtnsHeight);
+        resizedWhiteButton = getResizedImageFromSpriteSheet(ssBtns,110,8,100,25, purchaseBtnsWidth, purchaseBtnsHeight);
+        resizedGreenEndTurnButton = getResizedImageFromSpriteSheet(ssBtns,112,37,98,26, endTurnBtnWidth, endTurnBtnHeight);
+
+        // cursor and movement
+
+        resizedCursor = getResizedTilesizeImageFromFile("resources/cursor.png");
 
         // load map #1
 
@@ -474,7 +592,7 @@ public class GameBoard extends JFrame {
     private class ListenForMouse implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (!lockInput && e.getButton() == 1) {// lock is off & left click
+            if (!lockInput) {// lock is off
 
                 // Account for the size of the left border
 
@@ -484,6 +602,8 @@ public class GameBoard extends JFrame {
 
                 yClicked = e.getY() - topJFrameBorderLength;
             }
+
+            clickType = e.getButton();
         }
 
         @Override
@@ -506,6 +626,30 @@ public class GameBoard extends JFrame {
 
         }
     } // END OF MouseListener INNER CLASS
+
+
+    public int findXTileClickedOn() {
+
+        // if xPosition is out of bounds then -1, otherwise get the right grid number
+
+        if (xClicked < mapStartX || xClicked > mapStartX + mapWidth) {
+            return -1;
+        } else {
+            return (xClicked - mapStartX) / tileLength;
+        }
+    }
+
+    public int findYTileClickedOn() {
+
+        // if xPosition is out of bounds then -1, otherwise get the right grid number
+
+        if (xClicked < mapStartX || xClicked > mapStartX + mapWidth) {
+            return -1;
+        } else {
+            return (xClicked - mapStartX) / tileLength;
+        }
+    }
+
 
     void loadMap(int mapNumber) {
 
@@ -533,6 +677,7 @@ public class GameBoard extends JFrame {
 
         //File mapTerrainFile = new File("file:./resources/Map" + 1 + "_Terrain.txt");        Why doesn't this work???
         File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
+        // USE THIS FOR MAC File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
         BufferedReader br = null;
         try {
             br = new BufferedReader(
@@ -610,6 +755,7 @@ public class GameBoard extends JFrame {
 
         //File mapTerrainFile = new File("file:./resources/Map" + 1 + "_Terrain.txt");        Why doesn't this work???
         File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
+        // USE THIS FOR MAC File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
         BufferedReader br = null;
 
         try {
@@ -679,7 +825,7 @@ public class GameBoard extends JFrame {
         }
     } // END OF LoadMapBuildings METHOD
 
-    ImageIcon getResizedImageFromFile(String fileLocation) {
+    ImageIcon getResizedTilesizeImageFromFile(String fileLocation) {
 
         ImageIcon originalIcon = new ImageIcon(fileLocation);
         Image image = originalIcon.getImage();
@@ -688,11 +834,16 @@ public class GameBoard extends JFrame {
         return resizedIcon;
     } // END OF getResizedImageFromFile METHOD
 
-    ImageIcon getResizedImageFromSpriteSheet(SpriteSheet ss, int topLeftX, int topLeftY, int width, int height) {
+    ImageIcon getResizedTilesizeImageFromSpriteSheet(SpriteSheet ss, int topLeftX, int topLeftY, int width, int height) {
+        return getResizedImageFromSpriteSheet(ss, topLeftX, topLeftY, width, height, tileLength, tileLength);
+    } // END OF getResizedImageFromFile METHOD
+
+    ImageIcon getResizedImageFromSpriteSheet(SpriteSheet ss, int topLeftX, int topLeftY, int width, int height,
+                                             int newWidth, int newHeight) {
         BufferedImage sprite = ss.grabSprite(topLeftX, topLeftY, width, height);
         ImageIcon originalIcon = new ImageIcon(sprite);
         Image image = originalIcon.getImage();
-        Image resizedImage = image.getScaledInstance(tileLength, tileLength, java.awt.Image.SCALE_SMOOTH);
+        Image resizedImage = image.getScaledInstance(newWidth, newHeight, java.awt.Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizedImage);
         return resizedIcon;
     } // END OF getResizedImageFromFile METHOD
@@ -720,55 +871,11 @@ class GameDrawingPanel extends JPanel {
         drawingTopLeftXPos = gameBoard.getMapStartX();
         drawingTopLeftYPos = gameBoard.getMapStartY();
 
-        menuTitleLabel = new JLabel("Advance Wars");
-        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
-        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
-////////////////////////////////////////////////////////////////////////DONT USE LABELS USE DRAWSTRING!!!!!!!!!
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // DRAW TEXT HERE.  Then make a mouse listener check if each was clicked!
-
-        graphicSettings.setFont(new Font("TimesRoman", Font.PLAIN, 25));
-        graphicSettings.setColor(Color.WHITE);
-        graphicSettings.drawString((String) currentTile.getNumberOnTile(),
-                (int) (currentTile.getTopLeftXPos() + gameBoard.getTileSideLength() * .30),
-                (int) (currentTile.getTopLeftYPos() + gameBoard.getTileSideLength() * .60));
-
-        // the text is based off this below.  Don't actually make buttons
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        redInfantryBtn = new JButton("1000 G");
-        redMechBtn = new JButton("3000 G");
-        redArtilleryBtn = new JButton("6000 G");
-        redTankBtn = new JButton("7000 G");
-
-        blueInfantryBtn = new JButton("1000 G");
-        blueMechBtn = new JButton("3000 G");
-        blueArtilleryBtn = new JButton("6000 G");
-        blueTankBtn = new JButton("7000 G");
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     // METHODS
-
-    private void addComp(JPanel thePanel, JComponent comp, int xPos, int yPos, int compWidth, int compHeight, int place, int stretch) {
-
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-
-        gridBagConstraints.gridx = xPos;
-        gridBagConstraints.gridy = yPos;
-        gridBagConstraints.gridwidth = compWidth;
-        gridBagConstraints.gridheight = compHeight;
-        gridBagConstraints.weightx = 0;
-        gridBagConstraints.weighty = 0;
-        gridBagConstraints.insets = new Insets(5,5,5,5);
-        gridBagConstraints.anchor = place;
-        gridBagConstraints.fill = stretch;
-
-        thePanel.add(comp, gridBagConstraints);
-
-    } // END OF addComp METHOD
 
     public void paint(Graphics g) {
 
@@ -789,9 +896,14 @@ class GameDrawingPanel extends JPanel {
 
         drawBuildings(g);
 
-        /// draw menu
+        // draw menu
 
         drawMenu(g);
+
+        // draw cursor
+
+        drawCursor(g);
+
 
     } // END OF paint METHOD
 
@@ -879,99 +991,78 @@ class GameDrawingPanel extends JPanel {
         }
 
     } // END OF drawBuildings METHOD
-/*
-    public enum UnitTile {
-        INFANTRY, MECH, TANK, ARTILLERY
-    }
- */
+    /*
+        public enum UnitTile {
+            INFANTRY, MECH, TANK, ARTILLERY
+        }
+     */
     void drawMenu(Graphics g) {
 
-        gameBoard.getResizedRedInfantry().paintIcon(this, g, 0, 75);
-        gameBoard.getResizedRedMech().paintIcon(this, g, 0, 150);
-        gameBoard.getResizedRedArtillery().paintIcon(this, g, 0, 225);
-        gameBoard.getResizedRedTank().paintIcon(this, g, 0, 300);
-        gameBoard.getResizedBlueInfantry().paintIcon(this, g, 0, 375);
-        gameBoard.getResizedBlueMech().paintIcon(this, g, 0, 450);
-        gameBoard.getResizedBlueArtillery().paintIcon(this, g, 0, 525);
-        gameBoard.getResizedBlueTank().paintIcon(this, g, 0, 600);
+        gameBoard.getResizedRedInfantry().paintIcon(this, g, 0, 150);
+        gameBoard.getResizedRedMech().paintIcon(this, g, 0, 225);
+        gameBoard.getResizedRedArtillery().paintIcon(this, g, 0, 300);
+        gameBoard.getResizedRedTank().paintIcon(this, g, 0, 375);
+        gameBoard.getResizedBlueInfantry().paintIcon(this, g, 0, 450);
+        gameBoard.getResizedBlueMech().paintIcon(this, g, 0, 525);
+        gameBoard.getResizedBlueArtillery().paintIcon(this, g, 0, 600);
+        gameBoard.getResizedBlueTank().paintIcon(this, g, 0, 675);
+
+        // redraw the title
+
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 25));
+        g.setColor(Color.BLACK);
+        g.drawString("Advance Wars",70,40);
 
         // update bank numbers
 
-        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
-        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
+        g.drawString("Red Bank:", 20, 75);
+        g.drawString("Blue Bank:", 170, 75);
 
-        this.add(menuTitleLabel);
-        this.add(redPlayerBankLabel);
-        this.add(player2BankLabel);
+        g.drawString(Integer.toString(gameBoard.getRedPlayerBank()), 40, 105);
+        g.drawString(Integer.toString(gameBoard.getBluePlayerBank()), 190, 105);
 
-        /*
-                menuTitleLabel = new JLabel("Advance Wars");
-        menuTitleLabel.setLocation(0,0);
-        this.add(menuTitleLabel);
-        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
-        redPlayerBankLabel.setLocation(0,675);
-        this.add(redPlayerBankLabel);
-        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
-        player2BankLabel.setLocation(75,750);
-        this.add(player2BankLabel);
-         */
+        // draw the end turn button
 
-        // update buttons to enable / disable based on player's turn.  Update once per turn
+        gameBoard.getResizedGreenEndTurnButton().paintIcon(this, g, gameBoard.getEndTurnBtnStartX(), gameBoard.getEndTurnBtnStartY());
+        g.drawString("End Turn",gameBoard.getEndTurnBtnStartX() + (gameBoard.getEndTurnBtnWidth() / 2) - (int) (0.75 * gameBoard.getTileLength()),
+                gameBoard.getEndTurnBtnStartY() + (int) (0.35 * gameBoard.getTileLength()));
 
-        if (!buttonsUpdatedAlready) {
-            updateButtonAccess(gameBoard.getTurnColor());
-        }
-
-
-        // draw labels
-
-
-
-/*
-        menuTitleLabel = new JLabel("Advance Wars");
-        redPlayerBankLabel = new JLabel(Integer.toString(gameBoard.getRedPlayerBank()));
-        player2BankLabel = new JLabel(Integer.toString(gameBoard.getBluePlayerBank()));
-
-        redInfantryBtn = new JButton("1000 G");
-        redMechBtn = new JButton("3000 G");
-        redArtilleryBtn = new JButton("6000 G");
-        redTankBtn = new JButton("7000 G");
-
-        blueInfantryBtn = new JButton("1000 G");
-        blueMechBtn = new JButton("3000 G");
-        blueArtilleryBtn = new JButton("6000 G");
-        blueTankBtn = new JButton("7000 G");
- */
+        // update the unit labels
+        gameBoard.getResizedRedButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY());
+        g.drawString("1000 G", 110, 200);
+        gameBoard.getResizedRedButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY() + 1 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()));
+        g.drawString("3000 G", 110, 275);
+        gameBoard.getResizedRedButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY() + 2 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()));
+        g.drawString("6000 G", 110, 350);
+        gameBoard.getResizedRedButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY() + 3 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()));
+        g.drawString("7000 G", 110, 425);
+        gameBoard.getResizedBlueButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY() + 4 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()));
+        g.drawString("1000 G", 110, 500);
+        gameBoard.getResizedBlueButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY() + 5 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()));
+        g.drawString("3000 G", 110, 575);
+        gameBoard.getResizedBlueButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY() + 6 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()));
+        g.drawString("6000 G", 110, 650);
+        gameBoard.getResizedBlueButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
+                gameBoard.getPurchaseBtnsStartY() + 7 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()));
+        g.drawString("7000 G", 110, 725);
     }
 
-    void updateButtonAccess(char color) {
-        if (color == 'r') {
-            redInfantryBtn.setEnabled(true);
-            redMechBtn.setEnabled(true);
-            redArtilleryBtn.setEnabled(true);
-            redTankBtn.setEnabled(true);
-            blueInfantryBtn.setEnabled(false);
-            blueMechBtn.setEnabled(false);
-            blueArtilleryBtn.setEnabled(false);
-            blueTankBtn.setEnabled(false);
-        } else if (color == 'b') {
-            redInfantryBtn.setEnabled(false);
-            redMechBtn.setEnabled(false);
-            redArtilleryBtn.setEnabled(false);
-            redTankBtn.setEnabled(false);
-            blueInfantryBtn.setEnabled(true);
-            blueMechBtn.setEnabled(true);
-            blueArtilleryBtn.setEnabled(true);
-            blueTankBtn.setEnabled(true);
-        }
-        buttonsUpdatedAlready = true;
+    void drawCursor(Graphics g) {
+        int xTile = gameBoard.getCursorMapTileX();
+        int yTile = gameBoard.getCursorMapTileX();
+
+        gameBoard.getResizedCursor().paintIcon(this, g,
+                gameBoard.getMapStartX() + gameBoard.getTileLength() * xTile,
+                gameBoard.getMapStartY() + gameBoard.getTileLength() * yTile);
     }
 
-    /*
-    This updates the XY position.
-    The first if statement will look for when the tile has gone to the edge of the screen, the second checks if it reaches
-    the bottom of the screen.
-     */
     public void updateXYPositionForMapDrawing() {
         if (drawingTopLeftXPos < gameBoard.getMapWidth() + gameBoard.getMapStartX() - gameBoard.getTileLength()) {
             drawingTopLeftXPos += gameBoard.getTileLength();
@@ -993,6 +1084,8 @@ class MainGameLoop implements Runnable {
 
     //// FIELDS
 
+    int xClicked;
+    int yClicked;
     GameBoard gameBoard;
     GameDrawingPanel gameDrawingPanel;
 
@@ -1003,16 +1096,136 @@ class MainGameLoop implements Runnable {
         this.gameDrawingPanel = gameDrawingPanel;
     }
 
+    //// METHODS
+
     @Override
     public void run() {
 
-        // ???
+        // set the xClicked and yClicked for this frame
+        xClicked = gameBoard.getXClicked();
+        yClicked = gameBoard.getYClicked();
 
-        // movement
+        // update the game to be the right player's turn
+        checkEndTurnButtonForClick();
+
+        // if the click type is 1, it is a left click.  If click type is greater than 1 it is an alternative click
+        // all alternative clicks are treated the same.  They are essentially all treated as right clicks.
+
+        if (gameBoard.getClickType() == 1) {
+            new FindLeftClickGameStateChanges(gameBoard, xClicked, yClicked);
+        } else if (gameBoard.getClickType() > 1) {
+            new FindRightClickGameStateChanges(gameBoard, xClicked, yClicked);
+        }
 
         // repaint
         gameDrawingPanel.repaint();
 
+        // Reset click location to -1 after frame is complete.  We don't want to reuse that click after the frame is done.
+
+        gameBoard.setXClicked(-1);
+        gameBoard.setYClicked(-1);
+
+    } // END OF run METHOD
+
+    /*
+    This method will check if the button for ending the turn has been clicked.  If so, it will change a game
+    state that tells other classes which player has their turn.
+     */
+
+    void checkEndTurnButtonForClick() {
+
+        // if the click came from inside the button then update the turns
+
+        if (xClicked >= gameBoard.getEndTurnBtnStartX() &&
+                xClicked <= gameBoard.getEndTurnBtnStartX() + gameBoard.getEndTurnBtnWidth() &&
+                yClicked >= gameBoard.getEndTurnBtnStartY() &&
+                yClicked <= gameBoard.getEndTurnBtnStartY() + gameBoard.getEndTurnBtnHeight()) {
+
+            // switch the turns
+
+            if (gameBoard.getTurnColor() == 'r') {
+                gameBoard.setTurnColor('b');
+            } else {
+                gameBoard.setTurnColor('r');
+            }
+
+        }
+
+    } // END OF checkEndTurnButtonForClick METHOD
+
+}
+
+class FindLeftClickGameStateChanges {
+
+    GameBoard gameBoard;
+    int xClicked;
+    int yClicked;
+    int selectedXTile;
+    int selectedYTile;
+
+    FindLeftClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
+
+        /*   ACCOUNT FOR THIS!!!!!!!!!!!!!
+            private final int leftJFrameBorderLength = 8;
+    private final int topJFrameBorderLength = 30;
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         */
+
+
+        // take a snapshot of the click location when created
+
+        this.xClicked = xClicked;
+        this.yClicked = yClicked;
+        selectedXTile = gameBoard.findXTileClickedOn();
+        selectedYTile = gameBoard.findYTileClickedOn();
+
+        // update the cursor location.  Also if a tile is selected the unitSelected variable is now true
+        // if a left click occurs we want to deselect any tiles
+
+        gameBoard.setCursorMapTileX(selectedXTile);
+        gameBoard.setCursorMapTileY(selectedYTile);
+        if (selectedXTile != -1 && selectedYTile != -1) {
+            gameBoard.setUnitSelected(true);
+        } else {
+            gameBoard.setUnitSelected(false);
+        }
+
+        // check if a cursor is over a base, then update the boolean saying buying is possible
+
+        // check if an item is purchased
+
+        // check if the player clicked on their own unit
+
 
     }
+
+} // END OF FindBasicGameStateChanges CLASS
+
+class FindRightClickGameStateChanges {
+
+    GameBoard gameBoard;
+    int xClicked;
+    int yClicked;
+    int cursorTileX;
+    int cursorTileY;
+
+    /*   ACCOUNT FOR THIS!!!!!!!!!!!!!
+        private final int leftJFrameBorderLength = 8;
+private final int topJFrameBorderLength = 30;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     */
+    FindRightClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
+
+        // take a snapshot of the click location when created
+
+        this.xClicked = xClicked;
+        this.yClicked = yClicked;
+
+        // check if the player clicked on an enemy unit while their unit was selected
+
+        // check if the player clicked on a free map location while their unit was selected
+
+
+    }
+
 }

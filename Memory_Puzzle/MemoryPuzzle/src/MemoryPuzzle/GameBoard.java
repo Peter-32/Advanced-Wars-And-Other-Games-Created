@@ -513,23 +513,6 @@ class CardStateChanges {
     void checkForNewlyClickedOnCards() {
         // if all of these happen: 1) just clicked on. 2) hasn't been guessed correctly yet. 3) wasn't the first choice index
 
-        //System.out.println(gameBoard.getFirstChoiceIdx());
-        //System.out.println(xClicked);
-
-        /* if (xClicked != 0) {
-            System.out.println("xClick = " + xClicked + " yClick = " + yClicked);
-            System.out.println("idx = " + idx + " first guess = " + gameBoard.getFirstChoiceIdx() + " second guess = " +
-                    gameBoard.getSecondChoiceIdx());
-            System.out.println("xLoc = " + xLoc + " yLoc = " + yLoc);
-            System.out.println("cardWidth = " + cardWidth + " cardHeight = "  + cardHeight);
-
-            System.out.println("was this contained?");
-            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
-                    && gameBoard.getFirstChoiceIdx() != idx);
-            System.out.println(cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight));
-            System.out.println(!isGuessedCorrectAlready);
-            System.out.println(gameBoard.getFirstChoiceIdx() != idx);
-        } */
         if (cardContainsClick(xClicked, yClicked, xLoc, yLoc, cardWidth, cardHeight) && !isGuessedCorrectAlready
                 && gameBoard.getFirstChoiceIdx() != idx) {
 
