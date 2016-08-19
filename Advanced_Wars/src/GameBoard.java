@@ -10,8 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -39,14 +38,6 @@ public class GameBoard extends JFrame {
             clonedBuildingTilesGrid[i] = buildingTilesGrid[i].clone();
         }
         return clonedBuildingTilesGrid;
-    }
-    public UnitTile[][] cloneUnitTilesGrid() {
-
-        UnitTile[][] clonedUnitTilesGrid = new UnitTile[10][16];
-        for(int i = 0; i < terrainTilesGrid.length; i++) {
-            clonedUnitTilesGrid[i] = unitTilesGrid[i].clone();
-        }
-        return clonedUnitTilesGrid;
     }
     public ImageIcon getResizedMountainIcon() {
         return resizedMountainIcon;
@@ -254,12 +245,12 @@ public class GameBoard extends JFrame {
     public void setCursorMapTileX(int cursorMapTileX) {
         this.cursorMapTileX = cursorMapTileX;
     }
-    public boolean isUnitSelected() {
-        return unitSelected;
+    public boolean isAUnitSelected() {
+        return aUnitSelected;
     }
 
-    public void setUnitSelected(boolean unitSelected) {
-        this.unitSelected = unitSelected;
+    public void setAUnitSelected(boolean aUnitSelected) {
+        this.aUnitSelected = aUnitSelected;
     }
     public int getClickType() {
         return clickType;
@@ -316,6 +307,38 @@ public class GameBoard extends JFrame {
     public int getPurchaseBtnsTopMargin() {
         return purchaseBtnsTopMargin;
     }
+    public boolean isBuyingFromBasePossible() {
+        return buyingFromBasePossible;
+    }
+
+    public void setBuyingFromBasePossible(boolean buyingFromBasePossible) {
+        this.buyingFromBasePossible = buyingFromBasePossible;
+    }
+    public Iterator<MilitaryUnit> militaryUnitsIterator() {
+        readLock.lock();
+        try {
+            return new ArrayList<MilitaryUnit>(militaryUnits).iterator();
+            // we iterate over a snapshot of our list
+        } finally {
+            readLock.unlock();
+        }
+    }
+    public void addMilitaryUnits(MilitaryUnit e) {
+        writeLock.lock();
+        try {
+            militaryUnits.add(e);
+        } finally{
+            writeLock.unlock();
+        }
+    }
+    public void removeMilitaryUnits(MilitaryUnit e) {
+        writeLock.lock();
+        try {
+            militaryUnits.remove(e);
+        } finally{
+            writeLock.unlock();
+        }
+    }
 
     //// FIELDS
     private final int jFrameWidth = 1500;
@@ -341,27 +364,40 @@ public class GameBoard extends JFrame {
     private final int purchaseBtnsHeight = (int) (0.8 * tileLength);
     private final int purchaseBtnsTopMargin = (int) (0.2 * tileLength);
 
+    // the units list, Infantry, mech, artillery, tank
+
+    private final java.util.List<MilitaryUnit> militaryUnits = new ArrayList();
+
+    // Bank
+
     private int redPlayerBank = 5000;
     private int bluePlayerBank = 5000;
-    private char turnColor = 'r'; // also 'b' is possible
 
-    // this stores the tile that should hold the cursor.  -1 means don't show it at the moment
-    private int cursorMapTileX = -1;
-    private int cursorMapTileY = -1;
+    // this stores the tile that should hold the cursor.  0,0  is default because it is always on the board.
 
+    private int cursorMapTileX = 0;
+    private int cursorMapTileY = 0;
+
+    // sprite sheets
 
     SpriteSheet ssBuildings;
-    SpriteSheet ssUnits;
+    SpriteSheet ssMilitaryUnits;
     SpriteSheet ssBtns;
 
+    // Other board states
 
     private boolean lockInput = false; // not sure if this still be used
     private int yClicked = -1;
     private int xClicked = -1;
     private int clickType = -1;
     private boolean GameOver = false;
-    private boolean unitSelected = false;
+    private boolean aUnitSelected = false;
 
+
+    // Turn, base clicked on (a base allows you to buy units)
+
+    private char turnColor = 'r'; // also 'b' is possible
+    private boolean buyingFromBasePossible = false;
 
     // Sprites and enums
 
@@ -375,12 +411,9 @@ public class GameBoard extends JFrame {
         RED_HQ, RED_BASE, RED_CITY,
         BLUE_HQ, BLUE_BASE, BLUE_CITY
     }
-    public enum UnitTile {
-        INFANTRY, MECH, ARTILLERY, TANK
-    }
+
     private TerrainTile[][] terrainTilesGrid = new TerrainTile[10][16];
     private BuildingTile[][] buildingTilesGrid = new BuildingTile[10][16];
-    private UnitTile[][] unitTilesGrid = new UnitTile[10][16];
 
     // Terrain
 
@@ -404,7 +437,7 @@ public class GameBoard extends JFrame {
     private ImageIcon resizedBlueBaseIcon;
     private ImageIcon resizedBlueCityIcon;
 
-    // Units
+    // Military Units
 
     private ImageIcon resizedRedInfantry;
     private ImageIcon resizedRedMech;
@@ -465,17 +498,17 @@ public class GameBoard extends JFrame {
 
         BufferedImageLoader loader = new BufferedImageLoader();
         BufferedImage spriteSheetBuildings = null;
-        BufferedImage spriteSheetUnits = null;
+        BufferedImage spriteSheetMilitaryUnits = null;
         BufferedImage spriteSheetBtns = null;
         try {
             spriteSheetBuildings = loader.loadImage("file:./resources/Game Boy Advance - Advance Wars 2 - Buildings.png");
-            spriteSheetUnits = loader.loadImage("file:./resources/Map_units.png");
+            spriteSheetMilitaryUnits = loader.loadImage("file:./resources/Map_units.png");
             spriteSheetBtns = loader.loadImage("file:./resources/game_button_spritesheet.png");
         } catch (IOException e) {
             e.printStackTrace();
         }
         ssBuildings = new SpriteSheet(spriteSheetBuildings);
-        ssUnits = new SpriteSheet(spriteSheetUnits);
+        ssMilitaryUnits = new SpriteSheet(spriteSheetMilitaryUnits);
         ssBtns = new SpriteSheet(spriteSheetBtns);
 
 
@@ -503,14 +536,14 @@ public class GameBoard extends JFrame {
 
         // load unit sprite icons
 
-        resizedRedInfantry = getResizedTilesizeImageFromSpriteSheet(ssUnits,0,0,15,17);
-        resizedRedMech = getResizedTilesizeImageFromSpriteSheet(ssUnits,15,0,17,17);
-        resizedRedTank = getResizedTilesizeImageFromSpriteSheet(ssUnits,78,0,17,18);
-        resizedRedArtillery = getResizedTilesizeImageFromSpriteSheet(ssUnits,143,0,17,16);
-        resizedBlueInfantry = getResizedTilesizeImageFromSpriteSheet(ssUnits,0,16,15,16);
-        resizedBlueMech = getResizedTilesizeImageFromSpriteSheet(ssUnits,15,16,17,16);
-        resizedBlueTank = getResizedTilesizeImageFromSpriteSheet(ssUnits,80,17,16,15);
-        resizedBlueArtillery = getResizedTilesizeImageFromSpriteSheet(ssUnits,144,16,16,16);
+        resizedRedInfantry = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,0,0,15,17);
+        resizedRedMech = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,15,0,17,17);
+        resizedRedTank = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,78,0,17,18);
+        resizedRedArtillery = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,143,0,17,16);
+        resizedBlueInfantry = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,0,16,15,16);
+        resizedBlueMech = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,15,16,17,16);
+        resizedBlueTank = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,80,17,16,15);
+        resizedBlueArtillery = getResizedTilesizeImageFromSpriteSheet(ssMilitaryUnits,144,16,16,16);
 
         // load button sprite icons
         resizedRedButton = getResizedImageFromSpriteSheet(ssBtns,111,97,99,25, purchaseBtnsWidth, purchaseBtnsHeight);
@@ -643,10 +676,10 @@ public class GameBoard extends JFrame {
 
         // if xPosition is out of bounds then -1, otherwise get the right grid number
 
-        if (xClicked < mapStartX || xClicked > mapStartX + mapWidth) {
+        if (yClicked < mapStartY || yClicked > mapStartY + mapHeight) {
             return -1;
         } else {
-            return (xClicked - mapStartX) / tileLength;
+            return (yClicked - mapStartY) / tileLength;
         }
     }
 
@@ -676,8 +709,8 @@ public class GameBoard extends JFrame {
         }
 
         //File mapTerrainFile = new File("file:./resources/Map" + 1 + "_Terrain.txt");        Why doesn't this work???
-        File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
-        // USE THIS FOR MAC File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
+        // USE THIS FOR PC File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
+        File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
         BufferedReader br = null;
         try {
             br = new BufferedReader(
@@ -754,8 +787,8 @@ public class GameBoard extends JFrame {
         }
 
         //File mapTerrainFile = new File("file:./resources/Map" + 1 + "_Terrain.txt");        Why doesn't this work???
-        File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
-        // USE THIS FOR MAC File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
+        // USE THIS FOR PC File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
+        File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
         BufferedReader br = null;
 
         try {
@@ -886,7 +919,7 @@ class GameDrawingPanel extends JPanel {
 
         graphicSettings.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        /// draw terrain, then buildings, then units.  See if they can stack!
+        /// draw terrain, then buildings, then military units.  See if they can stack!
 
         // draw terrain
 
@@ -991,11 +1024,7 @@ class GameDrawingPanel extends JPanel {
         }
 
     } // END OF drawBuildings METHOD
-    /*
-        public enum UnitTile {
-            INFANTRY, MECH, TANK, ARTILLERY
-        }
-     */
+
     void drawMenu(Graphics g) {
 
         gameBoard.getResizedRedInfantry().paintIcon(this, g, 0, 150);
@@ -1027,7 +1056,7 @@ class GameDrawingPanel extends JPanel {
         g.drawString("End Turn",gameBoard.getEndTurnBtnStartX() + (gameBoard.getEndTurnBtnWidth() / 2) - (int) (0.75 * gameBoard.getTileLength()),
                 gameBoard.getEndTurnBtnStartY() + (int) (0.35 * gameBoard.getTileLength()));
 
-        // update the unit labels
+        // update the military unit labels
         gameBoard.getResizedRedButton().paintIcon(this, g, gameBoard.getPurchaseBtnsStartX(),
                 gameBoard.getPurchaseBtnsStartY());
         g.drawString("1000 G", 110, 200);
@@ -1056,7 +1085,7 @@ class GameDrawingPanel extends JPanel {
 
     void drawCursor(Graphics g) {
         int xTile = gameBoard.getCursorMapTileX();
-        int yTile = gameBoard.getCursorMapTileX();
+        int yTile = gameBoard.getCursorMapTileY();
 
         gameBoard.getResizedCursor().paintIcon(this, g,
                 gameBoard.getMapStartX() + gameBoard.getTileLength() * xTile,
@@ -1124,6 +1153,7 @@ class MainGameLoop implements Runnable {
 
         gameBoard.setXClicked(-1);
         gameBoard.setYClicked(-1);
+        gameBoard.setClickType(-1);
 
     } // END OF run METHOD
 
@@ -1165,39 +1195,245 @@ class FindLeftClickGameStateChanges {
 
     FindLeftClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
 
-        /*   ACCOUNT FOR THIS!!!!!!!!!!!!!
-            private final int leftJFrameBorderLength = 8;
-    private final int topJFrameBorderLength = 30;
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-         */
-
-
-        // take a snapshot of the click location when created
+        // Pull in the snapshot click location (x, y)
 
         this.xClicked = xClicked;
         this.yClicked = yClicked;
         selectedXTile = gameBoard.findXTileClickedOn();
         selectedYTile = gameBoard.findYTileClickedOn();
 
-        // update the cursor location.  Also if a tile is selected the unitSelected variable is now true
-        // if a left click occurs we want to deselect any tiles
+        // check if the map is clicked on, then the game will update the cursor location, otherwise no update is wanted.
 
-        gameBoard.setCursorMapTileX(selectedXTile);
-        gameBoard.setCursorMapTileY(selectedYTile);
         if (selectedXTile != -1 && selectedYTile != -1) {
-            gameBoard.setUnitSelected(true);
-        } else {
-            gameBoard.setUnitSelected(false);
+            gameBoard.setCursorMapTileX(selectedXTile);    // SETTER USED
+            gameBoard.setCursorMapTileY(selectedYTile);    // SETTER USED
         }
 
-        // check if a cursor is over a base, then update the boolean saying buying is possible
+        // check if the player clicked on a military unit, regardless of if it is friendly or an enemy
 
-        // check if an item is purchased
+        updateMilitaryUnitSelectionState();
 
-        // check if the player clicked on their own unit
+        // check if a cursor is over a base and no military unit (friendly or enemy)
+        //   is on that base, then update the boolean saying buying is possible
 
+        checkIfBuyingFromBaseIsPossible();
+
+        // If buying is possible, check to see if the player clicked on one while the boolean above is true.
+
+        if (gameBoard.isBuyingFromBasePossible()) {
+            purchaseUnitIfClickedOn();
+        }
 
     }
+
+    void updateMilitaryUnitSelectionState() {
+
+        MilitaryUnit currentMilitaryUnit = null;
+        boolean aUnitIsSelected = false;
+
+        // loop through allunits; update selected to true or false.
+
+        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
+
+        while (tempUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempUnitsIterator.next();
+            if (gameBoard.getCursorMapTileX() == currentMilitaryUnit.getXTile() &&
+                    gameBoard.getCursorMapTileY() == currentMilitaryUnit.getYTile()) {
+                currentMilitaryUnit.setSelected(true);    // SETTER USED
+                aUnitIsSelected = true;
+            } else {
+                currentMilitaryUnit.setSelected(false);    // SETTER USED
+            }
+        }
+
+        // if at least one unit is selected then this will be set to true, otherwise it will be set to false.
+
+        gameBoard.setAUnitSelected(aUnitIsSelected);    // SETTER USED
+
+    } // END OF updateWhichUnitIsSelected METHOD
+
+    void checkIfBuyingFromBaseIsPossible() {
+
+        // check which player turn it is
+        // check if a building is selected, otherwise return from method early
+
+        GameBoard.BuildingTile[][] tempBuildingTiles = gameBoard.cloneBuildingTilesGrid();
+
+        switch (gameBoard.getTurnColor()) {
+            case 'r':
+                if (tempBuildingTiles[gameBoard.getCursorMapTileY()][gameBoard.getCursorMapTileX()]
+                        != GameBoard.BuildingTile.RED_BASE) {
+                    gameBoard.setBuyingFromBasePossible(false);    // SETTER USED
+                    return;
+                }
+                break;
+            case 'b':
+                if (tempBuildingTiles[gameBoard.getCursorMapTileY()][gameBoard.getCursorMapTileX()]
+                        != GameBoard.BuildingTile.BLUE_BASE) {
+                    gameBoard.setBuyingFromBasePossible(false);    // SETTER USED
+                    return;
+                }
+                break;
+            default: // otherwise return as well.
+                gameBoard.setBuyingFromBasePossible(false);    // SETTER USED
+                return;
+        }
+
+        // If still inside this method:
+        // Check if there are no military units on that square, then buying is possible
+
+        if (gameBoard.isAUnitSelected()) {
+            gameBoard.setBuyingFromBasePossible(false);    // SETTER USED
+        } else {
+            gameBoard.setBuyingFromBasePossible(true);    // SETTER USED
+        }
+    } // END OF checkIfBuyingFromBaseIsPossible METHOD
+
+    /*
+    Checks if the player clicks on a new unit button with their same color in the menu, in order to buy the unit.
+     */
+    void purchaseUnitIfClickedOn() {
+        if (!gameBoard.isBuyingFromBasePossible()) { return;}
+
+        switch (gameBoard.getTurnColor()) {
+            case 'r':
+                if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY(),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('r', "Infantry");
+                } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY() + 1 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('r', "Mech");
+                } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY() + 2 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('r', "Artillery");
+                } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY() + 3 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('r', "Tank");
+                }
+                break;
+            case 'b':
+                if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY() + 4 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('b', "Infantry");
+                } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY() + 5 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('b', "Mech");
+                } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY() + 6 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('b', "Artillery");
+                } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
+                        gameBoard.getPurchaseBtnsStartY() + 7 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
+                        gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
+                    purchaseMilitaryUnitIfEnoughFunds('b', "Tank");
+                }
+                break;
+            
+        } // END OF SWITCH
+
+    } // END OF purchaseUnitIfClickedOn METHOD
+
+    /*
+     given the location of a button, returns true or false if it was clicked on.
+     Uses the class fields xClicked and yClicked
+     */
+
+    boolean checkIfBtnPressed(int topLeftX, int topLeftY, int width, int height) {
+
+        return (xClicked >= topLeftX &&
+                xClicked <= topLeftX + width &&
+                yClicked >= topLeftY &&
+                yClicked <= topLeftY + height);
+
+    } // END OF checkIfBtnPressed METHOD
+
+    /*
+    This unit was clicked on in the game menu for a purchase.  If there is enough money in the player's bank then
+    the unit should go onto the board.  Add the unit to the gamebord unit list, update "buying possible" to false,
+    update unit selected to true.
+     */
+
+    void purchaseMilitaryUnitIfEnoughFunds(char playerColor, String militaryUnit) {
+
+        if (playerColor == 'r') {
+            switch (militaryUnit) {
+                case "Infantry":
+                    if (gameBoard.getRedPlayerBank() >= 1000) {
+                        gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 1000);
+                        gameBoard.addMilitaryUnits(new Infantry('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+                case "Mech":
+                    if (gameBoard.getRedPlayerBank() >= 3000) {
+                        gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 3000);
+                        gameBoard.addMilitaryUnits(new Mech('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+                case "Artillery":
+                    if (gameBoard.getRedPlayerBank() >= 6000) {
+                        gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 6000);
+                        gameBoard.addMilitaryUnits(new Artillery('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+                case "Tank":
+                    if (gameBoard.getRedPlayerBank() >= 7000) {
+                        gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 7000);
+                        gameBoard.addMilitaryUnits(new Tank('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+            }
+        } else if (playerColor == 'b') {
+            switch (militaryUnit) {
+                case "Infantry":
+                    if (gameBoard.getBluePlayerBank() >= 1000) {
+                        gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 1000);
+                        gameBoard.addMilitaryUnits(new Infantry('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+                case "Mech":
+                    if (gameBoard.getBluePlayerBank() >= 3000) {
+                        gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 3000);
+                        gameBoard.addMilitaryUnits(new Mech('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+                case "Artillery":
+                    if (gameBoard.getBluePlayerBank() >= 6000) {
+                        gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 6000);
+                        gameBoard.addMilitaryUnits(new Artillery('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+                case "Tank":
+                    if (gameBoard.getBluePlayerBank() >= 7000) {
+                        gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 7000);
+                        gameBoard.addMilitaryUnits(new Tank('r', selectedXTile, selectedYTile, true));
+                        gameBoard.setBuyingFromBasePossible(false);
+                        gameBoard.setAUnitSelected(true);
+                    }
+                    break;
+            }
+        }
+
+    } // END OF purchaseMilitaryUnitIfEnoughFunds METHOD
 
 } // END OF FindBasicGameStateChanges CLASS
 
@@ -1216,16 +1452,30 @@ private final int topJFrameBorderLength = 30;
      */
     FindRightClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
 
-        // take a snapshot of the click location when created
+        // Pull in the snapshot click location (x, y)
 
         this.xClicked = xClicked;
         this.yClicked = yClicked;
 
         // check if the player clicked on an enemy unit while their unit was selected
 
-        // check if the player clicked on a free map location while their unit was selected
+        // check if the player clicked on a free map location within moving range while their unit was selected
 
 
     }
 
-}
+} // END OF FindRightClickGameStateChanges CLASS
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+/* PUT ALL THESE UNDER THE SRC DIRECTORY WHILE ON PC COMPUTER, CAN'T SAVE AS EASILY ON MAC */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
