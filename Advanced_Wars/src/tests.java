@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 /**
  * Created by Peter on 8/14/2016.
  */
@@ -20,14 +22,7 @@ public class tests {
     }
 
     tests() {
-        /*for (TerrainTile[] row : terrainTilesGrid) {
-            for (int j = 0; j < row.length; j++) {
-                row[j] = TerrainTile.GRASS;
-                System.out.println(row.length);
-            }
-        } */
 
-        System.out.println(terrainTilesGrid.length);
-        System.out.println("hello".substring(10,10));
+
     }
 }
