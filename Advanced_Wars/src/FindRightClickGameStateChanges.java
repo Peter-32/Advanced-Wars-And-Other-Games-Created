@@ -22,9 +22,20 @@ private final int topJFrameBorderLength = 30;
         this.xClicked = xClicked;
         this.yClicked = yClicked;
 
-        // check if the player clicked on an enemy unit while their unit was selected
+        // check if a ranged unit is selected
+
+        // check if a melee unit is selected
+
+        // check if the "a" button is pressed at the time of this right click
+
+        // check if right click location is a free space with no units
+
 
         // check if the player clicked on a free map location within moving range while their unit was selected
+
+        // check if the player clicked on an enemy unit while their unit was selected
+
+
 
 
     }

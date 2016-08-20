@@ -42,6 +42,14 @@ public class GameBoard extends JFrame {
         }
         return clonedBuildingTilesGrid;
     }
+    public boolean[][] cloneCurrentMoveableChoices() {
+
+        boolean[][] clonedCurrentMoveableChoicesGrid = new boolean[10][16];
+        for(int i = 0; i < currentMoveableChoicesGrid.length; i++) {
+            clonedCurrentMoveableChoicesGrid[i] = currentMoveableChoicesGrid[i].clone();
+        }
+        return clonedCurrentMoveableChoicesGrid;
+    }
     public ImageIcon getResizedMountainIcon() {
         return resizedMountainIcon;
     }
@@ -424,6 +432,7 @@ public class GameBoard extends JFrame {
 
     private TerrainTile[][] terrainTilesGrid = new TerrainTile[10][16];
     private BuildingTile[][] buildingTilesGrid = new BuildingTile[10][16];
+    private boolean[][] currentMoveableChoicesGrid = new boolean[10][16];
 
     // Terrain
 
@@ -799,14 +808,12 @@ public class GameBoard extends JFrame {
     WeightedGraph loadTerrainGraph() {
 
         // use terrainTilesGrid to build the nodes and edges
-        //terrainTilesGrid[1][1] = TerrainTile.ROAD_TURN_UL;
-
 
         // add all nodes
 
-        WeightedGraph g = new WeightedGraph();
+        WeightedGraph g = new WeightedGraph(this);
         for (int i = 0; i < terrainTilesGrid.length; i++) {
-            for (int j = 0; j < terrainTilesGrid[j].length; j++) {
+            for (int j = 0; j < terrainTilesGrid[0].length; j++) {
                 g.addNode(terrainTilesGrid[i][j], j, i);
             }
         }
@@ -964,6 +971,15 @@ public class GameBoard extends JFrame {
         return resizedIcon;
     } // END OF getResizedImageFromFile METHOD
 
+
+    public Set<WeightedGraph.Node> runNodesAccessibleFromLocationWithSteps(int steps, WeightedGraph.Node startingNode, MilitaryUnitType militaryUnitType) {
+        return graph.nodesAccessibleFromLocationWithSteps(steps, startingNode, militaryUnitType);
+    }
+
+    public WeightedGraph.Node getNodeAtLocation(int xTile, int yTile) {
+        return graph.getNodeAtLocation(xTile, yTile);
+    }
+
 } // END OF GameBoard CLASS
 
 class GameDrawingPanel extends JPanel {
@@ -1023,6 +1039,15 @@ class GameDrawingPanel extends JPanel {
         // draw cursor
 
         drawCursor(g);
+
+        // draw currently moveable locations,
+        // Only draw when a unit is selected!!!
+        // This way it doesn't have to be updated to a false array every frame
+
+        if (gameBoard.isAMilitaryUnitSelected()) {
+            drawMoveableGrid(graphicSettings);
+        }
+
 
 
     } // END OF paint METHOD
@@ -1234,7 +1259,9 @@ class GameDrawingPanel extends JPanel {
 
     }
 
-
+    /*
+    Draw the cursor in its currently map location.  The cursor never leaves the map
+     */
 
     void drawCursor(Graphics g) {
         int xTile = gameBoard.getCursorMapTileX();
@@ -1244,6 +1271,35 @@ class GameDrawingPanel extends JPanel {
                 gameBoard.getMapStartX() + gameBoard.getTileLength() * xTile,
                 gameBoard.getMapStartY() + gameBoard.getTileLength() * yTile);
     }
+
+
+    /*
+    Draw the moveable grid;  There is a condition prior that only draws if a unit is selected
+     */
+
+    void drawMoveableGrid(Graphics2D graphicSettings) {
+        boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoices();
+
+        graphicSettings.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.40f));
+        graphicSettings.setPaint(Color.YELLOW);
+
+        for (boolean[] row : tempCurrentMoveableChoices) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j]) {
+
+                    // draw a transparent rectangle
+
+                    graphicSettings.fill(new Rectangle(drawingTopLeftXPos, drawingTopLeftYPos, gameBoard.getTileLength(),
+                            gameBoard.getTileLength()));
+                }
+
+                updateXYPositionForMapDrawing();
+            }
+
+        } // END OF FOR LOOP
+
+    }
+
 
     public void updateXYPositionForMapDrawing() {
         if (drawingTopLeftXPos < gameBoard.getMapWidth() + gameBoard.getMapStartX() - gameBoard.getTileLength()) {

@@ -58,6 +58,10 @@ public class FindLeftClickGameStateChanges {
             purchaseUnitIfClickedOn();
         }
 
+        // when a unit is selected, change the state of currentMoveableChoices[][].
+
+        updateCurrentMoveableChoices();
+
 
     }
 
@@ -292,5 +296,13 @@ public class FindLeftClickGameStateChanges {
         }
 
     } // END OF checkIfEndTurnWasClickedOn METHOD
+
+    // update the grid of which tiles are currently moveable.
+
+    void updateCurrentMoveableChoices() {
+
+        //nodesAccessibleFromLocationWithSteps()
+
+    }
 
 } // END OF FindLeftClickGameStateChanges  CLASS

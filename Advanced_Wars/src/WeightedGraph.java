@@ -10,11 +10,13 @@ public class WeightedGraph {
     private CopyOnWriteArrayList<DirectedEdge> edges;
     private CopyOnWriteArrayList<Node> nodes;
     private Map<Node, CopyOnWriteArrayList<DirectedEdge>> nodeEdges;
+    private GameBoard gameBoard;
 
-    WeightedGraph() {
+    WeightedGraph(GameBoard gameBoard) {
         edges = new CopyOnWriteArrayList<DirectedEdge>();
         nodes = new CopyOnWriteArrayList<Node>();
         nodeEdges = new ConcurrentHashMap<Node, CopyOnWriteArrayList<DirectedEdge>>();
+        this.gameBoard = gameBoard;
 
     }
 
@@ -41,7 +43,8 @@ public class WeightedGraph {
     /*
     Returns the unique nodes that are accessible from this initial x, y location
      */
-    Set<Node> nodesAccessibleFromLocationWithSteps(int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
+    Set<Node> nodesAccessibleFromLocationWithSteps(int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType
+                                                   ) {
         CopyOnWriteArrayList<Node> nodeList = NodesAccessibleFromLocationWithStepsRecursion(
                 new CopyOnWriteArrayList<Node>(), steps, startingNode, militaryUnitType);
 
@@ -59,6 +62,8 @@ public class WeightedGraph {
 
     CopyOnWriteArrayList<Node> NodesAccessibleFromLocationWithStepsRecursion(
             CopyOnWriteArrayList<Node> nodeList, int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
+
+        boolean useContinueOnce = false;
 
         // get the xTile and yTile of the startingNode
 
@@ -78,9 +83,36 @@ public class WeightedGraph {
 
         CopyOnWriteArrayList<DirectedEdge> currentEdges = nodeEdges.get(getNodeAtLocation(startingXTile, startingYTile));
 
+        // prepare to skip movement through tiles with enemy units in them.  You cannot move through the other team's color units.
+
+        MilitaryUnit currentMilitaryUnit = null;
+        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
+
         // loops through all edges that start from this starting node, and go to a new node called "node 2".
 
         for (DirectedEdge edge : currentEdges) {
+
+            useContinueOnce = false;
+
+            // if this edge has the same node2 X position and Y position of an enemy unit then we want to skip this edge.
+
+            while (tempUnitsIterator.hasNext()) {
+
+                currentMilitaryUnit = tempUnitsIterator.next();
+                if (edge.getNode2().getXTile() == currentMilitaryUnit.getXTile() &&
+                        edge.getNode2().getYTile() == currentMilitaryUnit.getYTile() &&
+                        gameBoard.getTurnColor() != currentMilitaryUnit.getColor()) {
+                    useContinueOnce = true;
+                }
+
+            } // ?ND OF WHILE LOOP
+
+            // based on the while loop above, either use continue or don't use it.  This boolean resets to false
+            // for each for loop iteration.
+
+            if (useContinueOnce) {
+                continue;
+            }
 
             terrainMovementRequirement = edge.getMovementRequired(militaryUnitType);
             nodeToMoveTo = edge.getNode2();
