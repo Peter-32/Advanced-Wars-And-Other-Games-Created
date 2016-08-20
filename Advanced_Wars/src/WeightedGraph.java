@@ -38,6 +38,18 @@ public class WeightedGraph {
         new DirectedEdge(node1, node2);
         new DirectedEdge(node2, node1);
     }
+    void loggingNumberOfNodesAndEdges() {
+        System.out.println("edges.size() = " + edges.size());
+        System.out.println("nodes.size() = " + nodes.size());
+        System.out.println("nodeEdges.size() = " + nodeEdges.size());
+        CopyOnWriteArrayList<DirectedEdge> loggingEdges = null;
+        int countEdgesInDictionary = 0;
+        for (Node node : nodes) {
+            loggingEdges = nodeEdges.get(node);
+            countEdgesInDictionary += loggingEdges.size();
+        }
+        System.out.println("nodeEdges number of edges = " + countEdgesInDictionary);
+    }
 
 
     /*

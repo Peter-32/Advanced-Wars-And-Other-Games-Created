@@ -50,6 +50,17 @@ public class GameBoard extends JFrame {
         }
         return clonedCurrentMoveableChoicesGrid;
     }
+    synchronized public void updateCurrentMoveableChoicesGrid(int i, int j, boolean newValue) {
+        currentMoveableChoicesGrid[i][j] = newValue;
+    }
+    synchronized public void resetCurrentMoveableChoicesGrid() {
+        for (int i = 0; i < currentMoveableChoicesGrid.length; i++) {
+            for (int j = 0; j < currentMoveableChoicesGrid[0].length; j++) {
+                currentMoveableChoicesGrid[i][j] = false;
+            }
+        }
+
+    }
     public ImageIcon getResizedMountainIcon() {
         return resizedMountainIcon;
     }
@@ -807,6 +818,9 @@ public class GameBoard extends JFrame {
 
     WeightedGraph loadTerrainGraph() {
 
+        int countNodes = 0;
+        int countEdges = 0;
+
         // use terrainTilesGrid to build the nodes and edges
 
         // add all nodes
@@ -815,6 +829,7 @@ public class GameBoard extends JFrame {
         for (int i = 0; i < terrainTilesGrid.length; i++) {
             for (int j = 0; j < terrainTilesGrid[0].length; j++) {
                 g.addNode(terrainTilesGrid[i][j], j, i);
+                countNodes++;
             }
         }
 
@@ -835,6 +850,7 @@ public class GameBoard extends JFrame {
                 if (i != 0) {
                     otherNode = g.getNodeAtLocation(j, i - 1);
                     g.addEdges(currentNode, otherNode);
+                    countEdges+=2;
                 }
 
                 // add the edges connected directly right from the current node
@@ -842,6 +858,7 @@ public class GameBoard extends JFrame {
                 if (j != terrainTilesGrid[0].length - 1) {
                     otherNode = g.getNodeAtLocation(j + 1, i);
                     g.addEdges(currentNode, otherNode);
+                    countEdges+=2;
                 }
 
                 // add the edges connected directly down from the current node
@@ -849,6 +866,7 @@ public class GameBoard extends JFrame {
                 if (i != terrainTilesGrid.length - 1) {
                     otherNode = g.getNodeAtLocation(j, i + 1);
                     g.addEdges(currentNode, otherNode);
+                    countEdges+=2;
                 }
 
                 // add the edges connected directly right from the current node
@@ -856,11 +874,15 @@ public class GameBoard extends JFrame {
                 if (j != 0) {
                     otherNode = g.getNodeAtLocation(j - 1, i);
                     g.addEdges(currentNode, otherNode);
+                    countEdges+=2;
                 }
 
             } // END OF j FOR LOOP
 
         } // END OF i FOR LOOP
+
+        System.out.println("Edges: " + countEdges + " Nodes: " + countNodes + " Expected based on loadTerrainGraphLogic");
+        g.loggingNumberOfNodesAndEdges();
 
         return g;
 
@@ -1073,8 +1095,7 @@ class GameDrawingPanel extends JPanel {
         drawCursor(g);
 
         // draw currently moveable locations,
-        // Only draw when a unit is selected!!!
-        // This way it doesn't have to be updated to a false array every frame
+        // if statement is unneeded, but may as well have it.
 
         if (gameBoard.isAMilitaryUnitSelected()) {
             drawMoveableGrid(graphicSettings);
@@ -1226,7 +1247,8 @@ class GameDrawingPanel extends JPanel {
     void drawMilitaryUnits(Graphics g) {
         MilitaryUnit currentMilitaryUnit = null;
 
-        // loop through allunits; update selected to true or false.
+        // loop through all units; update selected to true or false.
+
         Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
         while (tempUnitsIterator.hasNext()) {
             currentMilitaryUnit = tempUnitsIterator.next();
@@ -1261,7 +1283,8 @@ class GameDrawingPanel extends JPanel {
             } else {
 
                 // if blue unit, make a blue unit
-
+                System.out.println("made it to paint blue unit");
+                System.out.println("current military type is " + currentMilitaryUnit.getMilitaryUnitType());
                 switch (currentMilitaryUnit.getMilitaryUnitType()) {
 
                     case INFANTRY:

@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.util.Set;
 
 /*
  Movement: left click to select, right click to move.  Don't move if A is held.
@@ -60,7 +61,7 @@ public class FindLeftClickGameStateChanges {
 
         // change the state of currentMoveableChoices[][].  Won't change unless a unit is selected.
 
-        updateCurrentMoveableChoices();
+        updateCurrentMovableChoices();
 
 
     }
@@ -134,38 +135,38 @@ public class FindLeftClickGameStateChanges {
                 if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY(),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('r', "Infantry");
+                    purchaseMilitaryUnitIfEnoughFunds('r', GameBoard.MilitaryUnitType.INFANTRY);
                 } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY() + 1 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('r', "Mech");
+                    purchaseMilitaryUnitIfEnoughFunds('r', GameBoard.MilitaryUnitType.MECH);
                 } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY() + 2 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('r', "Artillery");
+                    purchaseMilitaryUnitIfEnoughFunds('r', GameBoard.MilitaryUnitType.ARTILLERY);
                 } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY() + 3 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('r', "Tank");
+                    purchaseMilitaryUnitIfEnoughFunds('r', GameBoard.MilitaryUnitType.TANK);
                 }
                 break;
             case 'b':
                 if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY() + 4 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('b', "Infantry");
+                    purchaseMilitaryUnitIfEnoughFunds('b', GameBoard.MilitaryUnitType.INFANTRY);
                 } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY() + 5 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('b', "Mech");
+                    purchaseMilitaryUnitIfEnoughFunds('b', GameBoard.MilitaryUnitType.MECH);
                 } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY() + 6 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('b', "Artillery");
+                    purchaseMilitaryUnitIfEnoughFunds('b', GameBoard.MilitaryUnitType.ARTILLERY);
                 } else if (checkIfBtnPressed(gameBoard.getPurchaseBtnsStartX(),
                         gameBoard.getPurchaseBtnsStartY() + 7 * (gameBoard.getPurchaseBtnsHeight() + gameBoard.getPurchaseBtnsTopMargin()),
                         gameBoard.getPurchaseBtnsWidth(), gameBoard.getPurchaseBtnsHeight())) {
-                    purchaseMilitaryUnitIfEnoughFunds('b', "Tank");
+                    purchaseMilitaryUnitIfEnoughFunds('b', GameBoard.MilitaryUnitType.TANK);
                 }
                 break;
 
@@ -193,11 +194,11 @@ public class FindLeftClickGameStateChanges {
     update unit selected to true.
      */
 
-    void purchaseMilitaryUnitIfEnoughFunds(char playerColor, String militaryUnit) {
+    void purchaseMilitaryUnitIfEnoughFunds(char playerColor, GameBoard.MilitaryUnitType militaryUnitType) {
 
         if (playerColor == 'r') {
-            switch (militaryUnit) {
-                case "Infantry":
+            switch (militaryUnitType) {
+                case INFANTRY:
                     if (gameBoard.getRedPlayerBank() >= 1000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 1000);
                         gameBoard.addMilitaryUnits(new Infantry('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -205,7 +206,7 @@ public class FindLeftClickGameStateChanges {
                         gameBoard.setAMilitaryUnitSelected(true);
                     }
                     break;
-                case "Mech":
+                case MECH:
                     if (gameBoard.getRedPlayerBank() >= 3000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 3000);
                         gameBoard.addMilitaryUnits(new Mech('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -213,7 +214,7 @@ public class FindLeftClickGameStateChanges {
                         gameBoard.setAMilitaryUnitSelected(true);
                     }
                     break;
-                case "Artillery":
+                case ARTILLERY:
                     if (gameBoard.getRedPlayerBank() >= 6000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 6000);
                         gameBoard.addMilitaryUnits(new Artillery('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -221,7 +222,7 @@ public class FindLeftClickGameStateChanges {
                         gameBoard.setAMilitaryUnitSelected(true);
                     }
                     break;
-                case "Tank":
+                case TANK:
                     if (gameBoard.getRedPlayerBank() >= 7000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 7000);
                         gameBoard.addMilitaryUnits(new Tank('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -231,8 +232,8 @@ public class FindLeftClickGameStateChanges {
                     break;
             }
         } else if (playerColor == 'b') {
-            switch (militaryUnit) {
-                case "Infantry":
+            switch (militaryUnitType) {
+                case INFANTRY:
                     if (gameBoard.getBluePlayerBank() >= 1000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 1000);
                         gameBoard.addMilitaryUnits(new Infantry('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -240,7 +241,7 @@ public class FindLeftClickGameStateChanges {
                         gameBoard.setAMilitaryUnitSelected(true);
                     }
                     break;
-                case "Mech":
+                case MECH:
                     if (gameBoard.getBluePlayerBank() >= 3000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 3000);
                         gameBoard.addMilitaryUnits(new Mech('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -248,7 +249,7 @@ public class FindLeftClickGameStateChanges {
                         gameBoard.setAMilitaryUnitSelected(true);
                     }
                     break;
-                case "Artillery":
+                case ARTILLERY:
                     if (gameBoard.getBluePlayerBank() >= 6000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 6000);
                         gameBoard.addMilitaryUnits(new Artillery('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -256,7 +257,7 @@ public class FindLeftClickGameStateChanges {
                         gameBoard.setAMilitaryUnitSelected(true);
                     }
                     break;
-                case "Tank":
+                case TANK:
                     if (gameBoard.getBluePlayerBank() >= 7000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 7000);
                         gameBoard.addMilitaryUnits(new Tank('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
@@ -265,6 +266,7 @@ public class FindLeftClickGameStateChanges {
                     }
                     break;
             }
+            System.out.println("click on purchase button happened and player is blue");
         }
 
     } // END OF purchaseMilitaryUnitIfEnoughFunds METHOD
@@ -301,32 +303,51 @@ public class FindLeftClickGameStateChanges {
      update the grid of which tiles are currently movable.
      */
 
-    void updateCurrentMoveableChoices() {
+    void updateCurrentMovableChoices() {
 
-        MilitaryUnit selectedMilitaryUnit = null;
-        GameBoard.MilitaryUnitType militaryUnitType;
+        System.out.println("Updating movable choices");
+
+        // reset the current movable choices to all false, whenever this method is called.
+        // this method is called at some point soon after the player uses a left click
+        // (all of the methods in this class occur after left clicks)
+        gameBoard.resetCurrentMoveableChoicesGrid();
 
         // if no unit is selected then return
 
         if (!gameBoard.isAMilitaryUnitSelected()) {
+            System.out.println("Leaving movable choices early");
             return;
         }
 
-        // get the unit type of the unit selected
+        // initialize variables
+        MilitaryUnit selectedMilitaryUnit = null;
+        GameBoard.MilitaryUnitType militaryUnitType;
+        int currentNodeX;
+        int currentNodeY;
+
+
+
+        // get the unit type of the unit selected and the node at the current location of the unit
 
         selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();
         militaryUnitType = selectedMilitaryUnit.getMilitaryUnitType();
+        int selectedUnitXTile = selectedMilitaryUnit.getXTile();
+        int selectedUnitYTile = selectedMilitaryUnit.getYTile();
+        WeightedGraph.Node selectedNode = gameBoard.getNodeAtLocation(selectedUnitXTile, selectedUnitYTile);
 
         // call the graph search function via a GameBoard method.  The graph is on the gameBoard
 
-        gameBoard.runNodesAccessibleFromLocationWithSteps()
+        Set<WeightedGraph.Node> resultNodes = gameBoard.runNodesAccessibleFromLocationWithSteps(selectedNode, militaryUnitType);
 
-        //////gameBoard.runNodesAccessibleFromLocationWithSteps()
+        // now update the movable choices based on the X, Y locations of the resultNodes
 
+        for (WeightedGraph.Node node : resultNodes) {
+            currentNodeX = node.getXTile();
+            currentNodeY = node.getYTile();
+            gameBoard.updateCurrentMoveableChoicesGrid(currentNodeX, currentNodeY, true);   // not sure if this will work, but looks reasonable.
+        }
 
-
-        //nodesAccessibleFromLocationWithSteps()
-
+        System.out.println("Leaving movable choices at end");
     }
 
 } // END OF FindLeftClickGameStateChanges  CLASS
