@@ -14,7 +14,7 @@ public class tests {
         RED_HQ, RED_BASE, RED_CITY,
         BLUE_HQ, BLUE_BASE, BLUE_CITY
     }
-    private TerrainTile[][] terrainTilesGrid = new TerrainTile[16][10];
+    private TerrainTile[][] terrainTilesGrid = new TerrainTile[10][16];
 
 
     public static void main(String[] args) {
@@ -22,7 +22,14 @@ public class tests {
     }
 
     tests() {
-
-
+        System.out.println(terrainTilesGrid.length);
+        System.out.println(terrainTilesGrid[0].length);
+        /*
+        for (int i = 0; i < terrainTilesGrid.length; i++) {
+            for (int j = 0; j < terrainTilesGrid[0].length; j++) {
+                System.out.println(i);
+            }
+        }
+        */
     }
 }

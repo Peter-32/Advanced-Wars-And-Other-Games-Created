@@ -3,3 +3,6 @@ next need to implement a graph search.  nodes are th terraina nd each adjacent s
 Note artillary must right click from 2-3 tiles away while selected.
 
 Defense points for certain terrain like mountains = 4, rest so far are 0 defense.
+
+
+for movement, always allow the unit to return to the current tile and don't count anything like this as moving.

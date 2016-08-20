@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+
 import static javafx.scene.input.KeyCode.G;
 
 /**
@@ -366,6 +367,10 @@ public class GameBoard extends JFrame {
     private final int purchaseBtnsHeight = (int) (0.8 * tileLength);
     private final int purchaseBtnsTopMargin = (int) (0.2 * tileLength);
 
+    // Nodes and edges and put in this graph
+
+    WeightedGraph graph;
+
     // the units list, Infantry, mech, artillery, tank
 
     private final java.util.List<MilitaryUnit> militaryUnits = new ArrayList();
@@ -412,6 +417,9 @@ public class GameBoard extends JFrame {
         GRAY_BASE, GRAY_CITY,
         RED_HQ, RED_BASE, RED_CITY,
         BLUE_HQ, BLUE_BASE, BLUE_CITY
+    }
+    public enum MilitaryUnitType {
+        INFANTRY, MECH, ARTILLERY, TANK
     }
 
     private TerrainTile[][] terrainTilesGrid = new TerrainTile[10][16];
@@ -483,6 +491,7 @@ public class GameBoard extends JFrame {
     GameBoard() {
 
         this.setSize(jFrameWidth, jFrameHeight);
+        this.setLocationRelativeTo(null);
         this.setTitle("Advance Wars");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -685,7 +694,6 @@ public class GameBoard extends JFrame {
         }
     }
 
-
     void loadMap(int mapNumber) {
 
         // load map terrain
@@ -694,7 +702,7 @@ public class GameBoard extends JFrame {
 
         // load the graph nodes/edges based on the terrain
 
-        loadTerrainGraph();
+        graph = loadTerrainGraph();
 
         // load map buildings
 
@@ -788,20 +796,68 @@ public class GameBoard extends JFrame {
     The purpose of a graph is to be able to use graph search to find which spaces can be moved to by military units.
      */
 
-    void loadTerrainGraph() {
+    WeightedGraph loadTerrainGraph() {
 
         // use terrainTilesGrid to build the nodes and edges
         //terrainTilesGrid[1][1] = TerrainTile.ROAD_TURN_UL;
 
 
-        // the tiles are labeled from 0 to (10*16=160)
+        // add all nodes
+
         WeightedGraph g = new WeightedGraph();
+        for (int i = 0; i < terrainTilesGrid.length; i++) {
+            for (int j = 0; j < terrainTilesGrid[j].length; j++) {
+                g.addNode(terrainTilesGrid[i][j], j, i);
+            }
+        }
 
+        // add all edges.  It is inefficient, but this only has to be run once when the map is loaded.
 
-    }
+        WeightedGraph.Node currentNode = null;
+        WeightedGraph.Node otherNode = null;
 
+        for (int i = 0; i < terrainTilesGrid.length; i++) {
+            for (int j = 0; j < terrainTilesGrid[0].length; j++) {
 
+                // find the current node
 
+                currentNode = g.getNodeAtLocation(j, i);
+
+                // add the edges connected directly up from the current node
+
+                if (i != 0) {
+                    otherNode = g.getNodeAtLocation(j, i - 1);
+                    g.addEdges(currentNode, otherNode);
+                }
+
+                // add the edges connected directly right from the current node
+
+                if (j != terrainTilesGrid[0].length - 1) {
+                    otherNode = g.getNodeAtLocation(j + 1, i);
+                    g.addEdges(currentNode, otherNode);
+                }
+
+                // add the edges connected directly down from the current node
+
+                if (i != terrainTilesGrid.length - 1) {
+                    otherNode = g.getNodeAtLocation(j, i + 1);
+                    g.addEdges(currentNode, otherNode);
+                }
+
+                // add the edges connected directly right from the current node
+
+                if (j != 0) {
+                    otherNode = g.getNodeAtLocation(j - 1, i);
+                    g.addEdges(currentNode, otherNode);
+                }
+
+            } // END OF j FOR LOOP
+
+        } // END OF i FOR LOOP
+
+        return g;
+
+    } // END OF loadTerrainGraph METHOD
 
     void loadMapBuildings(int mapNumber) {
 
@@ -1011,14 +1067,6 @@ class GameDrawingPanel extends JPanel {
     void drawBuildings(Graphics g) {
         GameBoard.BuildingTile[][] tempBuildingTilesGrid = gameBoard.cloneBuildingTilesGrid();
 
-/*
-                public enum BuildingTile {
-                    NONE,
-                    GRAY_BASE, GRAY_CITY,
-                    RED_HQ, RED_BASE, RED_CITY,
-                    BLUE_HQ, BLUE_BASE, BLUE_CITY
-                }
-                */
         for (GameBoard.BuildingTile[] row : tempBuildingTilesGrid) {
             for (int j = 0; j < row.length; j++) {
                 switch(row[j]) {
