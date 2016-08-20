@@ -1,0 +1,5 @@
+next need to implement a graph search.  nodes are th terraina nd each adjacent spot will connect.  Next make black movement grid, then movement implmentation, then attack choice, then health fields and drawing, then attack math, then capturing city mechanic, then it is done.
+
+Note artillary must right click from 2-3 tiles away while selected.
+
+Defense points for certain terrain like mountains = 4, rest so far are 0 defense.

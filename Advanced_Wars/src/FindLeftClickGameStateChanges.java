@@ -1,5 +1,18 @@
 import java.util.Iterator;
 
+/*
+ Movement: left click to select, right click to move.  Don't move if A is held.
+ Attacking melee: hold A and right click on the movement tile, then still while holding A right click on the attack tile, if valid do the movement and attack
+ ATtacking range: hold A and right click on the enemy unit, don't preform a movement if A is held no matter what.
+ */
+
+
+
+
+
+
+
+
 public class FindLeftClickGameStateChanges {
 
     GameBoard gameBoard;
@@ -263,7 +276,7 @@ public class FindLeftClickGameStateChanges {
 
         if(checkIfBtnPressed(gameBoard.getEndTurnBtnStartX(), gameBoard.getEndTurnBtnStartY(),
                 gameBoard.getEndTurnBtnWidth(), gameBoard.getEndTurnBtnHeight())) {
-            
+
             if (gameBoard.getTurnColor() == 'r') {
 
                 gameBoard.setTurnColor('b');

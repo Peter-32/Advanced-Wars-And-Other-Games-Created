@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static javafx.scene.input.KeyCode.G;
+
 /**
  * Created by Peter on 8/14/2016.
  */
@@ -690,9 +692,15 @@ public class GameBoard extends JFrame {
 
         loadMapTerrain(mapNumber);
 
+        // load the graph nodes/edges based on the terrain
+
+        loadTerrainGraph();
+
         // load map buildings
 
         loadMapBuildings(mapNumber);
+
+
 
 
     } // END OF loadMap METHOD
@@ -775,6 +783,25 @@ public class GameBoard extends JFrame {
             }
         }
     } // END OF LoadMapTerrain METHOD
+
+    /*
+    The purpose of a graph is to be able to use graph search to find which spaces can be moved to by military units.
+     */
+
+    void loadTerrainGraph() {
+
+        // use terrainTilesGrid to build the nodes and edges
+        //terrainTilesGrid[1][1] = TerrainTile.ROAD_TURN_UL;
+
+
+        // the tiles are labeled from 0 to (10*16=160)
+        WeightedGraph g = new WeightedGraph();
+
+
+    }
+
+
+
 
     void loadMapBuildings(int mapNumber) {
 
