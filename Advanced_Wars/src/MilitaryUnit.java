@@ -35,6 +35,24 @@ abstract class MilitaryUnit {
         this.selected = selected;
     }
 
+    public GameBoard.MilitaryUnitType getMilitaryUnitType() {
+
+        switch(this.getClass().getName()) {
+            case "Infantry":
+                return GameBoard.MilitaryUnitType.INFANTRY;
+            case "Mech":
+                return GameBoard.MilitaryUnitType.MECH;
+            case "Artillery":
+                return GameBoard.MilitaryUnitType.ARTILLERY;
+            case "Tank":
+                return GameBoard.MilitaryUnitType.TANK;
+            default:
+                return null;
+
+        }
+
+    } // END OF getMilitaryUnitType GETTER
+
     private char color;
     private int xTile;
     private int yTile;
@@ -46,6 +64,7 @@ abstract class MilitaryUnit {
         this.yTile = yTile;
         this.selected = selected;
     }
+
 
 }
 

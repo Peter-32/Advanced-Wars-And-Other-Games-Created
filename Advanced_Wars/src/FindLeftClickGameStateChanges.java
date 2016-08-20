@@ -58,7 +58,7 @@ public class FindLeftClickGameStateChanges {
             purchaseUnitIfClickedOn();
         }
 
-        // when a unit is selected, change the state of currentMoveableChoices[][].
+        // change the state of currentMoveableChoices[][].  Won't change unless a unit is selected.
 
         updateCurrentMoveableChoices();
 
@@ -297,9 +297,33 @@ public class FindLeftClickGameStateChanges {
 
     } // END OF checkIfEndTurnWasClickedOn METHOD
 
-    // update the grid of which tiles are currently moveable.
+    /*
+     update the grid of which tiles are currently movable.
+     */
 
     void updateCurrentMoveableChoices() {
+
+        MilitaryUnit selectedMilitaryUnit = null;
+        GameBoard.MilitaryUnitType militaryUnitType;
+
+        // if no unit is selected then return
+
+        if (!gameBoard.isAMilitaryUnitSelected()) {
+            return;
+        }
+
+        // get the unit type of the unit selected
+
+        selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();
+        militaryUnitType = selectedMilitaryUnit.getMilitaryUnitType();
+
+        // call the graph search function via a GameBoard method.  The graph is on the gameBoard
+
+        gameBoard.runNodesAccessibleFromLocationWithSteps()
+
+        //////gameBoard.runNodesAccessibleFromLocationWithSteps()
+
+
 
         //nodesAccessibleFromLocationWithSteps()
 

@@ -43,8 +43,28 @@ public class WeightedGraph {
     /*
     Returns the unique nodes that are accessible from this initial x, y location
      */
-    Set<Node> nodesAccessibleFromLocationWithSteps(int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType
+    Set<Node> nodesAccessibleFromLocationWithSteps(Node startingNode, GameBoard.MilitaryUnitType militaryUnitType
                                                    ) {
+        int steps = 0;
+        switch (militaryUnitType) {
+
+            case INFANTRY:
+                steps = 3;
+                break;
+            case MECH:
+                steps = 2;
+                break;
+            case ARTILLERY:
+                steps = 4;
+                break;
+            case TANK:
+                steps = 6;
+                break;
+        }
+
+
+        // run the recursive method with the new steps field
+
         CopyOnWriteArrayList<Node> nodeList = NodesAccessibleFromLocationWithStepsRecursion(
                 new CopyOnWriteArrayList<Node>(), steps, startingNode, militaryUnitType);
 

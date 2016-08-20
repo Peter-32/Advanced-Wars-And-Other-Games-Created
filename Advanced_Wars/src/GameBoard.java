@@ -971,14 +971,46 @@ public class GameBoard extends JFrame {
         return resizedIcon;
     } // END OF getResizedImageFromFile METHOD
 
+    /*
+    This method allows you to call this method against the graph stored in this GameBoard
+     */
 
-    public Set<WeightedGraph.Node> runNodesAccessibleFromLocationWithSteps(int steps, WeightedGraph.Node startingNode, MilitaryUnitType militaryUnitType) {
-        return graph.nodesAccessibleFromLocationWithSteps(steps, startingNode, militaryUnitType);
+    public Set<WeightedGraph.Node> runNodesAccessibleFromLocationWithSteps(WeightedGraph.Node startingNode, MilitaryUnitType militaryUnitType) {
+        return graph.nodesAccessibleFromLocationWithSteps(startingNode, militaryUnitType);
     }
+
+    /*
+    This method allows you to call this method against the graph stored in this GameBoard
+     */
 
     public WeightedGraph.Node getNodeAtLocation(int xTile, int yTile) {
         return graph.getNodeAtLocation(xTile, yTile);
     }
+
+    /*
+    This finds the one unit selected by the cursor.  Be sure to only call this method if a unit is currently selected.
+     */
+
+    public MilitaryUnit getSelectedMilitaryUnit() {
+        MilitaryUnit currentMilitaryUnit = null;
+        MilitaryUnit selectedMilitaryUnit = null;
+
+        // loop through all units
+
+        Iterator<MilitaryUnit> tempUnitsIterator = militaryUnitsIterator();
+        while (tempUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempUnitsIterator.next();
+            if (currentMilitaryUnit.isSelected()) {
+                selectedMilitaryUnit = currentMilitaryUnit;
+            }
+        }
+
+        // the return value can be null.
+
+        return selectedMilitaryUnit;
+    }
+
+
 
 } // END OF GameBoard CLASS
 
@@ -1202,57 +1234,59 @@ class GameDrawingPanel extends JPanel {
             // if a red unit, make a red unit
 
             if (currentMilitaryUnit.getColor() == 'r') {
-                switch (currentMilitaryUnit.getClass().getName()) {
-                    case "Infantry":
+                switch (currentMilitaryUnit.getMilitaryUnitType()) {
+
+                    case INFANTRY:
                         gameBoard.getResizedRedInfantry().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
-                    case "Mech":
+                    case MECH:
                         gameBoard.getResizedRedMech().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
-                    case "Artillery":
+                    case ARTILLERY:
                         gameBoard.getResizedRedArtillery().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
-                    case "Tank":
+                    case TANK:
                         gameBoard.getResizedRedTank().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
-
                 }
 
             } else {
 
                 // if blue unit, make a blue unit
 
-                switch (currentMilitaryUnit.getClass().getName()) {
-                    case "Infantry":
+                switch (currentMilitaryUnit.getMilitaryUnitType()) {
+
+                    case INFANTRY:
                         gameBoard.getResizedBlueInfantry().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
-                    case "Mech":
+                    case MECH:
                         gameBoard.getResizedBlueMech().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
-                    case "Artillery":
+                    case ARTILLERY:
                         gameBoard.getResizedBlueArtillery().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
-                    case "Tank":
+                    case TANK:
                         gameBoard.getResizedBlueTank().paintIcon(this, g,
                                 gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
                                 gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
                         break;
 
                 }
+
             }
 
         }
