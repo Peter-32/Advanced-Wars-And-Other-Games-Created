@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -43,9 +41,14 @@ public class WeightedGraph {
     /*
     Returns the unique nodes that are accessible from this initial x, y location
      */
-    CopyOnWriteArrayList<Node> nodesAccessibleFromLocationWithSteps(int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
-        return recursiveNodesAccessibleFromLocationWithSteps(
+    Set<Node> nodesAccessibleFromLocationWithSteps(int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
+        CopyOnWriteArrayList<Node> nodeList = NodesAccessibleFromLocationWithStepsRecursion(
                 new CopyOnWriteArrayList<Node>(), steps, startingNode, militaryUnitType);
+
+        // this conversion removes duplicates
+
+        Set<Node> uniqueNodeList = new HashSet<Node>(nodeList);
+        return uniqueNodeList;
     }
 
 
@@ -54,8 +57,8 @@ public class WeightedGraph {
     Recursive call from the nodesAccessibleFromLocationWithSteps method
      */
 
-    CopyOnWriteArrayList<Node> recursiveNodesAccessibleFromLocationWithSteps(
-            CopyOnWriteArrayList<Node> uniqueNodeList, int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
+    CopyOnWriteArrayList<Node> NodesAccessibleFromLocationWithStepsRecursion(
+            CopyOnWriteArrayList<Node> nodeList, int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
 
         // get the xTile and yTile of the startingNode
 
@@ -65,6 +68,7 @@ public class WeightedGraph {
         // moves required to go from node 1 to node 2 for the edge
 
         int terrainMovementRequirement;
+        int newSteps = steps;
 
         // this stores the nodes that will be moved to
 
@@ -85,28 +89,27 @@ public class WeightedGraph {
             // Check if the new node is not already in the list being compiled
 
             if (steps >= terrainMovementRequirement &&
-                    !uniqueNodeList.contains(nodeToMoveTo)) {
+                    !nodeList.contains(nodeToMoveTo)) {
 
                 // subtract the number of steps possible left
 
-                steps -= terrainMovementRequirement;
+                newSteps = steps - terrainMovementRequirement;
 
                 // add the node2 to the tempNodeList, which represents the new locations the military unit can travel to.
 
-                uniqueNodeList.add(nodeToMoveTo);
+                nodeList.add(nodeToMoveTo);
 
                 // return recursively
 
-                return recursiveNodesAccessibleFromLocationWithSteps(uniqueNodeList, steps, nodeToMoveTo, militaryUnitType);
-
+                nodeList.addAll(NodesAccessibleFromLocationWithStepsRecursion(nodeList, newSteps, nodeToMoveTo, militaryUnitType));
 
             }
 
         } // END OF FOR LOOP
 
-        // return the list.  It shouldn't have duplicate records
+        // return the list.
 
-        return ????????BASE CASE!!!;
+        return nodeList;
 
     }
 
