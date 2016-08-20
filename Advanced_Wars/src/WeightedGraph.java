@@ -43,9 +43,9 @@ public class WeightedGraph {
     /*
     Returns the unique nodes that are accessible from this initial x, y location
      */
-    CopyOnWriteArrayList<Node> nodesAccessibleFromLocationWithSteps(int steps, int xTile, int yTile, GameBoard.MilitaryUnitType militaryUnitType) {
+    CopyOnWriteArrayList<Node> nodesAccessibleFromLocationWithSteps(int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
         return recursiveNodesAccessibleFromLocationWithSteps(
-                new CopyOnWriteArrayList<Node>(), steps, xTile, yTile, militaryUnitType);
+                new CopyOnWriteArrayList<Node>(), steps, startingNode, militaryUnitType);
     }
 
 
@@ -55,25 +55,37 @@ public class WeightedGraph {
      */
 
     CopyOnWriteArrayList<Node> recursiveNodesAccessibleFromLocationWithSteps(
-            CopyOnWriteArrayList<Node> uniqueNodeList, int steps, int xTile, int yTile, GameBoard.MilitaryUnitType militaryUnitType) {
+            CopyOnWriteArrayList<Node> uniqueNodeList, int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
+
+        // get the xTile and yTile of the startingNode
+
+        int startingXTile = startingNode.getXTile();
+        int startingYTile = startingNode.getYTile();
 
         // moves required to go from node 1 to node 2 for the edge
 
         int terrainMovementRequirement;
 
+        // this stores the nodes that will be moved to
+
+        Node nodeToMoveTo = null;
+
         // the edges at a given node
 
-        CopyOnWriteArrayList<DirectedEdge> currentEdges = nodeEdges.get(getNodeAtLocation(xTile, yTile));
+        CopyOnWriteArrayList<DirectedEdge> currentEdges = nodeEdges.get(getNodeAtLocation(startingXTile, startingYTile));
+
+        // loops through all edges that start from this starting node, and go to a new node called "node 2".
 
         for (DirectedEdge edge : currentEdges) {
 
             terrainMovementRequirement = edge.getMovementRequired(militaryUnitType);
+            nodeToMoveTo = edge.getNode2();
 
             // Check if the number of steps is enough to move over the terrain
             // Check if the new node is not already in the list being compiled
 
             if (steps >= terrainMovementRequirement &&
-                    !uniqueNodeList.contains(edge.getNode2())) {
+                    !uniqueNodeList.contains(nodeToMoveTo)) {
 
                 // subtract the number of steps possible left
 
@@ -81,16 +93,21 @@ public class WeightedGraph {
 
                 // add the node2 to the tempNodeList, which represents the new locations the military unit can travel to.
 
-                uniqueNodeList.add(edge.getNode2());
+                uniqueNodeList.add(nodeToMoveTo);
+
+                // return recursively
+
+                return recursiveNodesAccessibleFromLocationWithSteps(uniqueNodeList, steps, nodeToMoveTo, militaryUnitType);
+
 
             }
 
-        }
+        } // END OF FOR LOOP
 
-        // remove duplicates and return the list
+        // return the list.  It shouldn't have duplicate records
 
+        return ????????BASE CASE!!!;
 
-        return null;
     }
 
 
