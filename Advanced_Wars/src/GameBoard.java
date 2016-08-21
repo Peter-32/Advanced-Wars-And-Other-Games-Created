@@ -1590,6 +1590,12 @@ class GameDrawingPanel extends JPanel {
 
     void drawMilitaryUnits(Graphics g) {
         MilitaryUnit currentMilitaryUnit = null;
+        int drawXPosition = 0;
+        int drawYPosition = 0;
+        final int drawStringAdjustmentX = (int) (0.80 * gameBoard.getTileLength());
+        final int drawStringAdjustmentY = gameBoard.getTileLength();
+        int currentDisplayAndCaptureHealth;
+        g.setColor(Color.RED);
 
         // loop through all units; update selected to true or false.
 
@@ -1597,32 +1603,31 @@ class GameDrawingPanel extends JPanel {
         while (tempMilitaryUnitsIterator.hasNext()) {
             currentMilitaryUnit = tempMilitaryUnitsIterator.next();
 
+            // update drawXPosition, drawYPosition, and currentDisplayAndCaptureHealth
+
+            drawXPosition = gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile());
+            drawYPosition = gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile());
+            currentDisplayAndCaptureHealth = currentMilitaryUnit.getDisplayAndCaptureHealth();
+
             // if a red unit, make a red unit
 
             if (currentMilitaryUnit.getColor() == 'r') {
                 switch (currentMilitaryUnit.getMilitaryUnitType()) {
 
                     case INFANTRY:
-                        gameBoard.getResizedRedInfantry().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedRedInfantry().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
                     case MECH:
-                        gameBoard.getResizedRedMech().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedRedMech().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
                     case ARTILLERY:
-                        gameBoard.getResizedRedArtillery().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedRedArtillery().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
                     case TANK:
-                        gameBoard.getResizedRedTank().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedRedTank().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
-                }
+
+                } // END OF SWITCH
 
             } else {
 
@@ -1630,31 +1635,30 @@ class GameDrawingPanel extends JPanel {
                 switch (currentMilitaryUnit.getMilitaryUnitType()) {
 
                     case INFANTRY:
-                        gameBoard.getResizedBlueInfantry().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedBlueInfantry().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
                     case MECH:
-                        gameBoard.getResizedBlueMech().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedBlueMech().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
                     case ARTILLERY:
-                        gameBoard.getResizedBlueArtillery().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedBlueArtillery().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
                     case TANK:
-                        gameBoard.getResizedBlueTank().paintIcon(this, g,
-                                gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile()),
-                                gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile()));
+                        gameBoard.getResizedBlueTank().paintIcon(this, g, drawXPosition, drawYPosition);
                         break;
 
-                }
+                } // END OF SWITCH
 
+            } // END OF ELSE
+
+            // Draw health if under 10 displayAndCaptureHealth
+            if (currentDisplayAndCaptureHealth < 10) {
+                g.drawString(Integer.toString(currentDisplayAndCaptureHealth),
+                        drawXPosition + drawStringAdjustmentX,
+                        drawYPosition + drawStringAdjustmentY);
             }
 
-        }
+        } // END OF WHLIE LOOP
 
     }
 

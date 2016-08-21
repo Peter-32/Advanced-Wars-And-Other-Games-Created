@@ -6,6 +6,7 @@ Implemented, untested:    then one attack and one move per turn, unless artiller
 then health fields and drawing, (Only draw health if the display health is less than 10)
 then attack math, 
 then defense points, 
+destroy units and remove them from lists when they lose all health
 gain X money at the end of the turn (1000 per building)
 lose X money at end of turn and repair occurs if injured units on on buildings (2 health repair ??? cost)
 then capturing city mechanic, 

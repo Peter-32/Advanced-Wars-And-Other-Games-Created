@@ -83,7 +83,7 @@ abstract class MilitaryUnit {
         }
 
     } // END OF getMilitaryUnitType GETTER
-    
+
     private char color;
     private int xTile;
     private int yTile;
