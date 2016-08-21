@@ -29,6 +29,12 @@ public class GameBoard extends JFrame {
 
     //// GETTERS AND SETTERS
 
+    synchronized TerrainTile getTerrainAtXYTile(int xTile, int yTile) {
+        return terrainTilesGrid[yTile][xTile];
+    }
+    synchronized BuildingTile getBuildingAtXYTile(int xTile, int yTile) {
+        return buildingTilesGrid[yTile][xTile];
+    }
     public TerrainTile[][] cloneTerrainTilesGrid() {
 
         TerrainTile[][] clonedTerrainTilesGrid = new TerrainTile[10][16];
@@ -476,8 +482,8 @@ public class GameBoard extends JFrame {
 
     // Bank
 
-    private int redPlayerBank = 12000;
-    private int bluePlayerBank = 12000;
+    private int redPlayerBank = 5000;
+    private int bluePlayerBank = 2000;
 
     // this stores the tile that should hold the cursor.  0,0  is default because it is always on the board.
 
@@ -1369,9 +1375,6 @@ public class GameBoard extends JFrame {
         setARangedMilitaryUnitSelected(isRanged);    // SETTER USED
         setSelectedMilitaryUnit();    // SETTER USED
     }
-
-
-
 
 } // END OF GameBoard CLASS
 

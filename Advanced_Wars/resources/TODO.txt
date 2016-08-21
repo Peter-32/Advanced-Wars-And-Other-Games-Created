@@ -1,9 +1,10 @@
 Implemented, untested:    then attack choice, 
 Implemented, untested:    then one attack and one move per turn, unless artillery-movement costs an attack, 
+Implemented, and tested:    then health fields and drawing, (Only draw health if the display health is less than 10)
 
 
+update unit's terrain at creation and movement
 
-then health fields and drawing, (Only draw health if the display health is less than 10)
 then attack math, 
 then defense points, 
 destroy units and remove them from lists when they lose all health
@@ -17,6 +18,32 @@ then capturing HQ Game Over, then it is done.
 
 
 
+terrainReduction = 1% per health per star
+
+(Base + random number 0 to 9) * terrainReduction (if 40% then 0.6)  ie. answer 35.28 is 35%
+
+
+base * (% health you have) * terrainReduction
+
+
+
+
+
+
+
+
+
+Base = Base damage (in damage chart)
+R = random number 0-9
+AHP = HP of attacker (out of 10 I think)
+DTS = defender terrain stars (plain = ??, mountain = ??)
+DHP = defender HP (out of 10 I think)
+
+attack math:
+
+(Base+R) * (AHP/10) * [(200-(DTS*DHP))/100]
+
+counter damage must be whatever is left,then they get to attack you back with that.
 
 
 

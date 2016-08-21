@@ -22,19 +22,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="GameBoard.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GameBoard.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="1655" column="76" selection-start-line="1655" selection-start-column="76" selection-end-line="1655" selection-end-column="76" />
+            <state relative-caret-position="193">
+              <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#8159#8160#0" expanded="true" />
-                <element signature="e#8211#8212#0" expanded="true" />
-                <element signature="e#8673#8674#0" expanded="true" />
-                <element signature="e#8722#8723#0" expanded="true" />
-                <element signature="e#10419#10420#0" expanded="true" />
-                <element signature="e#10462#10463#0" expanded="true" />
+                <element signature="e#880#881#0" expanded="true" />
+                <element signature="e#933#934#0" expanded="true" />
+                <element signature="e#1007#1008#0" expanded="true" />
+                <element signature="e#1061#1062#0" expanded="true" />
+                <element signature="e#8412#8413#0" expanded="true" />
+                <element signature="e#8464#8465#0" expanded="true" />
+                <element signature="e#8926#8927#0" expanded="true" />
+                <element signature="e#8975#8976#0" expanded="true" />
+                <element signature="e#10672#10673#0" expanded="true" />
+                <element signature="e#10715#10716#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -66,11 +70,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FindRightClickGameStateChanges.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="FindRightClickGameStateChanges.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/FindRightClickGameStateChanges.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="28" column="58" selection-start-line="28" selection-start-column="58" selection-end-line="28" selection-end-column="58" />
+            <state relative-caret-position="261">
+              <caret line="82" column="54" selection-start-line="82" selection-start-column="54" selection-end-line="82" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -115,8 +119,8 @@
       <file leaf-file-name="FindLeftClickGameStateChanges.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/FindLeftClickGameStateChanges.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="47" column="38" selection-start-line="47" selection-start-column="38" selection-end-line="47" selection-end-column="38" />
+            <state relative-caret-position="52">
+              <caret line="311" column="50" selection-start-line="311" selection-start-column="50" selection-end-line="311" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -128,7 +132,7 @@
         <entry file="file://$PROJECT_DIR$/resources/TODO.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="323">
-              <caret line="25" column="223" selection-start-line="0" selection-start-column="0" selection-end-line="25" selection-end-column="223" />
+              <caret line="52" column="223" selection-start-line="0" selection-start-column="0" selection-end-line="52" selection-end-column="223" />
               <folding />
             </state>
           </provider>
@@ -137,8 +141,8 @@
       <file leaf-file-name="MilitaryUnit.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/MilitaryUnit.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="75" column="29" selection-start-line="75" selection-start-column="29" selection-end-line="75" selection-end-column="29" />
+            <state relative-caret-position="203">
+              <caret line="119" column="6" selection-start-line="119" selection-start-column="6" selection-end-line="119" selection-end-column="6" />
               <folding>
                 <element signature="e#560#561#0" expanded="true" />
                 <element signature="e#591#592#0" expanded="true" />
@@ -158,6 +162,10 @@
                 <element signature="e#1364#1365#0" expanded="true" />
                 <element signature="e#1405#1406#0" expanded="true" />
                 <element signature="e#1441#1442#0" expanded="true" />
+                <element signature="e#1497#1498#0" expanded="true" />
+                <element signature="e#1534#1535#0" expanded="true" />
+                <element signature="e#1609#1610#0" expanded="true" />
+                <element signature="e#1661#1662#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -192,10 +200,10 @@
         <option value="$PROJECT_DIR$/src/WeightedGraph.java" />
         <option value="$PROJECT_DIR$/src/FindAButtonGameStateChanges.java" />
         <option value="$PROJECT_DIR$/resources/TODO.txt" />
-        <option value="$PROJECT_DIR$/src/FindLeftClickGameStateChanges.java" />
-        <option value="$PROJECT_DIR$/src/FindRightClickGameStateChanges.java" />
         <option value="$PROJECT_DIR$/src/MilitaryUnit.java" />
         <option value="$PROJECT_DIR$/src/GameBoard.java" />
+        <option value="$PROJECT_DIR$/src/FindLeftClickGameStateChanges.java" />
+        <option value="$PROJECT_DIR$/src/FindRightClickGameStateChanges.java" />
       </list>
     </option>
   </component>
@@ -832,12 +840,16 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#8159#8160#0" expanded="true" />
-            <element signature="e#8211#8212#0" expanded="true" />
-            <element signature="e#8673#8674#0" expanded="true" />
-            <element signature="e#8722#8723#0" expanded="true" />
-            <element signature="e#10419#10420#0" expanded="true" />
-            <element signature="e#10462#10463#0" expanded="true" />
+            <element signature="e#880#881#0" expanded="true" />
+            <element signature="e#933#934#0" expanded="true" />
+            <element signature="e#1007#1008#0" expanded="true" />
+            <element signature="e#1061#1062#0" expanded="true" />
+            <element signature="e#8412#8413#0" expanded="true" />
+            <element signature="e#8464#8465#0" expanded="true" />
+            <element signature="e#8926#8927#0" expanded="true" />
+            <element signature="e#8975#8976#0" expanded="true" />
+            <element signature="e#10672#10673#0" expanded="true" />
+            <element signature="e#10715#10716#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -893,12 +905,16 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#8159#8160#0" expanded="true" />
-            <element signature="e#8211#8212#0" expanded="true" />
-            <element signature="e#8673#8674#0" expanded="true" />
-            <element signature="e#8722#8723#0" expanded="true" />
-            <element signature="e#10419#10420#0" expanded="true" />
-            <element signature="e#10462#10463#0" expanded="true" />
+            <element signature="e#880#881#0" expanded="true" />
+            <element signature="e#933#934#0" expanded="true" />
+            <element signature="e#1007#1008#0" expanded="true" />
+            <element signature="e#1061#1062#0" expanded="true" />
+            <element signature="e#8412#8413#0" expanded="true" />
+            <element signature="e#8464#8465#0" expanded="true" />
+            <element signature="e#8926#8927#0" expanded="true" />
+            <element signature="e#8975#8976#0" expanded="true" />
+            <element signature="e#10672#10673#0" expanded="true" />
+            <element signature="e#10715#10716#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -949,12 +965,16 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#8159#8160#0" expanded="true" />
-            <element signature="e#8211#8212#0" expanded="true" />
-            <element signature="e#8673#8674#0" expanded="true" />
-            <element signature="e#8722#8723#0" expanded="true" />
-            <element signature="e#10419#10420#0" expanded="true" />
-            <element signature="e#10462#10463#0" expanded="true" />
+            <element signature="e#880#881#0" expanded="true" />
+            <element signature="e#933#934#0" expanded="true" />
+            <element signature="e#1007#1008#0" expanded="true" />
+            <element signature="e#1061#1062#0" expanded="true" />
+            <element signature="e#8412#8413#0" expanded="true" />
+            <element signature="e#8464#8465#0" expanded="true" />
+            <element signature="e#8926#8927#0" expanded="true" />
+            <element signature="e#8975#8976#0" expanded="true" />
+            <element signature="e#10672#10673#0" expanded="true" />
+            <element signature="e#10715#10716#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1117,7 +1137,7 @@
     <entry file="file://$PROJECT_DIR$/resources/TODO.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
-          <caret line="25" column="223" selection-start-line="0" selection-start-column="0" selection-end-line="25" selection-end-column="223" />
+          <caret line="52" column="223" selection-start-line="0" selection-start-column="0" selection-end-line="52" selection-end-column="223" />
           <folding />
         </state>
       </provider>
@@ -1160,28 +1180,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/FindLeftClickGameStateChanges.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="47" column="38" selection-start-line="47" selection-start-column="38" selection-end-line="47" selection-end-column="38" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/FindRightClickGameStateChanges.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="28" column="58" selection-start-line="28" selection-start-column="58" selection-end-line="28" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/MilitaryUnit.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="75" column="29" selection-start-line="75" selection-start-column="29" selection-end-line="75" selection-end-column="29" />
+        <state relative-caret-position="203">
+          <caret line="119" column="6" selection-start-line="119" selection-start-column="6" selection-end-line="119" selection-end-column="6" />
           <folding>
             <element signature="e#560#561#0" expanded="true" />
             <element signature="e#591#592#0" expanded="true" />
@@ -1201,23 +1203,49 @@
             <element signature="e#1364#1365#0" expanded="true" />
             <element signature="e#1405#1406#0" expanded="true" />
             <element signature="e#1441#1442#0" expanded="true" />
+            <element signature="e#1497#1498#0" expanded="true" />
+            <element signature="e#1534#1535#0" expanded="true" />
+            <element signature="e#1609#1610#0" expanded="true" />
+            <element signature="e#1661#1662#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="1655" column="76" selection-start-line="1655" selection-start-column="76" selection-end-line="1655" selection-end-column="76" />
+        <state relative-caret-position="193">
+          <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#8159#8160#0" expanded="true" />
-            <element signature="e#8211#8212#0" expanded="true" />
-            <element signature="e#8673#8674#0" expanded="true" />
-            <element signature="e#8722#8723#0" expanded="true" />
-            <element signature="e#10419#10420#0" expanded="true" />
-            <element signature="e#10462#10463#0" expanded="true" />
+            <element signature="e#880#881#0" expanded="true" />
+            <element signature="e#933#934#0" expanded="true" />
+            <element signature="e#1007#1008#0" expanded="true" />
+            <element signature="e#1061#1062#0" expanded="true" />
+            <element signature="e#8412#8413#0" expanded="true" />
+            <element signature="e#8464#8465#0" expanded="true" />
+            <element signature="e#8926#8927#0" expanded="true" />
+            <element signature="e#8975#8976#0" expanded="true" />
+            <element signature="e#10672#10673#0" expanded="true" />
+            <element signature="e#10715#10716#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/FindLeftClickGameStateChanges.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="52">
+          <caret line="311" column="50" selection-start-line="311" selection-start-column="50" selection-end-line="311" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/FindRightClickGameStateChanges.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="82" column="54" selection-start-line="82" selection-start-column="54" selection-end-line="82" selection-end-column="54" />
+          <folding />
         </state>
       </provider>
     </entry>

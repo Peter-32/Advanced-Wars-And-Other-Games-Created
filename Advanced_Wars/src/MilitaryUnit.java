@@ -66,6 +66,14 @@ abstract class MilitaryUnit {
         this.health = health;
     }
 
+    public GameBoard.TerrainTile getCurrentTerrain() {
+        return currentTerrain;
+    }
+
+    public void setCurrentTerrain(GameBoard.TerrainTile currentTerrain) {
+        this.currentTerrain = currentTerrain;
+    }
+
     public GameBoard.MilitaryUnitType getMilitaryUnitType() {
 
         switch(this.getClass().getName()) {
@@ -92,14 +100,17 @@ abstract class MilitaryUnit {
     private boolean selected;
     private boolean movedThisTurn = false;
     private boolean attackedThisTurn = false;
+    private GameBoard.TerrainTile currentTerrain;
 
-    MilitaryUnit(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
+    MilitaryUnit(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
+                 GameBoard.TerrainTile currentTerrain) {
         this.color = color;
         this.xTile = xTile;
         this.yTile = yTile;
         this.selected = selected;
         this.movedThisTurn = movedThisTurn;
         this.attackedThisTurn = attackedThisTurn;
+        this.currentTerrain = currentTerrain;
     }
 
     abstract void attack(MilitaryUnit enemyUnit);
@@ -108,11 +119,32 @@ abstract class MilitaryUnit {
 
 class Infantry extends MilitaryUnit {
 
-    Infantry(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
+    Infantry(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
+             GameBoard.TerrainTile currentTerrain) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
     }
 
     void attack(MilitaryUnit enemyUnit) {
+        GameBoard.MilitaryUnitType enemyUnitType = enemyUnit.getMilitaryUnitType();
+        //
+        int randomNumber = (int) (Math.random() * 10);
+        double baseDamage;
+
+        switch (enemyUnitType) {
+
+            case INFANTRY:
+                baseDamage = 0.55;
+                break;
+            case MECH:
+                baseDamage = 0.45;
+                break;
+            case ARTILLERY:
+                baseDamage = 0.15;
+                break;
+            case TANK:
+                baseDamage = 0.05;
+                break;
+        }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -122,11 +154,13 @@ class Infantry extends MilitaryUnit {
 
 class Mech extends MilitaryUnit {
 
-    Mech(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
+    Mech(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
+         GameBoard.TerrainTile currentTerrain) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
     }
 
     void attack(MilitaryUnit enemyUnit) {
+        GameBoard.MilitaryUnitType enemyUnitType = enemyUnit.getMilitaryUnitType();
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -136,11 +170,13 @@ class Mech extends MilitaryUnit {
 
 class Artillery extends MilitaryUnit {
 
-    Artillery(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
+    Artillery(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
+              GameBoard.TerrainTile currentTerrain) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
     }
 
     void attack(MilitaryUnit enemyUnit) {
+        GameBoard.MilitaryUnitType enemyUnitType = enemyUnit.getMilitaryUnitType();
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -151,11 +187,13 @@ class Artillery extends MilitaryUnit {
 class Tank extends MilitaryUnit {
     private char color;
 
-    Tank(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
+    Tank(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
+         GameBoard.TerrainTile currentTerrain) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
     }
 
     void attack(MilitaryUnit enemyUnit) {
+        GameBoard.MilitaryUnitType enemyUnitType = enemyUnit.getMilitaryUnitType();
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 

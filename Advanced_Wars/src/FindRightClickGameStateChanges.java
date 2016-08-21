@@ -78,6 +78,7 @@ public class FindRightClickGameStateChanges {
 
             selectedMilitaryUnit.setXTile(clickedXTile);
             selectedMilitaryUnit.setYTile(clickedYTile);
+            selectedMilitaryUnit.setCurrentTerrain(gameBoard.getTerrainAtXYTile(clickedXTile, clickedYTile));
             selectedMilitaryUnit.setMovedThisTurn(true);
             gameBoard.setCursorMapTileX(clickedXTile);
             gameBoard.setCursorMapTileY(clickedYTile);
