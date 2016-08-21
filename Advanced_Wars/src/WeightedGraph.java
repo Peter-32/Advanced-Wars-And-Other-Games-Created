@@ -118,7 +118,7 @@ public class WeightedGraph {
         CopyOnWriteArrayList<DirectedEdge> tempEdges = nodeEdges.get(startingNode);
         for (DirectedEdge edge_ : tempEdges) {
             if (steps >= edge_.getMovementRequired(militaryUnitType) &&
-                    node2NotControlledByEnemyUnit(edge_)) {
+                    !node2ControlledByEnemyUnit(edge_)) {
                 frontierNodes.add(edge_.getNode2());
                 movementCostToFrontierNode.add(edge_.getMovementRequired(militaryUnitType));
             }
@@ -147,7 +147,8 @@ public class WeightedGraph {
             for (DirectedEdge edge_ : tempEdges) {
                 if (steps >= edge_.getMovementRequired(militaryUnitType) + movementCostToFrontierNode.get(0) &&
                         !nodesVisited.contains(edge_.getNode2()) &&
-                        !frontierNodes.contains(edge_.getNode2())) {
+                        !frontierNodes.contains(edge_.getNode2()) &&
+                        !node2ControlledByEnemyUnit(edge_)) {
                     frontierNodes.add(edge_.getNode2());
                     movementCostToFrontierNode.add(movementCostToFrontierNode.get(0) + edge_.getMovementRequired(militaryUnitType));
                 }
@@ -163,7 +164,7 @@ public class WeightedGraph {
         return nodesVisited;
     } // END OF nodesAccessibleFromLocationInNSteps METHOD
 
-    boolean node2NotControlledByEnemyUnit(DirectedEdge edge_) {
+    boolean node2ControlledByEnemyUnit(DirectedEdge edge_) {
 
         // prepare to skip movement through tiles with enemy units in them.  You cannot move through the other team's color units.
 
@@ -179,12 +180,12 @@ public class WeightedGraph {
             if (edge_.getNode2().getXTile() == currentMilitaryUnit.getXTile() &&
                     edge_.getNode2().getYTile() == currentMilitaryUnit.getYTile() &&
                     gameBoard.getSelectedMilitaryUnit().getColor() != currentMilitaryUnit.getColor()) {
-                return false;
+                return true;
             }
 
         } // AND OF WHILE LOOP
 
-        return true;
+        return false;
     }
 
 
