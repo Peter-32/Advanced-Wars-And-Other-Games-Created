@@ -1,8 +1,22 @@
-then movement implmentation, 
 then attack choice, 
 then one attack and one move per turn, unless artillery-movement costs an attack, then health fields and drawing, 
 then attack math, 
 then defense points, 
 then repair at start of turn that costs right amount of money (repair on units at buildings)
 then capturing city mechanic, 
+
+
 then capturing HQ Game Over, then it is done.
+
+
+
+
+
+
+
+
+
+
+Dont' do this:
+
+update paint of units if their attacked this turn is true; maybe gray them out a bit.  This probably won't work because the game does movements and attacks separately, so it wouldn't allow graying out units that have moved.

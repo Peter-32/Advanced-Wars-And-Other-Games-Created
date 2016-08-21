@@ -75,35 +75,37 @@ abstract class MilitaryUnit {
     private boolean movedThisTurn = false;
     private boolean attackedThisTurn = false;
 
-    MilitaryUnit(char color, int xTile, int yTile, boolean selected) {
+    MilitaryUnit(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
         this.color = color;
         this.xTile = xTile;
         this.yTile = yTile;
         this.selected = selected;
+        this.movedThisTurn = movedThisTurn;
+        this.attackedThisTurn = attackedThisTurn;
     }
 
 }
 
 class Infantry extends MilitaryUnit {
 
-    Infantry(char color, int xTile, int yTile, boolean selected) {
-        super(color, xTile, yTile, selected);
+    Infantry(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
     }
 
 }
 
 class Mech extends MilitaryUnit {
 
-    Mech(char color, int xTile, int yTile, boolean selected) {
-        super(color, xTile, yTile, selected);
+    Mech(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
     }
 
 }
 
 class Artillery extends MilitaryUnit {
 
-    Artillery(char color, int xTile, int yTile, boolean selected) {
-        super(color, xTile, yTile, selected);
+    Artillery(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
     }
 
 }
@@ -111,8 +113,8 @@ class Artillery extends MilitaryUnit {
 class Tank extends MilitaryUnit {
     private char color;
 
-    Tank(char color, int xTile, int yTile, boolean selected) {
-        super(color, xTile, yTile, selected);
+    Tank(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
     }
 
 }

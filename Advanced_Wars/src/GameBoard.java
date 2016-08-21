@@ -1148,10 +1148,9 @@ public class GameBoard extends JFrame {
 
             currentMilitaryUnit = tempMilitaryUnitsIterator.next();
             currentMilitaryUnit.setSelected(false);
-            updateGameBoardSpecificSelectedMilitaryUnitVariables(false, false, false);
 
         }
-        System.out.println("test4");
+        updateGameBoardSpecificSelectedMilitaryUnitVariables(false, false);
 
     } // END OF resetMilitaryUnitSelected METHOD
 
@@ -1416,10 +1415,14 @@ class GameDrawingPanel extends JPanel {
 
         if (gameBoard.getSelectedMilitaryUnit() != null &&
                 !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
-            drawMoveableGrid(graphicSettings);
+            if (!gameBoard.getSelectedMilitaryUnit().isMovedThisTurn()) {  // if military unit has not moved this turn (null checked above)
+                drawMoveableGrid(graphicSettings);
+            }
         } else if (gameBoard.getSelectedMilitaryUnit() != null &&
                 gameBoard.isPressedTheAKeyWhileUnitSelected()) {
-            drawAttackGrid(graphicSettings);
+            if (!gameBoard.getSelectedMilitaryUnit().isAttackedThisTurn()) {  // if military unit has not attacked this turn (null checked above)
+                drawAttackGrid(graphicSettings);
+            }
         }
 
 

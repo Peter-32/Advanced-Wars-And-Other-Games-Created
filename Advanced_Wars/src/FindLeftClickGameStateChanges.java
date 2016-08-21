@@ -226,7 +226,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getRedPlayerBank() >= 1000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 1000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Infantry('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Infantry('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(true, false);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -236,7 +236,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getRedPlayerBank() >= 3000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 3000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Mech('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Mech('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(true, false);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -246,7 +246,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getRedPlayerBank() >= 6000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 6000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Artillery('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Artillery('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(false, true);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -256,7 +256,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getRedPlayerBank() >= 7000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 7000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Tank('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Tank('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(true, false);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -269,7 +269,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getBluePlayerBank() >= 1000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 1000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Infantry('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Infantry('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(true, false);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -279,7 +279,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getBluePlayerBank() >= 3000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 3000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Mech('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Mech('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(true, false);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -289,7 +289,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getBluePlayerBank() >= 6000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 6000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Artillery('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Artillery('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(false, true);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -299,7 +299,7 @@ public class FindLeftClickGameStateChanges {
                     if (gameBoard.getBluePlayerBank() >= 7000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 7000);
                         gameBoard.resetMilitaryUnitSelected();
-                        gameBoard.addMilitaryUnits(new Tank('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
+                        gameBoard.addMilitaryUnits(new Tank('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true, true, true));
                         gameBoard.updateGameBoardSpecificSelectedMilitaryUnitVariables(true, false);
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.updateAttackSquares();
@@ -369,9 +369,9 @@ public class FindLeftClickGameStateChanges {
         // (all of the methods in this class occur after left clicks)
         gameBoard.resetCurrentMoveableChoicesGrid();
 
-        // if no unit is selected then return
+        // if no unit is selected or if the unit has moved already this turn, then return early.
 
-        if (gameBoard.getSelectedMilitaryUnit() == null) {
+        if (gameBoard.getSelectedMilitaryUnit() == null || gameBoard.getSelectedMilitaryUnit().isMovedThisTurn()) {
             return;
         }
 

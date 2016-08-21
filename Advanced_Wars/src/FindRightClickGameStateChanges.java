@@ -28,22 +28,23 @@ public class FindRightClickGameStateChanges {
         this.isARangedMilitaryUnitSelected = gameBoard.isARangedMilitaryUnitSelected();
         this.selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();
 
+        // leave early if no units are selected
 
+        if (selectedMilitaryUnit == null) { return; }
 
-
+        // if the unit can still move this turn:
         // check if the player clicked on a tile that is true in the movable grid while a unit is selected (black tiles)
 
-        militaryUnitMovementCommand();
+        if (!selectedMilitaryUnit.isMovedThisTurn()) {
+            militaryUnitMovementCommand();
+        }
 
+        // if the unit can still attack this turn:
         // check if the player clicked on an enemy unit inside the attack grid and make sure a unti is currently under the cursor
 
-        militaryUnitAttackCommand();
-
-
-
-
-
-
+        if (!selectedMilitaryUnit.isAttackedThisTurn()) {
+            militaryUnitAttackCommand();
+        }
 
     } // END OF CONSTRUCTOR
 
@@ -53,38 +54,38 @@ public class FindRightClickGameStateChanges {
 
     void militaryUnitMovementCommand() {
 
-        if (gameBoard.getSelectedMilitaryUnit() == null) { return; } // return early if no unit is selected
-
         boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoicesGrid();
 
         // if the selected tile is currently movable
 
         if (tempCurrentMoveableChoices[selectedYTile][selectedXTile]) {
 
-            gameBoard.getSelectedMilitaryUnit().setXTile(selectedXTile);
-            gameBoard.getSelectedMilitaryUnit().setYTile(selectedYTile);
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            selectedMilitaryUnit.setXTile(selectedXTile);
+            selectedMilitaryUnit.setYTile(selectedYTile);
+            selectedMilitaryUnit.setMovedThisTurn(true);
+            gameBoard.setCursorMapTileX(selectedXTile);
+            gameBoard.setCursorMapTileY(selectedYTile);
+            gameBoard.setBuyingFromBasePossible(false);
+
+            // If artillery moves then it can't attack the same turn
+
+            if (selectedMilitaryUnit.getMilitaryUnitType() == GameBoard.MilitaryUnitType.ARTILLERY) {
+                selectedMilitaryUnit.setAttackedThisTurn(true);
+            }
+
+            // These don't need to be updated because paint is turned off and move is turned off.  The attack squares
+            // already seem updated
+              //gameBoard.updateCurrentMoveableChoicesGrid();
+              //gameBoard.updateAttackSquares();
+
+
+
+
+
 
         }
 
-
-
-
-        for (boolean[] row : tempCurrentMoveableChoices) {
-            for (int j = 0; j < row.length; j++) {
-                if (row[j]) {
-
-
-
-                }
-
-            }
-
-        } // END OF FOR LOOP
-
-    }
+    } // END OF militaryUnitMovementCommand METHOD
 
     /*
     check if the player clicked on an enemy unit inside the attack grid and make sure a unti is currently under the cursor
