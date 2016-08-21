@@ -128,7 +128,6 @@ public class WeightedGraph {
 
         while(frontierNodes.size() > 0) {
 
-            System.out.println("Stuck in loop");
             // get the first frontier node
 
             nextNode = frontierNodes.get(0);

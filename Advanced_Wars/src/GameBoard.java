@@ -60,9 +60,7 @@ public class GameBoard extends JFrame {
         return clonedCurrentMoveableChoicesGrid;
     }
     synchronized public void updateCurrentMoveableChoicesGrid(int x, int y, boolean newValue) {
-        System.out.println("Inside update statement");
         currentMoveableChoicesGrid[y][x] = newValue;
-        System.out.println("Finished update");
     }
     synchronized public void resetCurrentMoveableChoicesGrid() {
         for (int i = 0; i < currentMoveableChoicesGrid.length; i++) {
@@ -81,9 +79,7 @@ public class GameBoard extends JFrame {
         return clonedCurrentAttackChoicesGrid;
     }
     synchronized public void updateCurrentAttackChoicesGrid(int x, int y, boolean newValue) {
-        System.out.println("Inside update statement");
         currentAttackChoicesGrid[y][x] = newValue;
-        System.out.println("Finished update");
     }
     synchronized public void resetCurrentAttackChoicesGrid() {
         for (int i = 0; i < currentAttackChoicesGrid.length; i++) {
@@ -93,6 +89,23 @@ public class GameBoard extends JFrame {
         }
 
     }
+
+    public int getRedHQXTile() {
+        return redHQXTile;
+    }
+
+    public int getRedHQYTile() {
+        return redHQYTile;
+    }
+
+    public int getBlueHQXTile() {
+        return blueHQXTile;
+    }
+
+    public int getBlueHQYTile() {
+        return blueHQYTile;
+    }
+
     public ImageIcon getResizedMountainIcon() {
         return resizedMountainIcon;
     }
@@ -512,6 +525,10 @@ public class GameBoard extends JFrame {
     private boolean aRangedMilitaryUnitSelected = false;
     private boolean aMeleeMilitaryUnitSelected = false;
     private MilitaryUnit selectedMilitaryUnit = null;
+    private int redHQXTile;
+    private int redHQYTile;
+    private int blueHQXTile;
+    private int blueHQYTile;
 
 
     // Turn, base clicked on (a base allows you to buy units)
@@ -698,6 +715,11 @@ public class GameBoard extends JFrame {
         GameDrawingPanel gameDrawingPanel = new GameDrawingPanel(this);
         this.add(gameDrawingPanel, BorderLayout.CENTER);
 
+        // create testing units
+
+        addMilitaryUnits(new Tank('r', 6, 8, true, false, false, 0));
+        addMilitaryUnits(new Tank('b', 7, 8, true, false, false, 0));
+
         // final changes to JFrame
 
         setResizable(false);
@@ -797,6 +819,7 @@ public class GameBoard extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent e) {
+
             if (e.getKeyCode() == 65 &&
                     getSelectedMilitaryUnit() != null && // a military unit is selected
                     !waitForTheAKeyRelease) {
@@ -1025,24 +1048,6 @@ public class GameBoard extends JFrame {
 
         } // END OF i FOR LOOP
 
-        System.out.println("Edges: " + countEdges + " Nodes: " + countNodes + " Expected based on loadTerrainGraphLogic");
-        g.loggingNumberOfNodesAndEdges();
-
-
-        WeightedGraph.Node loggingNode = g.getNodeAtLocation(3,2);
-        System.out.println("loggingNode get terrain " + loggingNode.getTerrain());
-        CopyOnWriteArrayList<WeightedGraph.DirectedEdge> edgesOutFromLoggingNode = g.nodeEdges.get(loggingNode);
-        for (WeightedGraph.DirectedEdge edge : edgesOutFromLoggingNode) {
-            System.out.println("edge.getNode1.getXTile() = " + edge.getNode1().getXTile());
-            System.out.println("edge.getNode1.getYTile() = " + edge.getNode1().getYTile());
-            System.out.println("edge.getNode2.getXTile() = " + edge.getNode2().getXTile());
-            System.out.println("edge.getNode2.getYTile() = " + edge.getNode2().getYTile());
-            System.out.println("edge.getMovementRequired = " + edge.getMovementRequired(MilitaryUnitType.INFANTRY));
-            System.out.println("Next Edge attached to this node at the node location");
-        }
-
-        System.out.println("Leaving loadTerrainGraph method");
-
         return g;
 
     } // END OF loadTerrainGraph METHOD
@@ -1079,6 +1084,8 @@ public class GameBoard extends JFrame {
                     switch(line.substring(j,j + 1)) {
                         case "H":
                             buildingTilesGrid[lineNumber][j] = BuildingTile.RED_HQ;
+                            redHQXTile = j;
+                            redHQYTile = lineNumber;
                             break;
                         case "B":
                             buildingTilesGrid[lineNumber][j] = BuildingTile.RED_BASE;
@@ -1088,6 +1095,8 @@ public class GameBoard extends JFrame {
                             break;
                         case "h":
                             buildingTilesGrid[lineNumber][j] = BuildingTile.BLUE_HQ;
+                            blueHQXTile = j;
+                            blueHQYTile = lineNumber;
                             break;
                         case "b":
                             buildingTilesGrid[lineNumber][j] = BuildingTile.BLUE_BASE;
@@ -1426,6 +1435,7 @@ public class GameBoard extends JFrame {
 
             case NONE:
                 buildingDefenseStars = 0;
+                break;
             case GRAY_BASE:
                 buildingDefenseStars = 3;
                 break;
@@ -1464,6 +1474,7 @@ public class GameBoard extends JFrame {
     void giveNewTurnIncome(char playerColor) {
         int redDailyIncome = 0;
         int blueDailyIncome = 0;
+        int newBankAmount = 0;
 
         BuildingTile[][] tempBuildingTilesGrid = cloneBuildingTilesGrid();
 
@@ -1504,16 +1515,55 @@ public class GameBoard extends JFrame {
 
         switch (playerColor) {
             case 'r':
-                setRedPlayerBank(getRedPlayerBank() + redDailyIncome);
+                newBankAmount = Math.min(99000, getRedPlayerBank() + redDailyIncome);
+                setRedPlayerBank(newBankAmount);
+                 initiateRepairs('b');  // start the repairs for the other color's start of turn
                 break;
             case 'b':
-                setBluePlayerBank(getBluePlayerBank() + blueDailyIncome);
+                newBankAmount = Math.min(99000, getBluePlayerBank() + blueDailyIncome);
+                setBluePlayerBank(newBankAmount);
+                initiateRepairs('r');  // start the repairs for the other color's start of turn
                 break;
 
         } // END OF SWITCH
 
     } // END OF giveNewTurnIncome METHOD
 
+    void initiateRepairs(char playerColor) {
+
+
+        MilitaryUnit currentMilitaryUnit = null;
+
+        // loop through all units; update selected to true or false.
+
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+            
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+        switch (playerColor) {
+
+            case 'r':
+                break;
+            case 'b':
+                break;
+
+        }
+
+
+    }
 
 } // END OF GameBoard CLASS
 
@@ -1573,7 +1623,7 @@ class GameDrawingPanel extends JPanel {
 
         drawCursor(g);
 
-        // draw currently moveable locations or attack locations.
+        // draw currently movable locations or attack locations.  Decided to remove the red color possibility if an attack happened this turn.
 
         if (gameBoard.getSelectedMilitaryUnit() != null &&
                 !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
@@ -1685,13 +1735,29 @@ class GameDrawingPanel extends JPanel {
         g.setColor(Color.BLACK);
         g.drawString("Advance Wars",70,40);
 
+        // create a rectangle based on the player turn
+
+        if (gameBoard.getTurnColor() == 'r') {
+            g.setColor(Color.RED);
+            g.fillRect(20, 85, 100, 20);
+        }
+
+        if (gameBoard.getTurnColor() == 'b') {
+            g.setColor(Color.BLUE);
+            g.fillRect(170, 85, 100, 20);
+        }
+
         // update bank numbers
 
-        g.drawString("Red Bank:", 20, 75);
-        g.drawString("Blue Bank:", 170, 75);
-
+        g.setColor(Color.WHITE);
         g.drawString(Integer.toString(gameBoard.getRedPlayerBank()), 40, 105);
         g.drawString(Integer.toString(gameBoard.getBluePlayerBank()), 190, 105);
+
+        // bank numbers title
+
+        g.setColor(Color.BLACK);
+        g.drawString("Red Bank:", 20, 75);
+        g.drawString("Blue Bank:", 170, 75);
 
         // draw the end turn button
 
@@ -1737,7 +1803,6 @@ class GameDrawingPanel extends JPanel {
         final int drawStringAdjustmentX = (int) (0.80 * gameBoard.getTileLength());
         final int drawStringAdjustmentY = gameBoard.getTileLength();
         int currentDisplayAndCaptureHealth;
-        g.setColor(Color.RED);
 
         // loop through all units; update selected to true or false.
 
@@ -1745,7 +1810,7 @@ class GameDrawingPanel extends JPanel {
         while (tempMilitaryUnitsIterator.hasNext()) {
             currentMilitaryUnit = tempMilitaryUnitsIterator.next();
 
-            // update drawXPosition, drawYPosition, and currentDisplayAndCaptureHealth
+            // update drawXPosition, drawYPosition, and currentDisplayAndCaptureHealth for use further below
 
             drawXPosition = gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile());
             drawYPosition = gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile());
@@ -1795,6 +1860,10 @@ class GameDrawingPanel extends JPanel {
 
             // Draw health if under 10 displayAndCaptureHealth
             if (currentDisplayAndCaptureHealth < 10) {
+                g.setColor(Color.BLACK);
+                g.fillRect(drawXPosition + gameBoard.getTileLength() - 20, drawYPosition + gameBoard.getTileLength() - 20, 20, 20);
+                g.setColor(Color.RED);
+                g.setFont(new Font("TimesRoman", Font.PLAIN, 25));
                 g.drawString(Integer.toString(currentDisplayAndCaptureHealth),
                         drawXPosition + drawStringAdjustmentX,
                         drawYPosition + drawStringAdjustmentY);

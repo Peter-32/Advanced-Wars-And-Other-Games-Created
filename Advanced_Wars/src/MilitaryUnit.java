@@ -63,7 +63,10 @@ abstract class MilitaryUnit {
     }
 
     public void setHealth(double health) {
-        this.health = health;
+
+        // 100 is the highest health for all military units
+
+        this.health = Math.min(health, 100);
 
         // If health is less than 0 another area of the program removes it from the game
 
@@ -263,10 +266,10 @@ class Artillery extends MilitaryUnit {
         switch (enemyUnitType) {
 
             case INFANTRY:
-                baseDamage = 55;
+                baseDamage = 90;
                 break;
             case MECH:
-                baseDamage = 45;
+                baseDamage = 85;
                 break;
             case ARTILLERY:
                 baseDamage = 75;
@@ -308,21 +311,22 @@ class Tank extends MilitaryUnit {
         // multiply this by the stars ie. 2 stars 100 health gives you 20 defense
         // divide this by 100 to get .2;  Then subtract from 1 to get 0.8 multiplier
 
+
         double defenseStarsMultiplier = 1 - (((enemyUnit.getHealth() / 10) * enemyUnit.getDefenseStars()) / 100);
 
         switch (enemyUnitType) {
 
             case INFANTRY:
-                baseDamage = 55;
+                baseDamage = 75;
                 break;
             case MECH:
-                baseDamage = 45;
+                baseDamage = 70;
                 break;
             case ARTILLERY:
-                baseDamage = 15;
+                baseDamage = 70;
                 break;
             case TANK:
-                baseDamage = 5;
+                baseDamage = 55;
                 break;
             default:
                 baseDamage = 0;
@@ -333,7 +337,19 @@ class Tank extends MilitaryUnit {
                 (this.getHealth() / 100) *  // pct health
                 defenseStarsMultiplier;  // if 4 defenseStars and 10 health
 
+        /*       LOGGING FOR ATTACK
+        System.out.println("randomNumber = " + randomNumber);
+        System.out.println("baseDamage = " + baseDamage);
+        System.out.println("this.getHealth() = " + this.getHealth());
+        System.out.println("(this.getHealth() / 100) = " + (this.getHealth() / 100));
+        System.out.println("defenseStarsMultiplier = " + defenseStarsMultiplier);
+        System.out.println("attackerDamageOutput = " + attackerDamageOutput);
+
+        System.out.println("BEFORE: enemyUnit.getHealth() = " + enemyUnit.getHealth());
+
+        */
         enemyUnit.setHealth(enemyUnit.getHealth() - attackerDamageOutput);
+
 
     }
 

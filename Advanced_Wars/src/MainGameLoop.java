@@ -23,17 +23,19 @@ public class MainGameLoop implements Runnable {
         xClicked = gameBoard.getXClicked();
         yClicked = gameBoard.getYClicked();
 
+        // Check if A button is pressed
+
+        if (gameBoard.isPressedTheAKeyWhileUnitSelected()) {
+            new FindAButtonGameStateChanges(gameBoard);
+        }
+
         // if the click type is 1, it is a left click.  If click type is greater than 1 it is an alternative click
         // all alternative clicks are treated the same.  They are essentially all treated as right clicks.
 
-        if (gameBoard.getClickType() == 1 &&
-                !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
+        if (gameBoard.getClickType() == 1) {
             new FindLeftClickGameStateChanges(gameBoard, xClicked, yClicked);
-        } else if (gameBoard.getClickType() > 1 &&
-                !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
+        } else if (gameBoard.getClickType() > 1) {
             new FindRightClickGameStateChanges(gameBoard, xClicked, yClicked);
-        } else if (gameBoard.isPressedTheAKeyWhileUnitSelected()) {
-            new FindAButtonGameStateChanges(gameBoard);
         }
 
         // Search for game over

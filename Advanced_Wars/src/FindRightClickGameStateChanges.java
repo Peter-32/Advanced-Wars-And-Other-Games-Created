@@ -52,15 +52,19 @@ public class FindRightClickGameStateChanges {
 
         // if the unit can still move this turn:
         // check if the player clicked on a tile that is true in the movable grid while a unit is selected (black tiles)
+        // Make sure A is not pressed.
 
-        if (!selectedMilitaryUnit.isMovedThisTurn()) {
+        if (!selectedMilitaryUnit.isMovedThisTurn() &&
+                !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             militaryUnitMovementCommand();
         }
 
         // if the unit can still attack this turn:
         // check if the player clicked on an enemy unit inside the attack grid and make sure a unti is currently under the cursor
+        // Make sure A is pressed.
 
-        if (!selectedMilitaryUnit.isAttackedThisTurn()) {
+        if (!selectedMilitaryUnit.isAttackedThisTurn() &&
+                gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             militaryUnitAttackCommand();
         }
 
@@ -75,9 +79,13 @@ public class FindRightClickGameStateChanges {
         boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoicesGrid();
         int defenseStars = 0;
 
-        // if the selected tile is currently movable
+        // move if 1) The tile is a movable choice based on distance
+        //         2) it is the unit's turn
+        //         3) the new space is not occupied
 
-        if (tempCurrentMoveableChoices[clickedYTile][clickedXTile]) {
+        if (tempCurrentMoveableChoices[clickedYTile][clickedXTile] &&
+                selectedMilitaryUnit.getColor() == gameBoard.getTurnColor() &&
+                gameBoard.getMilitaryUnitAtXYTile(clickedXTile, clickedYTile) == null) {
 
             selectedMilitaryUnit.setXTile(clickedXTile);
             selectedMilitaryUnit.setYTile(clickedYTile);
@@ -114,11 +122,17 @@ public class FindRightClickGameStateChanges {
 
         boolean[][] tempCurrentAttackChoices = gameBoard.cloneCurrentAttackChoicesGrid();
 
-        if (tempCurrentAttackChoices[clickedYTile][clickedXTile]) {
+        // attack if 1) possible attack option
+        //           2) it is the unit's turn
+        //           3) the other unit is not their own color
+
+        if (tempCurrentAttackChoices[clickedYTile][clickedXTile] &&
+                selectedMilitaryUnit.getColor() == gameBoard.getTurnColor() &&
+                clickedMilitaryUnit.getColor() != gameBoard.getTurnColor()) {
 
             selectedMilitaryUnit.setMovedThisTurn(true);
             selectedMilitaryUnit.setAttackedThisTurn(true);
-            selectedMilitaryUnit.attack(clickedMilitaryUnit);
+            selectedMilitaryUnit.initiateAttack(clickedMilitaryUnit);
 
             checkForDestroyedUnits();
 

@@ -22,6 +22,7 @@ public class FindLeftClickGameStateChanges {
     int yClicked;
     int clickedXTile;
     int clickedYTile;
+    boolean turnChanged = false;
 
     FindLeftClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
 
@@ -34,16 +35,29 @@ public class FindLeftClickGameStateChanges {
         clickedXTile = gameBoard.findXTileClickedOn();
         clickedYTile = gameBoard.findYTileClickedOn();
 
+
         // check if end turn was clicked on
 
-        checkIfEndTurnWasClickedOn();
+        turnChanged = checkIfEndTurnWasClickedOnAndChangeTurn();
 
         // check if the map is clicked on, then the game will update the cursor location, otherwise no update is wanted.
+        // also update the cursor when the turn changes
 
         if (clickedXTile != -1 && clickedYTile != -1) {
             gameBoard.setCursorMapTileX(clickedXTile);    // SETTER USED
             gameBoard.setCursorMapTileY(clickedYTile);    // SETTER USED
         }
+
+        if (turnChanged && gameBoard.getTurnColor() == 'b') {
+            gameBoard.setCursorMapTileX(gameBoard.getBlueHQXTile());    // SETTER USED
+            gameBoard.setCursorMapTileY(gameBoard.getBlueHQYTile());    // SETTER USED
+        }
+
+        if (turnChanged && gameBoard.getTurnColor() == 'r') {
+            gameBoard.setCursorMapTileX(gameBoard.getRedHQXTile());    // SETTER USED
+            gameBoard.setCursorMapTileY(gameBoard.getRedHQYTile());    // SETTER USED
+        }
+
 
         // check if the player clicked on a military unit, regardless of if it is friendly or an enemy.
         // also check if the unit is melee or ranged and update the gameboard state
@@ -316,7 +330,6 @@ public class FindLeftClickGameStateChanges {
                     }
                     break;
             }
-            System.out.println("click on purchase button happened and player is blue");
         }
 
     } // END OF purchaseMilitaryUnitIfEnoughFunds METHOD
@@ -326,7 +339,7 @@ public class FindLeftClickGameStateChanges {
     state that tells other classes which player has their turn.
      */
 
-    void checkIfEndTurnWasClickedOn() {
+    boolean checkIfEndTurnWasClickedOnAndChangeTurn() {
 
         // checking end turn button
 
@@ -339,17 +352,19 @@ public class FindLeftClickGameStateChanges {
 
                 gameBoard.setTurnColor('b');
                 gameBoard.giveNewTurnIncome('b');
-                System.out.println("It is blue's turn");
 
             } else {
 
                 gameBoard.setTurnColor('r');
                 gameBoard.giveNewTurnIncome('r');
-                System.out.println("It is red's turn");
 
             }
 
+            return true;
+
         }
+
+        return false;
 
     } // END OF checkIfEndTurnWasClickedOn METHOD
 
