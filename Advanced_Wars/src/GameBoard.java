@@ -4,6 +4,8 @@ import Images.SpriteSheet;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -158,6 +160,10 @@ public class GameBoard extends JFrame {
 
     public void setYClicked(int yClicked) {
         this.yClicked = yClicked;
+    }
+
+    public boolean isPressedTheAKey() {
+        return pressedTheAKey;
     }
 
     public int getMenuStartX() {
@@ -434,6 +440,7 @@ public class GameBoard extends JFrame {
     private int yClicked = -1;
     private int xClicked = -1;
     private int clickType = -1;
+    private boolean pressedTheAKey = false;
     private boolean GameOver = false;
     private boolean aMilitaryUnitSelected = false;
     private boolean aRangedMilitaryUnitSelected = false;
@@ -615,6 +622,8 @@ public class GameBoard extends JFrame {
 
         ListenForMouse lForMouse = new ListenForMouse();
         addMouseListener(lForMouse);
+        KeyListener lForKey = new ListenForKey();
+        addKeyListener(lForKey);
 
         // create the GameDrawingPanel
 
@@ -710,6 +719,28 @@ public class GameBoard extends JFrame {
 
         }
     } // END OF MouseListener INNER CLASS
+
+    private class ListenForKey implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == 65) {
+                pressedTheAKey = true;
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == 65) {
+                pressedTheAKey = false;
+            }
+        }
+    }
 
 
     public int findXTileClickedOn() {
