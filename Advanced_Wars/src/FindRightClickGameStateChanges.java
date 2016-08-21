@@ -22,14 +22,6 @@ private final int topJFrameBorderLength = 30;
         this.xClicked = xClicked;
         this.yClicked = yClicked;
 
-        // check if a ranged unit is selected
-
-        
-
-        // check if a melee unit is selected
-
-
-
         // check if the "a" button is pressed at the time of this right click
 
 
@@ -52,6 +44,9 @@ private final int topJFrameBorderLength = 30;
 
 
 
-    }
+    } // END OF CONSTRUCTOR
+
+
+
 
 } // END OF FindRightClickGameStateChanges CLASS

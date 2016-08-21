@@ -45,7 +45,8 @@ public class FindLeftClickGameStateChanges {
             gameBoard.setCursorMapTileY(selectedYTile);    // SETTER USED
         }
 
-        // check if the player clicked on a military unit, regardless of if it is friendly or an enemy
+        // check if the player clicked on a military unit, regardless of if it is friendly or an enemy.
+        // also check if the unit is melee or ranged and update the gameboard state
 
         updateMilitaryUnitSelectionState();
 
@@ -65,11 +66,13 @@ public class FindLeftClickGameStateChanges {
         updateCurrentMovableChoices();
 
 
-    }
+    } // END OF CONSTRUCTOR
 
     void updateMilitaryUnitSelectionState() {
         MilitaryUnit currentMilitaryUnit = null;
         boolean aMilitaryUnitIsSelected = false;
+        boolean aMeleeMilitaryUnitSelected = false;
+        boolean aRangedMilitaryUnitSelected = false;
         // loop through allunits; update selected to true or false.
         Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
         while (tempUnitsIterator.hasNext()) {
@@ -78,6 +81,25 @@ public class FindLeftClickGameStateChanges {
                     gameBoard.getCursorMapTileY() == currentMilitaryUnit.getYTile()) {
                 currentMilitaryUnit.setSelected(true);    // SETTER USED
                 aMilitaryUnitIsSelected = true;
+                switch (currentMilitaryUnit.getMilitaryUnitType()) {
+
+                    case INFANTRY:
+                        aMeleeMilitaryUnitSelected = true;
+                        aRangedMilitaryUnitSelected = false;
+                        break;
+                    case MECH:
+                        aMeleeMilitaryUnitSelected = true;
+                        aRangedMilitaryUnitSelected = false;
+                        break;
+                    case ARTILLERY:
+                        aMeleeMilitaryUnitSelected = false;
+                        aRangedMilitaryUnitSelected = true;
+                        break;
+                    case TANK:
+                        aMeleeMilitaryUnitSelected = true;
+                        aRangedMilitaryUnitSelected = false;
+                        break;
+                }
             } else {
                 currentMilitaryUnit.setSelected(false);    // SETTER USED
             }
@@ -85,6 +107,8 @@ public class FindLeftClickGameStateChanges {
 
         // if at least one unit is selected then this will be set to true, otherwise it will be set to false.
         gameBoard.setAMilitaryUnitSelected(aMilitaryUnitIsSelected);    // SETTER USED
+        gameBoard.setAMeleeMilitaryUnitSelected(aMeleeMilitaryUnitSelected);    // SETTER USED
+        gameBoard.setARangedMilitaryUnitSelected(aRangedMilitaryUnitSelected);    // SETTER USED
 
     } // END OF updateWhichUnitIsSelected METHOD
 
@@ -373,6 +397,7 @@ public class FindLeftClickGameStateChanges {
         }
 
         System.out.println("Leaving updateCurrentMovableChoices choices at end of method");
-    }
+
+    } // END OF updateCurrentMovableChoices METHOD
 
 } // END OF FindLeftClickGameStateChanges  CLASS

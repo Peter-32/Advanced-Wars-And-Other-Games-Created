@@ -274,8 +274,23 @@ public class GameBoard extends JFrame {
         return aMilitaryUnitSelected;
     }
 
-    public void setAMilitaryUnitSelected(boolean aUnitSelected) {
-        this.aMilitaryUnitSelected = aUnitSelected;
+    public void setAMilitaryUnitSelected(boolean aMilitaryUnitSelected) {
+        this.aMilitaryUnitSelected = aMilitaryUnitSelected;
+    }
+    public boolean isARangedMilitaryUnitSelected() {
+        return aRangedMilitaryUnitSelected;
+    }
+
+    public void setARangedMilitaryUnitSelected(boolean aRangedMilitaryUnitSelected) {
+        this.aRangedMilitaryUnitSelected = aRangedMilitaryUnitSelected;
+    }
+
+    public boolean isAMeleeMilitaryUnitSelected() {
+        return aMeleeMilitaryUnitSelected;
+    }
+
+    public void setAMeleeMilitaryUnitSelected(boolean aMeleeMilitaryUnitSelected) {
+        this.aMeleeMilitaryUnitSelected = aMeleeMilitaryUnitSelected;
     }
     public int getClickType() {
         return clickType;
@@ -421,6 +436,8 @@ public class GameBoard extends JFrame {
     private int clickType = -1;
     private boolean GameOver = false;
     private boolean aMilitaryUnitSelected = false;
+    private boolean aRangedMilitaryUnitSelected = false;
+    private boolean aMeleeMilitaryUnitSelected = false;
 
 
     // Turn, base clicked on (a base allows you to buy units)
