@@ -354,11 +354,19 @@ public class FindLeftClickGameStateChanges {
                 gameBoard.giveNewTurnIncome();
                 gameBoard.tryRepairingAllUnits();
 
+                // at end of turn it tries capturing buildings
+
+                gameBoard.continueBuildingCapturesAndCheckForCompletion('r');
+
             } else {
 
                 gameBoard.setTurnColor('r');
                 gameBoard.giveNewTurnIncome();
                 gameBoard.tryRepairingAllUnits();
+
+                // at end of turn it tries capturing buildings
+
+                gameBoard.continueBuildingCapturesAndCheckForCompletion('r');
 
             }
 

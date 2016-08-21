@@ -1604,6 +1604,51 @@ public class GameBoard extends JFrame {
 
     } // END OF getBuildingColor METHOD
 
+    void continueBuildingCapturesAndCheckForCompletion(char playerColor) {
+
+
+        MilitaryUnit currentMilitaryUnit = null;
+
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+
+            BuildingTile buildingTile =  getBuildingAtXYTile(currentMilitaryUnit.getXTile(), currentMilitaryUnit.getYTile());
+
+            // continue to next iteration if there is no building at this location
+
+            if (buildingTile == BuildingTile.NONE) { continue; }
+
+            // continue to next iteration if it is the own player's building
+
+            if ((buildingTile == buildingTile.RED_BASE || buildingTile == buildingTile.RED_CITY || buildingTile == buildingTile.RED_HQ) &&
+                    playerColor == 'r') {
+                continue;
+            }
+            if ((buildingTile == buildingTile.BLUE_BASE || buildingTile == buildingTile.BLUE_CITY || buildingTile == buildingTile.BLUE_HQ) &&
+                    playerColor == 'b') {
+                continue;
+            }
+
+            // Check if 1) The unit is the right color that is supposed to be capturing
+            //          2) The unit is either an INFANTRY or a MECH
+            // otherwise skip this unit
+
+            if (currentMilitaryUnit.getColor() == playerColor && // #1
+                    (currentMilitaryUnit.getMilitaryUnitType() == MilitaryUnitType.INFANTRY || currentMilitaryUnit.getMilitaryUnitType() == MilitaryUnitType.MECH)) { // #2
+                
+
+
+
+            }
+
+        }
+
+
+
+    }
+
+
 } // END OF GameBoard CLASS
 
 class GameDrawingPanel extends JPanel {

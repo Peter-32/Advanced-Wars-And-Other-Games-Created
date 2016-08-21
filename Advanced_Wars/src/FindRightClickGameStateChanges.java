@@ -89,8 +89,9 @@ public class FindRightClickGameStateChanges {
                 selectedMilitaryUnit.setAttackedThisTurn(true);
             }
 
-            // Now check if an infantry or mech have just moved onto a gray city, then begin capturing it.
-            tryCapturingCity();
+            // After any movement to a new square, the unit must have a capture progress of 0.
+
+            selectedMilitaryUnit.setCaptureProgress(0);
 
             // These don't need to be updated because paint is turned off and move is turned off.  The attack squares
             // already seem updated
@@ -123,6 +124,10 @@ public class FindRightClickGameStateChanges {
                 gameBoard.setCursorMapTileX(clickedXTile);
                 gameBoard.setCursorMapTileY(clickedYTile);
                 gameBoard.setBuyingFromBasePossible(false); // this can be reset next time a left click happens
+
+                // merge will always reset the capturing of a city and the player will have to start over (not too different from the original game)
+
+                selectedMilitaryUnit.setCaptureProgress(0);
 
                 // merge health and delete the old one
                 selectedMilitaryUnit.setHealth(selectedMilitaryUnit.getHealth() + clickedOnMilitaryUnit.getHealth());
@@ -185,9 +190,5 @@ public class FindRightClickGameStateChanges {
         }
 
     } // END OF checkForDestroyedUnits METHOD
-
-    void tryCapturingCity() {
-
-    }
 
 } // END OF FindRightClickGameStateChanges CLASS

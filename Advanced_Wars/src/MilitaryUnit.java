@@ -127,7 +127,7 @@ abstract class MilitaryUnit {
     private int defenseStars;
     protected boolean isRanged;
     protected int cost;
-    protected int captureProgress; // getting 20 capture points gains a new building for your team
+    protected int captureProgress = 0; // getting 20 capture points gains a new building for your team
 
     MilitaryUnit(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
                  int defenseStars) {
