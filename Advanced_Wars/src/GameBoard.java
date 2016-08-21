@@ -311,9 +311,6 @@ public class GameBoard extends JFrame {
     public void setCursorMapTileX(int cursorMapTileX) {
         this.cursorMapTileX = cursorMapTileX;
     }
-    public boolean isAMilitaryUnitSelected() {
-        return aMilitaryUnitSelected;
-    }
 
     public void setAMilitaryUnitSelected(boolean aMilitaryUnitSelected) {
         this.aMilitaryUnitSelected = aMilitaryUnitSelected;
@@ -792,7 +789,7 @@ public class GameBoard extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == 65 &&
-                    isAMilitaryUnitSelected() &&
+                    getSelectedMilitaryUnit() != null && // a military unit is selected
                     !waitForTheAKeyRelease) {
                 pressedTheAKeyWhileUnitSelected = true;
             } else if (e.getKeyCode() == 65) {
@@ -1179,7 +1176,7 @@ public class GameBoard extends JFrame {
 
         // if no unit is selected then return.  Probably unnecessary, but shouldn't hurt to include this.
 
-        if (!isAMilitaryUnitSelected()) {
+        if (getSelectedMilitaryUnit() == null) {
             return;
         }
 
@@ -1218,7 +1215,7 @@ public class GameBoard extends JFrame {
 
         // if no unit is selected then return.  Probably unnecessary, but shouldn't hurt to include this.
 
-        if (!isAMilitaryUnitSelected()) {
+        if (getSelectedMilitaryUnit() == null) {
             return;
         }
 
@@ -1348,8 +1345,7 @@ public class GameBoard extends JFrame {
 
     } // END OF updateRangedAttackSquares METHOD
 
-    void updateGameBoardSpecificSelectedMilitaryUnitVariables(boolean isAMilitaryUnitSelected, boolean isMelee, boolean isRanged) {
-        setAMilitaryUnitSelected(isAMilitaryUnitSelected);    // SETTER USED
+    void updateGameBoardSpecificSelectedMilitaryUnitVariables(boolean isMelee, boolean isRanged) {
         setAMeleeMilitaryUnitSelected(isMelee);    // SETTER USED
         setARangedMilitaryUnitSelected(isRanged);    // SETTER USED
         setSelectedMilitaryUnit();    // SETTER USED
@@ -1418,10 +1414,10 @@ class GameDrawingPanel extends JPanel {
 
         // draw currently moveable locations or attack locations.
 
-        if (gameBoard.isAMilitaryUnitSelected() &&
+        if (gameBoard.getSelectedMilitaryUnit() != null &&
                 !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             drawMoveableGrid(graphicSettings);
-        } else if (gameBoard.isAMilitaryUnitSelected() &&
+        } else if (gameBoard.getSelectedMilitaryUnit() != null &&
                 gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             drawAttackGrid(graphicSettings);
         }

@@ -7,9 +7,9 @@ public class FindRightClickGameStateChanges {
     int cursorYTile;
     int selectedXTile;
     int selectedYTile;
-    boolean isAMilitaryUnitSelected;
     boolean isAMeleeMilitaryUnitSelected;
     boolean isARangedMilitaryUnitSelected;
+    MilitaryUnit selectedMilitaryUnit = null;
 
 
     FindRightClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
@@ -24,9 +24,9 @@ public class FindRightClickGameStateChanges {
         selectedYTile = gameBoard.findYTileClickedOn();
         cursorXTile = gameBoard.getCursorMapTileX();
         cursorYTile = gameBoard.getCursorMapTileY();
-        this.isAMilitaryUnitSelected = gameBoard.isAMilitaryUnitSelected();
         this.isAMeleeMilitaryUnitSelected = gameBoard.isAMeleeMilitaryUnitSelected();
         this.isARangedMilitaryUnitSelected = gameBoard.isARangedMilitaryUnitSelected();
+        this.selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();
 
 
 
@@ -53,7 +53,7 @@ public class FindRightClickGameStateChanges {
 
     void militaryUnitMovementCommand() {
 
-        if (!isAMeleeMilitaryUnitSelected) { return; } // return early if no unit is selected
+        if (gameBoard.getSelectedMilitaryUnit() == null) { return; } // return early if no unit is selected
 
         boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoicesGrid();
 
@@ -61,7 +61,11 @@ public class FindRightClickGameStateChanges {
 
         if (tempCurrentMoveableChoices[selectedYTile][selectedXTile]) {
 
-
+            gameBoard.getSelectedMilitaryUnit().setXTile(selectedXTile);
+            gameBoard.getSelectedMilitaryUnit().setYTile(selectedYTile);
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         }
 
