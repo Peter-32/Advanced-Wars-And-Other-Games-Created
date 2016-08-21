@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -50,8 +51,10 @@ public class GameBoard extends JFrame {
         }
         return clonedCurrentMoveableChoicesGrid;
     }
-    synchronized public void updateCurrentMoveableChoicesGrid(int i, int j, boolean newValue) {
-        currentMoveableChoicesGrid[i][j] = newValue;
+    synchronized public void updateCurrentMoveableChoicesGrid(int x, int y, boolean newValue) {
+        System.out.println("Inside update statement");
+        currentMoveableChoicesGrid[y][x] = newValue;
+        System.out.println("Finished update");
     }
     synchronized public void resetCurrentMoveableChoicesGrid() {
         for (int i = 0; i < currentMoveableChoicesGrid.length; i++) {
@@ -849,7 +852,7 @@ public class GameBoard extends JFrame {
 
                 if (i != 0) {
                     otherNode = g.getNodeAtLocation(j, i - 1);
-                    g.addEdges(currentNode, otherNode);
+                    g.addEdge(currentNode, otherNode);
                     countEdges+=2;
                 }
 
@@ -857,7 +860,7 @@ public class GameBoard extends JFrame {
 
                 if (j != terrainTilesGrid[0].length - 1) {
                     otherNode = g.getNodeAtLocation(j + 1, i);
-                    g.addEdges(currentNode, otherNode);
+                    g.addEdge(currentNode, otherNode);
                     countEdges+=2;
                 }
 
@@ -865,7 +868,7 @@ public class GameBoard extends JFrame {
 
                 if (i != terrainTilesGrid.length - 1) {
                     otherNode = g.getNodeAtLocation(j, i + 1);
-                    g.addEdges(currentNode, otherNode);
+                    g.addEdge(currentNode, otherNode);
                     countEdges+=2;
                 }
 
@@ -873,7 +876,7 @@ public class GameBoard extends JFrame {
 
                 if (j != 0) {
                     otherNode = g.getNodeAtLocation(j - 1, i);
-                    g.addEdges(currentNode, otherNode);
+                    g.addEdge(currentNode, otherNode);
                     countEdges+=2;
                 }
 
@@ -883,6 +886,21 @@ public class GameBoard extends JFrame {
 
         System.out.println("Edges: " + countEdges + " Nodes: " + countNodes + " Expected based on loadTerrainGraphLogic");
         g.loggingNumberOfNodesAndEdges();
+
+
+        WeightedGraph.Node loggingNode = g.getNodeAtLocation(3,2);
+        System.out.println("loggingNode get terrain " + loggingNode.getTerrain());
+        CopyOnWriteArrayList<WeightedGraph.DirectedEdge> edgesOutFromLoggingNode = g.nodeEdges.get(loggingNode);
+        for (WeightedGraph.DirectedEdge edge : edgesOutFromLoggingNode) {
+            System.out.println("edge.getNode1.getXTile() = " + edge.getNode1().getXTile());
+            System.out.println("edge.getNode1.getYTile() = " + edge.getNode1().getYTile());
+            System.out.println("edge.getNode2.getXTile() = " + edge.getNode2().getXTile());
+            System.out.println("edge.getNode2.getYTile() = " + edge.getNode2().getYTile());
+            System.out.println("edge.getMovementRequired = " + edge.getMovementRequired(MilitaryUnitType.INFANTRY));
+            System.out.println("Next Edge attached to this node at the node location");
+        }
+
+        System.out.println("Leaving loadTerrainGraph method");
 
         return g;
 
@@ -1283,8 +1301,6 @@ class GameDrawingPanel extends JPanel {
             } else {
 
                 // if blue unit, make a blue unit
-                System.out.println("made it to paint blue unit");
-                System.out.println("current military type is " + currentMilitaryUnit.getMilitaryUnitType());
                 switch (currentMilitaryUnit.getMilitaryUnitType()) {
 
                     case INFANTRY:
@@ -1338,7 +1354,7 @@ class GameDrawingPanel extends JPanel {
         boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoices();
 
         graphicSettings.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.40f));
-        graphicSettings.setPaint(Color.YELLOW);
+        graphicSettings.setPaint(Color.BLACK);
 
         for (boolean[] row : tempCurrentMoveableChoices) {
             for (int j = 0; j < row.length; j++) {

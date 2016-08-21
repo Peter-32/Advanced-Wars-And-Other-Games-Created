@@ -9,7 +9,7 @@ public class WeightedGraph {
 
     private CopyOnWriteArrayList<DirectedEdge> edges;
     private CopyOnWriteArrayList<Node> nodes;
-    private Map<Node, CopyOnWriteArrayList<DirectedEdge>> nodeEdges;
+    public Map<Node, CopyOnWriteArrayList<DirectedEdge>> nodeEdges;
     private GameBoard gameBoard;
 
     WeightedGraph(GameBoard gameBoard) {
@@ -34,9 +34,8 @@ public class WeightedGraph {
         new Node(terrainTile, xTile, yTile);
     }
 
-    void addEdges(Node node1, Node node2) {
+    void addEdge(Node node1, Node node2) {
         new DirectedEdge(node1, node2);
-        new DirectedEdge(node2, node1);
     }
     void loggingNumberOfNodesAndEdges() {
         System.out.println("edges.size() = " + edges.size());
@@ -49,6 +48,21 @@ public class WeightedGraph {
             countEdgesInDictionary += loggingEdges.size();
         }
         System.out.println("nodeEdges number of edges = " + countEdgesInDictionary);
+
+        int i = 1;
+        for (Node node : nodes) {
+            System.out.println("");
+            System.out.println("node number " + i + ": (" + node.getXTile() + ", " + node.getYTile() + ")");
+            loggingEdges = nodeEdges.get(node);
+            for (DirectedEdge edge_ : loggingEdges) {
+                System.out.println("Edge's node1 X position = " + edge_.getNode1().getXTile() + " -- Edge's node1 Y Position = " + edge_.getNode1().getYTile() +
+                        " Edge's node2 X position = " + edge_.getNode2().getXTile() + " -- Edge's node2 Y Position = " + edge_.getNode2().getYTile());
+            }
+            i++;
+        }
+
+
+
     }
 
 
@@ -95,6 +109,7 @@ public class WeightedGraph {
     CopyOnWriteArrayList<Node> NodesAccessibleFromLocationWithStepsRecursion(
             CopyOnWriteArrayList<Node> nodeList, int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
 
+        System.out.println("New recursive call");
         boolean useContinueOnce = false;
 
         // get the xTile and yTile of the startingNode
@@ -173,6 +188,7 @@ public class WeightedGraph {
 
         // return the list.
 
+        System.out.println("Leaving recursive call");
         return nodeList;
 
     }

@@ -338,16 +338,22 @@ public class FindLeftClickGameStateChanges {
         // call the graph search function via a GameBoard method.  The graph is on the gameBoard
 
         Set<WeightedGraph.Node> resultNodes = gameBoard.runNodesAccessibleFromLocationWithSteps(selectedNode, militaryUnitType);
-
+        System.out.println("left resultNodes");
         // now update the movable choices based on the X, Y locations of the resultNodes
 
         for (WeightedGraph.Node node : resultNodes) {
+            System.out.println("in for loop");
             currentNodeX = node.getXTile();
+            System.out.println("in for loop");
             currentNodeY = node.getYTile();
+            System.out.println("in for loop");
+            System.out.println("currentNodeX = " + currentNodeX);
+            System.out.println("currentNodeY = " + currentNodeY);
             gameBoard.updateCurrentMoveableChoicesGrid(currentNodeX, currentNodeY, true);   // not sure if this will work, but looks reasonable.
+            System.out.println("in for loop");
         }
 
-        System.out.println("Leaving movable choices at end");
+        System.out.println("Leaving updateCurrentMovableChoices choices at end of method");
     }
 
 } // END OF FindLeftClickGameStateChanges  CLASS
