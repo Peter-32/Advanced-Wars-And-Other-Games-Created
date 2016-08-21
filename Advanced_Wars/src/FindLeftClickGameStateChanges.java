@@ -284,6 +284,8 @@ public class FindLeftClickGameStateChanges {
         if(checkIfBtnPressed(gameBoard.getEndTurnBtnStartX(), gameBoard.getEndTurnBtnStartY(),
                 gameBoard.getEndTurnBtnWidth(), gameBoard.getEndTurnBtnHeight())) {
 
+            resetAllMilitaryUnitsHasMoved();
+
             if (gameBoard.getTurnColor() == 'r') {
 
                 gameBoard.setTurnColor('b');
@@ -299,6 +301,22 @@ public class FindLeftClickGameStateChanges {
         }
 
     } // END OF checkIfEndTurnWasClickedOn METHOD
+
+    /*
+    Updates all military units.  The property has moved is set to false, so they can move on a new turn.
+     */
+
+    void resetAllMilitaryUnitsHasMoved() {
+
+        MilitaryUnit currentMilitaryUnit = null;
+        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
+
+        while (tempUnitsIterator.hasNext()) {
+
+            currentMilitaryUnit = tempUnitsIterator.next();
+            currentMilitaryUnit.setMovedThisTurn(false);
+        }
+    }
 
     /*
      update the grid of which tiles are currently movable.

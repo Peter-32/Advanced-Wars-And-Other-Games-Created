@@ -34,6 +34,13 @@ abstract class MilitaryUnit {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+    public boolean isMovedThisTurn() {
+        return movedThisTurn;
+    }
+
+    public void setMovedThisTurn(boolean movedThisTurn) {
+        this.movedThisTurn = movedThisTurn;
+    }
 
     public GameBoard.MilitaryUnitType getMilitaryUnitType() {
 
@@ -57,6 +64,7 @@ abstract class MilitaryUnit {
     private int xTile;
     private int yTile;
     private boolean selected;
+    private boolean movedThisTurn = false; // this turn
 
     MilitaryUnit(char color, int xTile, int yTile, boolean selected) {
         this.color = color;
@@ -64,7 +72,6 @@ abstract class MilitaryUnit {
         this.yTile = yTile;
         this.selected = selected;
     }
-
 
 }
 
