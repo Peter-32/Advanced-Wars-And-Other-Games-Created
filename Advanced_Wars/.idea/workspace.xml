@@ -26,7 +26,7 @@
         <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="186">
-              <caret line="1613" column="108" selection-start-line="1613" selection-start-column="108" selection-end-line="1613" selection-end-column="108" />
+              <caret line="839" column="30" selection-start-line="839" selection-start-column="30" selection-end-line="839" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#8159#8160#0" expanded="true" />
@@ -186,10 +186,10 @@
         <option value="$PROJECT_DIR$/src/WeightedGraph.java" />
         <option value="$PROJECT_DIR$/src/FindAButtonGameStateChanges.java" />
         <option value="$PROJECT_DIR$/resources/TODO.txt" />
-        <option value="$PROJECT_DIR$/src/GameBoard.java" />
         <option value="$PROJECT_DIR$/src/MilitaryUnit.java" />
-        <option value="$PROJECT_DIR$/src/FindRightClickGameStateChanges.java" />
         <option value="$PROJECT_DIR$/src/FindLeftClickGameStateChanges.java" />
+        <option value="$PROJECT_DIR$/src/FindRightClickGameStateChanges.java" />
+        <option value="$PROJECT_DIR$/src/GameBoard.java" />
       </list>
     </option>
   </component>
@@ -1140,22 +1140,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="1613" column="108" selection-start-line="1613" selection-start-column="108" selection-end-line="1613" selection-end-column="108" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#8159#8160#0" expanded="true" />
-            <element signature="e#8211#8212#0" expanded="true" />
-            <element signature="e#8673#8674#0" expanded="true" />
-            <element signature="e#8722#8723#0" expanded="true" />
-            <element signature="e#10419#10420#0" expanded="true" />
-            <element signature="e#10462#10463#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/WeightedGraph.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="186">
@@ -1197,6 +1181,22 @@
           <caret line="47" column="38" selection-start-line="47" selection-start-column="38" selection-end-line="47" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GameBoard.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="839" column="30" selection-start-line="839" selection-start-column="30" selection-end-line="839" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#8159#8160#0" expanded="true" />
+            <element signature="e#8211#8212#0" expanded="true" />
+            <element signature="e#8673#8674#0" expanded="true" />
+            <element signature="e#8722#8723#0" expanded="true" />
+            <element signature="e#10419#10420#0" expanded="true" />
+            <element signature="e#10462#10463#0" expanded="true" />
           </folding>
         </state>
       </provider>

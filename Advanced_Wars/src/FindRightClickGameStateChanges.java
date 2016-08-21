@@ -28,6 +28,7 @@ public class FindRightClickGameStateChanges {
         this.isAMeleeMilitaryUnitSelected = gameBoard.isAMeleeMilitaryUnitSelected();
         this.isARangedMilitaryUnitSelected = gameBoard.isARangedMilitaryUnitSelected();
         this.selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();
+        this.clickedMilitaryUnit = gameBoard.getMilitaryUnitAtXYTile(clickedXTile, clickedYTile);  // This can be null
 
         // assign a value to clickedMilitaryUnit:
 

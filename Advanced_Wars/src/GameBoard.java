@@ -829,6 +829,26 @@ public class GameBoard extends JFrame {
         }
     }
 
+    public MilitaryUnit getMilitaryUnitAtXYTile(int xTile, int yTile) {
+        MilitaryUnit currentMilitaryUnit = null;
+        MilitaryUnit selectedMilitaryUnit = null;
+
+        // loop through all units
+
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+            if (currentMilitaryUnit.getXTile() == xTile &&
+                    currentMilitaryUnit.getYTile() == yTile) {
+                selectedMilitaryUnit = currentMilitaryUnit;
+            }
+        }
+
+        // this value can be null.
+
+        return selectedMilitaryUnit;
+    }
+
     void loadMap(int mapNumber) {
 
         // load map terrain
