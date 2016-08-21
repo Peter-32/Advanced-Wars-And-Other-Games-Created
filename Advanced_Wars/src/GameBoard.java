@@ -1129,9 +1129,9 @@ public class GameBoard extends JFrame {
 
         // loop through all units
 
-        Iterator<MilitaryUnit> tempUnitsIterator = militaryUnitsIterator();
-        while (tempUnitsIterator.hasNext()) {
-            currentMilitaryUnit = tempUnitsIterator.next();
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
             if (currentMilitaryUnit.isSelected()) {
                 selectedMilitaryUnit = currentMilitaryUnit;
             }
@@ -1142,7 +1142,209 @@ public class GameBoard extends JFrame {
         return selectedMilitaryUnit;
     }
 
+    public void resetMilitaryUnitSelected() {
+        System.out.println("test3");
+        MilitaryUnit currentMilitaryUnit = null;
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
 
+        while (tempMilitaryUnitsIterator.hasNext()) {
+
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+            currentMilitaryUnit.setSelected(false);
+        }
+        System.out.println("test4");
+
+    } // END OF resetMilitaryUnitSelected METHOD
+
+    public void updateAttackSquares() {
+
+        if (isAMeleeMilitaryUnitSelected()) {
+            updateMeleeAttackSquares();
+        } else if (isARangedMilitaryUnitSelected()) {
+            updateRangedAttackSquares();
+        }
+    } // END OF updateAttackSquares METHOD
+
+    void updateMeleeAttackSquares() {
+
+        // variables
+
+        int xTile, yTile;
+
+        // reset
+
+        resetCurrentAttackChoicesGrid();
+
+        // if no unit is selected then return.  Probably unnecessary, but shouldn't hurt to include this.
+
+        if (!isAMilitaryUnitSelected()) {
+            return;
+        }
+
+        // find the current x, y position
+
+        xTile = getSelectedMilitaryUnit().getXTile();
+        yTile = getSelectedMilitaryUnit().getYTile();
+
+        if (xTile != 0) {
+            updateCurrentAttackChoicesGrid(xTile - 1, yTile, true);
+        }
+
+        if (xTile != getMapTileWidth() - 1) {
+            updateCurrentAttackChoicesGrid(xTile + 1, yTile, true);
+        }
+
+        if (yTile != 0) {
+            updateCurrentAttackChoicesGrid(xTile, yTile - 1, true);
+        }
+
+        if (yTile != getMapTileHeight() - 1) {
+            updateCurrentAttackChoicesGrid(xTile, yTile + 1, true);
+        }
+
+    } // END OF updateMeleeAttackSquares METHOD
+
+    void updateRangedAttackSquares() {
+
+        // variables
+
+        int xTile, yTile;
+
+        // reset
+
+        resetCurrentAttackChoicesGrid();
+
+        // if no unit is selected then return.  Probably unnecessary, but shouldn't hurt to include this.
+
+        if (!isAMilitaryUnitSelected()) {
+            return;
+        }
+
+        // find the current x, y position
+
+        xTile = getSelectedMilitaryUnit().getXTile();
+        yTile = getSelectedMilitaryUnit().getYTile();
+
+        // furthest left
+
+        if (xTile >= 3) {
+            updateCurrentAttackChoicesGrid(xTile - 3, yTile, true);
+        }
+
+        // furthest up
+
+        if (yTile >= 3) {
+            updateCurrentAttackChoicesGrid(xTile, yTile - 3, true);
+        }
+
+        // furthest right
+
+        if (xTile <= getMapTileWidth() - 4) {
+            updateCurrentAttackChoicesGrid(xTile + 3, yTile, true);
+        }
+
+        // furthest down
+
+        if (yTile <= getMapTileHeight() - 4) {
+            updateCurrentAttackChoicesGrid(xTile, yTile + 3, true);
+        }
+
+        // left 2
+
+        if (xTile >= 2) {
+            updateCurrentAttackChoicesGrid(xTile - 2, yTile, true);
+        }
+
+        // up 2
+
+        if (yTile >= 2) {
+            updateCurrentAttackChoicesGrid(xTile, yTile - 2, true);
+        }
+
+        // right 2
+
+        if (xTile <= getMapTileWidth() - 3) {
+            updateCurrentAttackChoicesGrid(xTile + 2, yTile, true);
+        }
+
+        // down 2
+
+        if (yTile <= getMapTileHeight() - 3) {
+            updateCurrentAttackChoicesGrid(xTile, yTile + 2, true);
+        }
+
+        // diagonal up 1 / left 1
+
+        if (xTile >= 1 && yTile >= 1) {
+            updateCurrentAttackChoicesGrid(xTile - 1, yTile - 1, true);
+        }
+
+        // diagonal up 1 / right 1
+
+        if (xTile <= getMapTileWidth() - 2 && yTile >= 1) {
+            updateCurrentAttackChoicesGrid(xTile + 1, yTile - 1, true);
+        }
+
+        // diagonal down 1 / left 1
+
+        if (xTile >= 1 && yTile <= getMapTileHeight() - 2) {
+            updateCurrentAttackChoicesGrid(xTile - 1, yTile + 1, true);
+        }
+
+        // diagonal down 1 / right 1
+
+        if (xTile <= getMapTileWidth() - 2 && yTile <= getMapTileHeight() - 2) {
+            updateCurrentAttackChoicesGrid(xTile + 1, yTile + 1, true);
+        }
+
+        // diagonal up 2 / left 1
+
+        if (xTile >= 1 && yTile >= 2) {
+            updateCurrentAttackChoicesGrid(xTile - 1, yTile - 2, true);
+        }
+
+        // diagonal up 1 / left 2
+
+        if (xTile >= 2 && yTile >= 1) {
+            updateCurrentAttackChoicesGrid(xTile - 2, yTile - 1, true);
+        }
+
+        // diagonal up 2 / right 1
+
+        if (xTile <= getMapTileWidth() - 2 && yTile >= 2) {
+            updateCurrentAttackChoicesGrid(xTile + 1, yTile - 2, true);
+        }
+
+        // diagonal up 1 / right 2
+
+        if (xTile <= getMapTileWidth() - 3 && yTile >= 1) {
+            updateCurrentAttackChoicesGrid(xTile + 2, yTile - 1, true);
+        }
+        // diagonal down 2 / left 1
+
+        if (xTile >= 1 && yTile <= getMapTileHeight() - 3) {
+            updateCurrentAttackChoicesGrid(xTile - 1, yTile + 2, true);
+        }
+
+        // diagonal down 1 / left 2
+
+        if (xTile >= 2 && yTile <= getMapTileHeight() - 2) {
+            updateCurrentAttackChoicesGrid(xTile - 2, yTile + 1, true);
+        }
+
+        // diagonal down 2 / right 1
+
+        if (xTile <= getMapTileWidth() - 2 && yTile <= getMapTileHeight() - 3) {
+            updateCurrentAttackChoicesGrid(xTile + 1, yTile + 2, true);
+        }
+
+        // diagonal down 1 / right 2
+
+        if (xTile <= getMapTileWidth() - 3 && yTile <= getMapTileHeight() - 2) {
+            updateCurrentAttackChoicesGrid(xTile + 2, yTile + 1, true);
+        }
+
+    } // END OF updateRangedAttackSquares METHOD
 
 } // END OF GameBoard CLASS
 
@@ -1362,9 +1564,9 @@ class GameDrawingPanel extends JPanel {
 
         // loop through all units; update selected to true or false.
 
-        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
-        while (tempUnitsIterator.hasNext()) {
-            currentMilitaryUnit = tempUnitsIterator.next();
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = gameBoard.militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
 
             // if a red unit, make a red unit
 

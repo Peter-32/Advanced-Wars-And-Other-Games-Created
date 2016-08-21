@@ -169,14 +169,14 @@ public class WeightedGraph {
         // prepare to skip movement through tiles with enemy units in them.  You cannot move through the other team's color units.
 
         MilitaryUnit currentMilitaryUnit = null;
-        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = gameBoard.militaryUnitsIterator();
 
-        while (tempUnitsIterator.hasNext()) {
+        while (tempMilitaryUnitsIterator.hasNext()) {
 
             // Search for when the X, Y are the same, and
             // the currently selected military unit color differs from this other military unit.
 
-            currentMilitaryUnit = tempUnitsIterator.next();
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
             if (edge_.getNode2().getXTile() == currentMilitaryUnit.getXTile() &&
                     edge_.getNode2().getYTile() == currentMilitaryUnit.getYTile() &&
                     gameBoard.getSelectedMilitaryUnit().getColor() != currentMilitaryUnit.getColor()) {

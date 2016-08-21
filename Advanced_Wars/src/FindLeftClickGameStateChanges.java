@@ -74,9 +74,9 @@ public class FindLeftClickGameStateChanges {
         boolean aMeleeMilitaryUnitSelected = false;
         boolean aRangedMilitaryUnitSelected = false;
         // loop through allunits; update selected to true or false.
-        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
-        while (tempUnitsIterator.hasNext()) {
-            currentMilitaryUnit = tempUnitsIterator.next();
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = gameBoard.militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
             if (gameBoard.getCursorMapTileX() == currentMilitaryUnit.getXTile() &&
                     gameBoard.getCursorMapTileY() == currentMilitaryUnit.getYTile()) {
                 currentMilitaryUnit.setSelected(true);    // SETTER USED
@@ -226,33 +226,49 @@ public class FindLeftClickGameStateChanges {
                 case INFANTRY:
                     if (gameBoard.getRedPlayerBank() >= 1000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 1000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Infantry('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(true);
+                        gameBoard.setARangedMilitaryUnitSelected(false);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
                 case MECH:
                     if (gameBoard.getRedPlayerBank() >= 3000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 3000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Mech('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(true);
+                        gameBoard.setARangedMilitaryUnitSelected(false);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
                 case ARTILLERY:
                     if (gameBoard.getRedPlayerBank() >= 6000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 6000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Artillery('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(false);
+                        gameBoard.setARangedMilitaryUnitSelected(true);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
                 case TANK:
                     if (gameBoard.getRedPlayerBank() >= 7000) {
                         gameBoard.setRedPlayerBank(gameBoard.getRedPlayerBank() - 7000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Tank('r', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(true);
+                        gameBoard.setARangedMilitaryUnitSelected(false);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
             }
@@ -261,33 +277,49 @@ public class FindLeftClickGameStateChanges {
                 case INFANTRY:
                     if (gameBoard.getBluePlayerBank() >= 1000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 1000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Infantry('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(true);
+                        gameBoard.setARangedMilitaryUnitSelected(false);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
                 case MECH:
                     if (gameBoard.getBluePlayerBank() >= 3000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 3000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Mech('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(true);
+                        gameBoard.setARangedMilitaryUnitSelected(false);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
                 case ARTILLERY:
                     if (gameBoard.getBluePlayerBank() >= 6000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 6000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Artillery('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(false);
+                        gameBoard.setARangedMilitaryUnitSelected(true);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
                 case TANK:
                     if (gameBoard.getBluePlayerBank() >= 7000) {
                         gameBoard.setBluePlayerBank(gameBoard.getBluePlayerBank() - 7000);
+                        gameBoard.resetMilitaryUnitSelected();
                         gameBoard.addMilitaryUnits(new Tank('b', gameBoard.getCursorMapTileX(), gameBoard.getCursorMapTileY(), true));
                         gameBoard.setBuyingFromBasePossible(false);
                         gameBoard.setAMilitaryUnitSelected(true);
+                        gameBoard.setAMeleeMilitaryUnitSelected(true);
+                        gameBoard.setARangedMilitaryUnitSelected(false);
+                        gameBoard.updateAttackSquares();
                     }
                     break;
             }
@@ -333,11 +365,11 @@ public class FindLeftClickGameStateChanges {
     void resetAllMilitaryUnitsHasMoved() {
 
         MilitaryUnit currentMilitaryUnit = null;
-        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = gameBoard.militaryUnitsIterator();
 
-        while (tempUnitsIterator.hasNext()) {
+        while (tempMilitaryUnitsIterator.hasNext()) {
 
-            currentMilitaryUnit = tempUnitsIterator.next();
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
             currentMilitaryUnit.setMovedThisTurn(false);
         }
     }
