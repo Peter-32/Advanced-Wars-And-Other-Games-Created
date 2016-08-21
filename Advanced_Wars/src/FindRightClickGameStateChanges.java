@@ -27,7 +27,7 @@ public class FindRightClickGameStateChanges {
         cursorYTile = gameBoard.getCursorMapTileY();
         this.isAMeleeMilitaryUnitSelected = gameBoard.isAMeleeMilitaryUnitSelected();
         this.isARangedMilitaryUnitSelected = gameBoard.isARangedMilitaryUnitSelected();
-        this.selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();
+        this.selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();  // this can be null
         this.clickedMilitaryUnit = gameBoard.getMilitaryUnitAtXYTile(clickedXTile, clickedYTile);  // This can be null
 
         // assign a value to clickedMilitaryUnit:
@@ -74,13 +74,13 @@ public class FindRightClickGameStateChanges {
 
         // if the selected tile is currently movable
 
-        if (tempCurrentMoveableChoices[selectedYTile][selectedXTile]) {
+        if (tempCurrentMoveableChoices[clickedYTile][clickedXTile]) {
 
-            selectedMilitaryUnit.setXTile(selectedXTile);
-            selectedMilitaryUnit.setYTile(selectedYTile);
+            selectedMilitaryUnit.setXTile(clickedXTile);
+            selectedMilitaryUnit.setYTile(clickedYTile);
             selectedMilitaryUnit.setMovedThisTurn(true);
-            gameBoard.setCursorMapTileX(selectedXTile);
-            gameBoard.setCursorMapTileY(selectedYTile);
+            gameBoard.setCursorMapTileX(clickedXTile);
+            gameBoard.setCursorMapTileY(clickedYTile);
             gameBoard.setBuyingFromBasePossible(false);
 
             // If artillery moves then it can't attack the same turn
@@ -104,18 +104,18 @@ public class FindRightClickGameStateChanges {
 
     void militaryUnitAttackCommand() {
 
+        if (clickedMilitaryUnit == null) { return; } // we return if no unit was clicked on
+        if (clickedMilitaryUnit.getColor() == gameBoard.getTurnColor()) { return; } // we return if the unit isn't another team color
+
         boolean[][] tempCurrentAttackChoices = gameBoard.cloneCurrentAttackChoicesGrid();
 
-        if (tempCurrentAttackChoices[selectedYTile][selectedXTile]) {
-
-
+        if (tempCurrentAttackChoices[clickedYTile][clickedXTile]) {
 
             selectedMilitaryUnit.setMovedThisTurn(true);
-            //selectedMilitaryUnit.attack
-            //////////////////////// CAN ONLY ATTACK THE OTHER COLOR!!!!!!!!!!!!!!!!
+            selectedMilitaryUnit.setAttackedThisTurn(true);
+            selectedMilitaryUnit.attack(clickedMilitaryUnit);
+
         }
-
-
 
     }
 

@@ -1,11 +1,14 @@
-then attack choice, 
-then one attack and one move per turn, unless artillery-movement costs an attack, then health fields and drawing, 
+Implemented, untested:    then attack choice, 
+Implemented, untested:    then one attack and one move per turn, unless artillery-movement costs an attack, 
+
+
+
+then health fields and drawing, (Only draw health if the display health is less than 10)
 then attack math, 
 then defense points, 
-then repair at start of turn that costs right amount of money (repair on units at buildings)
+gain X money at the end of the turn (1000 per building)
+lose X money at end of turn and repair occurs if injured units on on buildings (2 health repair ??? cost)
 then capturing city mechanic, 
-
-
 then capturing HQ Game Over, then it is done.
 
 

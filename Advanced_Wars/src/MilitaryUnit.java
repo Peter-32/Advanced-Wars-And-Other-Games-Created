@@ -50,6 +50,22 @@ abstract class MilitaryUnit {
         this.attackedThisTurn = attackedThisTurn;
     }
 
+    public int getDisplayAndCaptureHealth() {
+        return displayAndCaptureHealth;
+    }
+
+    public void setDisplayAndCaptureHealth(int displayAndCaptureHealth) {
+        this.displayAndCaptureHealth = displayAndCaptureHealth;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
     public GameBoard.MilitaryUnitType getMilitaryUnitType() {
 
         switch(this.getClass().getName()) {
@@ -67,10 +83,12 @@ abstract class MilitaryUnit {
         }
 
     } // END OF getMilitaryUnitType GETTER
-
+    
     private char color;
     private int xTile;
     private int yTile;
+    private int health = 100;
+    private int displayAndCaptureHealth = 10;
     private boolean selected;
     private boolean movedThisTurn = false;
     private boolean attackedThisTurn = false;
@@ -84,12 +102,20 @@ abstract class MilitaryUnit {
         this.attackedThisTurn = attackedThisTurn;
     }
 
+    abstract void attack(MilitaryUnit enemyUnit);
+
 }
 
 class Infantry extends MilitaryUnit {
 
     Infantry(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
+    }
+
+    void attack(MilitaryUnit enemyUnit) {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     }
 
 }
@@ -100,12 +126,24 @@ class Mech extends MilitaryUnit {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
     }
 
+    void attack(MilitaryUnit enemyUnit) {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    }
+
 }
 
 class Artillery extends MilitaryUnit {
 
     Artillery(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
+    }
+
+    void attack(MilitaryUnit enemyUnit) {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     }
 
 }
@@ -115,6 +153,12 @@ class Tank extends MilitaryUnit {
 
     Tank(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn);
+    }
+
+    void attack(MilitaryUnit enemyUnit) {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     }
 
 }
