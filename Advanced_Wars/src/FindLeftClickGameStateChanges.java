@@ -20,8 +20,8 @@ public class FindLeftClickGameStateChanges {
     GameBoard gameBoard;
     int xClicked;
     int yClicked;
-    int selectedXTile;
-    int selectedYTile;
+    int clickedXTile;
+    int clickedYTile;
 
     FindLeftClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
 
@@ -31,8 +31,8 @@ public class FindLeftClickGameStateChanges {
 
         this.xClicked = xClicked;
         this.yClicked = yClicked;
-        selectedXTile = gameBoard.findXTileClickedOn();
-        selectedYTile = gameBoard.findYTileClickedOn();
+        clickedXTile = gameBoard.findXTileClickedOn();
+        clickedYTile = gameBoard.findYTileClickedOn();
 
         // check if end turn was clicked on
 
@@ -40,9 +40,9 @@ public class FindLeftClickGameStateChanges {
 
         // check if the map is clicked on, then the game will update the cursor location, otherwise no update is wanted.
 
-        if (selectedXTile != -1 && selectedYTile != -1) {
-            gameBoard.setCursorMapTileX(selectedXTile);    // SETTER USED
-            gameBoard.setCursorMapTileY(selectedYTile);    // SETTER USED
+        if (clickedXTile != -1 && clickedYTile != -1) {
+            gameBoard.setCursorMapTileX(clickedXTile);    // SETTER USED
+            gameBoard.setCursorMapTileY(clickedYTile);    // SETTER USED
         }
 
         // check if the player clicked on a military unit, regardless of if it is friendly or an enemy.

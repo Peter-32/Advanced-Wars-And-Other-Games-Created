@@ -5,11 +5,12 @@ public class FindRightClickGameStateChanges {
     int yClicked;
     int cursorXTile;
     int cursorYTile;
-    int selectedXTile;
-    int selectedYTile;
+    int clickedXTile;
+    int clickedYTile;
     boolean isAMeleeMilitaryUnitSelected;
     boolean isARangedMilitaryUnitSelected;
     MilitaryUnit selectedMilitaryUnit = null;
+    MilitaryUnit clickedMilitaryUnit = null;
 
 
     FindRightClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
@@ -20,13 +21,27 @@ public class FindRightClickGameStateChanges {
 
         this.xClicked = xClicked;
         this.yClicked = yClicked;
-        selectedXTile = gameBoard.findXTileClickedOn();
-        selectedYTile = gameBoard.findYTileClickedOn();
+        clickedXTile = gameBoard.findXTileClickedOn();
+        clickedYTile = gameBoard.findYTileClickedOn();
         cursorXTile = gameBoard.getCursorMapTileX();
         cursorYTile = gameBoard.getCursorMapTileY();
         this.isAMeleeMilitaryUnitSelected = gameBoard.isAMeleeMilitaryUnitSelected();
         this.isARangedMilitaryUnitSelected = gameBoard.isARangedMilitaryUnitSelected();
         this.selectedMilitaryUnit = gameBoard.getSelectedMilitaryUnit();
+
+        // assign a value to clickedMilitaryUnit:
+
+
+        //gameBoard.unit
+
+
+
+        //this.clickedMilitaryUnit =
+
+
+
+
+
 
         // leave early if no units are selected
 
@@ -78,11 +93,6 @@ public class FindRightClickGameStateChanges {
               //gameBoard.updateCurrentMoveableChoicesGrid();
               //gameBoard.updateAttackSquares();
 
-
-
-
-
-
         }
 
     } // END OF militaryUnitMovementCommand METHOD
@@ -92,6 +102,17 @@ public class FindRightClickGameStateChanges {
      */
 
     void militaryUnitAttackCommand() {
+
+        boolean[][] tempCurrentAttackChoices = gameBoard.cloneCurrentAttackChoicesGrid();
+
+        if (tempCurrentAttackChoices[selectedYTile][selectedXTile]) {
+
+
+
+            selectedMilitaryUnit.setMovedThisTurn(true);
+            //selectedMilitaryUnit.attack
+            //////////////////////// CAN ONLY ATTACK THE OTHER COLOR!!!!!!!!!!!!!!!!
+        }
 
 
 
