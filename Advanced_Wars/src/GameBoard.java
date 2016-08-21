@@ -441,6 +441,9 @@ public class GameBoard extends JFrame {
         writeLock.lock();
         try {
             militaryUnits.remove(e);
+
+            // Sound can possibly go here
+
         } finally{
             writeLock.unlock();
         }
@@ -1375,6 +1378,87 @@ public class GameBoard extends JFrame {
         setARangedMilitaryUnitSelected(isRanged);    // SETTER USED
         setSelectedMilitaryUnit();    // SETTER USED
     }
+
+    /*
+    Find out how defendable a location is.  This will be assigned to a military unit.
+     */
+
+    int defenseStarsAtXYTile(int xTile, int yTile) {
+
+        TerrainTile terrain = getTerrainAtXYTile(xTile, yTile);
+        BuildingTile building = getBuildingAtXYTile(xTile, yTile);
+        int highestDefenseStars = 0;
+        int terrainDefenseStars = 0;
+        int buildingDefenseStars = 0;
+
+        switch (terrain) {
+
+            case MOUNTAIN:
+                terrainDefenseStars = 4;
+                break;
+            case GRASS:
+                terrainDefenseStars = 1;
+                break;
+            case ROAD_VERTICAL:
+                terrainDefenseStars = 0;
+                break;
+            case ROAD_HORIZONTAL:
+                terrainDefenseStars = 0;
+                break;
+            case ROAD_TURN_UL:
+                terrainDefenseStars = 0;
+                break;
+            case ROAD_TURN_UR:
+                terrainDefenseStars = 0;
+                break;
+            case ROAD_TURN_DL:
+                terrainDefenseStars = 0;
+                break;
+            case ROAD_TURN_DR:
+                terrainDefenseStars = 0;
+                break;
+            default:
+                terrainDefenseStars = 0;
+                break;
+        }
+
+        switch (building) {
+
+            case NONE:
+                buildingDefenseStars = 0;
+            case GRAY_BASE:
+                buildingDefenseStars = 3;
+                break;
+            case GRAY_CITY:
+                buildingDefenseStars = 3;
+                break;
+            case RED_HQ:
+                buildingDefenseStars = 4;
+                break;
+            case RED_BASE:
+                buildingDefenseStars = 3;
+                break;
+            case RED_CITY:
+                buildingDefenseStars = 3;
+                break;
+            case BLUE_HQ:
+                buildingDefenseStars = 4;
+                break;
+            case BLUE_BASE:
+                buildingDefenseStars = 3;
+                break;
+            case BLUE_CITY:
+                buildingDefenseStars = 3;
+                break;
+        }
+
+        highestDefenseStars = Math.max(terrainDefenseStars, buildingDefenseStars);
+
+        return highestDefenseStars;
+    }
+
+
+
 
 } // END OF GameBoard CLASS
 

@@ -58,21 +58,31 @@ abstract class MilitaryUnit {
         this.displayAndCaptureHealth = displayAndCaptureHealth;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(double health) {
         this.health = health;
+
+        // If health is less than 0 another area of the program removes it from the game
+
+        // update the display and capture integer health amount.  Add one to the health and divide by 10, and round down.
+        // the value is at most 10.
+
+        int tempDisplayAndCaptureHealth = (int) ((health + 1) / 10);
+        int newDisplayAndCaptureHealth = Math.min(10, tempDisplayAndCaptureHealth);
+        setDisplayAndCaptureHealth(newDisplayAndCaptureHealth);
     }
 
-    public GameBoard.TerrainTile getCurrentTerrain() {
-        return currentTerrain;
+    public int getDefenseStars() {
+        return defenseStars;
     }
 
-    public void setCurrentTerrain(GameBoard.TerrainTile currentTerrain) {
-        this.currentTerrain = currentTerrain;
+    public void setDefenseStars(int defenseStars) {
+        this.defenseStars = defenseStars;
     }
+
 
     public GameBoard.MilitaryUnitType getMilitaryUnitType() {
 
@@ -95,33 +105,44 @@ abstract class MilitaryUnit {
     private char color;
     private int xTile;
     private int yTile;
-    private int health = 100;
+    private double health = 100;
     private int displayAndCaptureHealth = 10;
     private boolean selected;
     private boolean movedThisTurn = false;
     private boolean attackedThisTurn = false;
-    private GameBoard.TerrainTile currentTerrain;
+    private int defenseStars;
 
     MilitaryUnit(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
-                 GameBoard.TerrainTile currentTerrain) {
+                 int defenseStars) {
         this.color = color;
         this.xTile = xTile;
         this.yTile = yTile;
         this.selected = selected;
         this.movedThisTurn = movedThisTurn;
         this.attackedThisTurn = attackedThisTurn;
-        this.currentTerrain = currentTerrain;
+        this.defenseStars = defenseStars;
     }
 
     abstract void attack(MilitaryUnit enemyUnit);
+
+    public void initiateAttack(MilitaryUnit enemyUnit) {
+
+        // attack enemy.
+
+        attack(enemyUnit);
+
+        // enemy returns fire after damage is done to them.
+
+        enemyUnit.attack(this);
+    }
 
 }
 
 class Infantry extends MilitaryUnit {
 
     Infantry(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
-             GameBoard.TerrainTile currentTerrain) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
+             int defenseStars) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -129,24 +150,39 @@ class Infantry extends MilitaryUnit {
         //
         int randomNumber = (int) (Math.random() * 10);
         double baseDamage;
+        double attackerDamageOutput;
+
+        // get health / 10, which is similar to display health, but can be fractional
+        // multiply this by the stars ie. 2 stars 100 health gives you 20 defense
+        // divide this by 100 to get .2;  Then subtract from 1 to get 0.8 multiplier
+
+        double defenseStarsMultiplier = 1 - (((enemyUnit.getHealth() / 10) * enemyUnit.getDefenseStars()) / 100);
 
         switch (enemyUnitType) {
 
             case INFANTRY:
-                baseDamage = 0.55;
+                baseDamage = 55;
                 break;
             case MECH:
-                baseDamage = 0.45;
+                baseDamage = 45;
                 break;
             case ARTILLERY:
-                baseDamage = 0.15;
+                baseDamage = 15;
                 break;
             case TANK:
-                baseDamage = 0.05;
+                baseDamage = 5;
+                break;
+            default:
+                baseDamage = 0;
                 break;
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        attackerDamageOutput = (baseDamage + randomNumber) *   // base damage plus random 0 to 9 extra damage
+                (this.getHealth() / 100) *  // pct health
+                defenseStarsMultiplier;  // if 4 defenseStars and 10 health
+
+        enemyUnit.setHealth(enemyUnit.getHealth() - attackerDamageOutput);
 
     }
 
@@ -155,8 +191,8 @@ class Infantry extends MilitaryUnit {
 class Mech extends MilitaryUnit {
 
     Mech(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
-         GameBoard.TerrainTile currentTerrain) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
+         int defenseStars) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -171,8 +207,8 @@ class Mech extends MilitaryUnit {
 class Artillery extends MilitaryUnit {
 
     Artillery(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
-              GameBoard.TerrainTile currentTerrain) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
+              int defenseStars) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -188,8 +224,8 @@ class Tank extends MilitaryUnit {
     private char color;
 
     Tank(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
-         GameBoard.TerrainTile currentTerrain) {
-        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, currentTerrain);
+         int defenseStars) {
+        super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
     }
 
     void attack(MilitaryUnit enemyUnit) {

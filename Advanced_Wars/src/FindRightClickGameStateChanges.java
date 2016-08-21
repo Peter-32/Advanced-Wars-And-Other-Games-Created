@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 public class FindRightClickGameStateChanges {
 
     GameBoard gameBoard;
@@ -71,6 +73,7 @@ public class FindRightClickGameStateChanges {
     void militaryUnitMovementCommand() {
 
         boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoicesGrid();
+        int defenseStars = 0;
 
         // if the selected tile is currently movable
 
@@ -78,7 +81,8 @@ public class FindRightClickGameStateChanges {
 
             selectedMilitaryUnit.setXTile(clickedXTile);
             selectedMilitaryUnit.setYTile(clickedYTile);
-            selectedMilitaryUnit.setCurrentTerrain(gameBoard.getTerrainAtXYTile(clickedXTile, clickedYTile));
+            defenseStars = gameBoard.defenseStarsAtXYTile(clickedXTile, clickedYTile);
+            selectedMilitaryUnit.setDefenseStars(defenseStars);
             selectedMilitaryUnit.setMovedThisTurn(true);
             gameBoard.setCursorMapTileX(clickedXTile);
             gameBoard.setCursorMapTileY(clickedYTile);
@@ -116,9 +120,30 @@ public class FindRightClickGameStateChanges {
             selectedMilitaryUnit.setAttackedThisTurn(true);
             selectedMilitaryUnit.attack(clickedMilitaryUnit);
 
+            checkForDestroyedUnits();
+
         }
 
     }
+
+    /*
+    Since units can't access GameBoard methods, the health of all units is checked here so they can be removed from the gameboard
+     */
+
+    void checkForDestroyedUnits() {
+
+        MilitaryUnit currentMilitaryUnit = null;
+
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = gameBoard.militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+            if (currentMilitaryUnit.getHealth() < 0) {
+                gameBoard.removeMilitaryUnits(currentMilitaryUnit);
+            }
+            
+        }
+
+    } // END OF checkForDestroyedUnits METHOD
 
 
 } // END OF FindRightClickGameStateChanges CLASS

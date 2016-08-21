@@ -5,6 +5,8 @@ Implemented, and tested:    then health fields and drawing, (Only draw health if
 
 update unit's terrain at creation and movement
 
+
+
 then attack math, 
 then defense points, 
 destroy units and remove them from lists when they lose all health

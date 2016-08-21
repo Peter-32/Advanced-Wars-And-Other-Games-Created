@@ -36,8 +36,9 @@ public class MainGameLoop implements Runnable {
             new FindAButtonGameStateChanges(gameBoard);
         }
 
+        // Search for game over
 
-        /////////////////////////if (gameBoard.isPressedTheAKeyWhileUnitSelected())??????????????? What is this again
+
 
 
         // repaint
