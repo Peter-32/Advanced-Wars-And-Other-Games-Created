@@ -45,7 +45,7 @@ public class GameBoard extends JFrame {
         }
         return clonedBuildingTilesGrid;
     }
-    public boolean[][] cloneCurrentMoveableChoices() {
+    public boolean[][] cloneCurrentMoveableChoicesGrid() {
 
         boolean[][] clonedCurrentMoveableChoicesGrid = new boolean[10][16];
         for(int i = 0; i < currentMoveableChoicesGrid.length; i++) {
@@ -62,6 +62,27 @@ public class GameBoard extends JFrame {
         for (int i = 0; i < currentMoveableChoicesGrid.length; i++) {
             for (int j = 0; j < currentMoveableChoicesGrid[0].length; j++) {
                 currentMoveableChoicesGrid[i][j] = false;
+            }
+        }
+
+    }
+    public boolean[][] cloneCurrentAttackChoicesGrid() {
+
+        boolean[][] clonedCurrentAttackChoicesGrid = new boolean[10][16];
+        for(int i = 0; i < currentAttackChoicesGrid.length; i++) {
+            clonedCurrentAttackChoicesGrid[i] = currentAttackChoicesGrid[i].clone();
+        }
+        return clonedCurrentAttackChoicesGrid;
+    }
+    synchronized public void updateCurrentAttackChoicesGrid(int x, int y, boolean newValue) {
+        System.out.println("Inside update statement");
+        currentAttackChoicesGrid[y][x] = newValue;
+        System.out.println("Finished update");
+    }
+    synchronized public void resetCurrentAttackChoicesGrid() {
+        for (int i = 0; i < currentAttackChoicesGrid.length; i++) {
+            for (int j = 0; j < currentAttackChoicesGrid[0].length; j++) {
+                currentAttackChoicesGrid[i][j] = false;
             }
         }
 
@@ -162,10 +183,16 @@ public class GameBoard extends JFrame {
         this.yClicked = yClicked;
     }
 
-    public boolean isPressedTheAKey() {
-        return pressedTheAKey;
+    public boolean isPressedTheAKeyWhileUnitSelected() {
+        return pressedTheAKeyWhileUnitSelected;
+    }
+    public boolean isWaitForTheAKeyRelease() {
+        return waitForTheAKeyRelease;
     }
 
+    public void setWaitForTheAKeyRelease(boolean waitForTheAKeyRelease) {
+        this.waitForTheAKeyRelease = waitForTheAKeyRelease;
+    }
     public int getMenuStartX() {
         return menuStartX;
     }
@@ -203,6 +230,14 @@ public class GameBoard extends JFrame {
     }
     public int getMapHeight() {
         return mapHeight;
+    }
+
+    public int getMapTileHeight() {
+        return mapTileHeight;
+    }
+
+    public int getMapTileWidth() {
+        return mapTileWidth;
     }
 
     public ImageIcon getResizedRedInfantry() {
@@ -400,6 +435,8 @@ public class GameBoard extends JFrame {
     private final int mapHeight = 750;
     private final int mapWidth = (int) (mapHeight * 16 / 10);
     private final int tileLength = mapHeight / 10;
+    private final int mapTileHeight = (int) (mapHeight / tileLength);
+    private final int mapTileWidth = (int) (mapWidth / tileLength);
     private final int endTurnBtnStartX = 40;
     private final int endTurnBtnStartY = (int) (1.46 * tileLength);
     private final int endTurnBtnWidth = (int) (2.93 * tileLength);
@@ -440,7 +477,8 @@ public class GameBoard extends JFrame {
     private int yClicked = -1;
     private int xClicked = -1;
     private int clickType = -1;
-    private boolean pressedTheAKey = false;
+    private boolean pressedTheAKeyWhileUnitSelected = false;
+    private boolean waitForTheAKeyRelease = false;
     private boolean GameOver = false;
     private boolean aMilitaryUnitSelected = false;
     private boolean aRangedMilitaryUnitSelected = false;
@@ -471,6 +509,7 @@ public class GameBoard extends JFrame {
     private TerrainTile[][] terrainTilesGrid = new TerrainTile[10][16];
     private BuildingTile[][] buildingTilesGrid = new BuildingTile[10][16];
     private boolean[][] currentMoveableChoicesGrid = new boolean[10][16];
+    private boolean[][] currentAttackChoicesGrid = new boolean[10][16];
 
     // Terrain
 
@@ -729,15 +768,20 @@ public class GameBoard extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == 65) {
-                pressedTheAKey = true;
+            if (e.getKeyCode() == 65 &&
+                    isAMilitaryUnitSelected() &&
+                    !waitForTheAKeyRelease) {
+                pressedTheAKeyWhileUnitSelected = true;
+            } else if (e.getKeyCode() == 65) {
+                waitForTheAKeyRelease = true;
             }
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
             if (e.getKeyCode() == 65) {
-                pressedTheAKey = false;
+                waitForTheAKeyRelease = false;
+                pressedTheAKeyWhileUnitSelected = false;
             }
         }
     }
@@ -1160,11 +1204,14 @@ class GameDrawingPanel extends JPanel {
 
         drawCursor(g);
 
-        // draw currently moveable locations,
-        // if statement is unneeded, but may as well have it.
+        // draw currently moveable locations or attack locations.
 
-        if (gameBoard.isAMilitaryUnitSelected()) {
+        if (gameBoard.isAMilitaryUnitSelected() &&
+                !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             drawMoveableGrid(graphicSettings);
+        } else if (gameBoard.isAMilitaryUnitSelected() &&
+                gameBoard.isPressedTheAKeyWhileUnitSelected()) {
+            drawAttackGrid(graphicSettings);
         }
 
 
@@ -1399,7 +1446,7 @@ class GameDrawingPanel extends JPanel {
      */
 
     void drawMoveableGrid(Graphics2D graphicSettings) {
-        boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoices();
+        boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoicesGrid();
 
         graphicSettings.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.40f));
         graphicSettings.setPaint(Color.BLACK);
@@ -1419,7 +1466,34 @@ class GameDrawingPanel extends JPanel {
 
         } // END OF FOR LOOP
 
-    }
+    } // END OF drawMoveableGrid METHOD
+
+    /*
+    Draw the moveable grid;  There is a condition prior that only draws if a unit is selected
+     */
+
+    void drawAttackGrid(Graphics2D graphicSettings) {
+        boolean[][] tempCurrentAttackChoices = gameBoard.cloneCurrentAttackChoicesGrid();
+
+        graphicSettings.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.40f));
+        graphicSettings.setPaint(Color.RED);
+
+        for (boolean[] row : tempCurrentAttackChoices) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j]) {
+
+                    // draw a transparent rectangle
+
+                    graphicSettings.fill(new Rectangle(drawingTopLeftXPos, drawingTopLeftYPos, gameBoard.getTileLength(),
+                            gameBoard.getTileLength()));
+                }
+
+                updateXYPositionForMapDrawing();
+            }
+
+        } // END OF FOR LOOP
+
+    } // END OF drawAttackGrid METHOD
 
 
     public void updateXYPositionForMapDrawing() {

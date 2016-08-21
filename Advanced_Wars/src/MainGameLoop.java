@@ -26,11 +26,19 @@ public class MainGameLoop implements Runnable {
         // if the click type is 1, it is a left click.  If click type is greater than 1 it is an alternative click
         // all alternative clicks are treated the same.  They are essentially all treated as right clicks.
 
-        if (gameBoard.getClickType() == 1) {
+        if (gameBoard.getClickType() == 1 &&
+                !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             new FindLeftClickGameStateChanges(gameBoard, xClicked, yClicked);
-        } else if (gameBoard.getClickType() > 1) {
+        } else if (gameBoard.getClickType() > 1 &&
+                !gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             new FindRightClickGameStateChanges(gameBoard, xClicked, yClicked);
+        } else if (gameBoard.isPressedTheAKeyWhileUnitSelected()) {
+            new FindAButtonGameStateChanges(gameBoard);
         }
+
+
+        /////////////////////////if (gameBoard.isPressedTheAKeyWhileUnitSelected())??????????????? What is this again
+
 
         // repaint
         gameDrawingPanel.repaint();

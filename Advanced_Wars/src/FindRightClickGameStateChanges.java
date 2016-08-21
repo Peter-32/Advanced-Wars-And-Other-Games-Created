@@ -22,10 +22,6 @@ private final int topJFrameBorderLength = 30;
         this.xClicked = xClicked;
         this.yClicked = yClicked;
 
-        // check if the "a" button is pressed at the time of this right click
-
-
-
         // check if right click location is a free space with no units;
         // note if a unit moved and/or attacked this turn it counts as a move
         // if so, move and update the unit to have the state moved.*** a military unit property
