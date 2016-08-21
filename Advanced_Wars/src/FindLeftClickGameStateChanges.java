@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /*
  Movement: left click to select, right click to move.  Don't move if A is held.
@@ -337,7 +338,7 @@ public class FindLeftClickGameStateChanges {
 
         // call the graph search function via a GameBoard method.  The graph is on the gameBoard
 
-        Set<WeightedGraph.Node> resultNodes = gameBoard.runNodesAccessibleFromLocationWithSteps(selectedNode, militaryUnitType);
+        CopyOnWriteArrayList<WeightedGraph.Node> resultNodes = gameBoard.runNodesAccessibleFromLocationByUnitType(selectedNode, militaryUnitType);
         System.out.println("left resultNodes");
         // now update the movable choices based on the X, Y locations of the resultNodes
 

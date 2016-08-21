@@ -399,8 +399,8 @@ public class GameBoard extends JFrame {
 
     // Bank
 
-    private int redPlayerBank = 5000;
-    private int bluePlayerBank = 5000;
+    private int redPlayerBank = 12000;
+    private int bluePlayerBank = 12000;
 
     // this stores the tile that should hold the cursor.  0,0  is default because it is always on the board.
 
@@ -1015,8 +1015,8 @@ public class GameBoard extends JFrame {
     This method allows you to call this method against the graph stored in this GameBoard
      */
 
-    public Set<WeightedGraph.Node> runNodesAccessibleFromLocationWithSteps(WeightedGraph.Node startingNode, MilitaryUnitType militaryUnitType) {
-        return graph.nodesAccessibleFromLocationWithSteps(startingNode, militaryUnitType);
+    public CopyOnWriteArrayList<WeightedGraph.Node> runNodesAccessibleFromLocationByUnitType(WeightedGraph.Node startingNode, MilitaryUnitType militaryUnitType) {
+        return graph.nodesAccessibleFromLocationByUnitType(startingNode, militaryUnitType);
     }
 
     /*

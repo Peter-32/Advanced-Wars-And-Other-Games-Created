@@ -67,10 +67,9 @@ public class WeightedGraph {
 
 
     /*
-    Returns the unique nodes that are accessible from this initial x, y location
+    Returns the unique nodes that are accessible from this initial x, y location.
      */
-    Set<Node> nodesAccessibleFromLocationWithSteps(Node startingNode, GameBoard.MilitaryUnitType militaryUnitType
-                                                   ) {
+    CopyOnWriteArrayList<Node> nodesAccessibleFromLocationByUnitType(Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
         int steps = 0;
         switch (militaryUnitType) {
 
@@ -88,110 +87,107 @@ public class WeightedGraph {
                 break;
         }
 
-
         // run the recursive method with the new steps field
 
-        CopyOnWriteArrayList<Node> nodeList = NodesAccessibleFromLocationWithStepsRecursion(
-                new CopyOnWriteArrayList<Node>(), steps, startingNode, militaryUnitType);
+        CopyOnWriteArrayList<Node> nodeList = nodesAccessibleFromLocationInNSteps(steps, startingNode, militaryUnitType);
 
-        // this conversion removes duplicates
+        /*CopyOnWriteArrayList<Node> uniqueNodeList = new HashSet<Node>(nodeList); //This can be used to remove duplicates*/
 
-        Set<Node> uniqueNodeList = new HashSet<Node>(nodeList);
-        return uniqueNodeList;
+        return nodeList;
     }
 
-
-
     /*
-    Recursive call from the nodesAccessibleFromLocationWithSteps method
+    Uses a breadth like search and stops when too many steps have been made.
      */
 
-    CopyOnWriteArrayList<Node> NodesAccessibleFromLocationWithStepsRecursion(
-            CopyOnWriteArrayList<Node> nodeList, int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
+    CopyOnWriteArrayList<Node> nodesAccessibleFromLocationInNSteps(int steps, Node startingNode,
+                                                                   GameBoard.MilitaryUnitType militaryUnitType) {
 
-        System.out.println("New recursive call");
-        boolean useContinueOnce = false;
+        // variables
 
-        // get the xTile and yTile of the startingNode
+        CopyOnWriteArrayList<Node> nodesVisited = new CopyOnWriteArrayList<Node>();
+        CopyOnWriteArrayList<Node> frontierNodes = new CopyOnWriteArrayList<Node>();
+        Node nextNode;
+        CopyOnWriteArrayList<Integer> movementCostToVisitedNode = new CopyOnWriteArrayList<Integer>();
+        CopyOnWriteArrayList<Integer> movementCostToFrontierNode = new CopyOnWriteArrayList<Integer>();
 
-        int startingXTile = startingNode.getXTile();
-        int startingYTile = startingNode.getYTile();
+        // create the frontier
+        // 1) The movements can't be too much
+        // 2) The square cannot be controlled by an enemy unit
 
-        // moves required to go from node 1 to node 2 for the edge
+        CopyOnWriteArrayList<DirectedEdge> tempEdges = nodeEdges.get(startingNode);
+        for (DirectedEdge edge_ : tempEdges) {
+            if (steps >= edge_.getMovementRequired(militaryUnitType) &&
+                    node2NotControlledByEnemyUnit(edge_)) {
+                frontierNodes.add(edge_.getNode2());
+                movementCostToFrontierNode.add(edge_.getMovementRequired(militaryUnitType));
+            }
+        }
 
-        int terrainMovementRequirement;
-        int newSteps = steps;
+        // visit a random frontier until you run out of moves or run out of spaces to visit
 
-        // this stores the nodes that will be moved to
+        while(frontierNodes.size() > 0) {
 
-        Node nodeToMoveTo = null;
+            System.out.println("Stuck in loop");
+            // get the first frontier node
 
-        // the edges at a given node
+            nextNode = frontierNodes.get(0);
 
-        CopyOnWriteArrayList<DirectedEdge> currentEdges = nodeEdges.get(getNodeAtLocation(startingXTile, startingYTile));
+            // add this as a new visited node
+
+            nodesVisited.add(nextNode);
+            movementCostToVisitedNode.add(movementCostToFrontierNode.get(0));
+
+            // generate new frontier nodes after visiting the node above
+            // Only continue if 1) the movements are not too much in total
+            //                  2) the existing arrays of nodes do not contain the new node (node2) (frontier or visited)
+            //                  3) The square cannot be controlled by an enemy unit
+
+            tempEdges = nodeEdges.get(nextNode);
+            for (DirectedEdge edge_ : tempEdges) {
+                if (steps >= edge_.getMovementRequired(militaryUnitType) + movementCostToFrontierNode.get(0) &&
+                        !nodesVisited.contains(edge_.getNode2()) &&
+                        !frontierNodes.contains(edge_.getNode2())) {
+                    frontierNodes.add(edge_.getNode2());
+                    movementCostToFrontierNode.add(movementCostToFrontierNode.get(0) + edge_.getMovementRequired(militaryUnitType));
+                }
+            }
+
+            // remove the node from the frontier node list
+
+            frontierNodes.remove(0);
+            movementCostToFrontierNode.remove(0);
+
+        } // END OF WHILE LOOP
+
+        return nodesVisited;
+    } // END OF nodesAccessibleFromLocationInNSteps METHOD
+
+    boolean node2NotControlledByEnemyUnit(DirectedEdge edge_) {
 
         // prepare to skip movement through tiles with enemy units in them.  You cannot move through the other team's color units.
 
         MilitaryUnit currentMilitaryUnit = null;
         Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
 
-        // loops through all edges that start from this starting node, and go to a new node called "node 2".
+        while (tempUnitsIterator.hasNext()) {
 
-        for (DirectedEdge edge : currentEdges) {
+            // Search for when the X, Y are the same, and
+            // the currently selected military unit color differs from this other military unit.
 
-            useContinueOnce = false;
-
-            // if this edge has the same node2 X position and Y position of an enemy unit then we want to skip this edge.
-
-            while (tempUnitsIterator.hasNext()) {
-
-                currentMilitaryUnit = tempUnitsIterator.next();
-                if (edge.getNode2().getXTile() == currentMilitaryUnit.getXTile() &&
-                        edge.getNode2().getYTile() == currentMilitaryUnit.getYTile() &&
-                        gameBoard.getTurnColor() != currentMilitaryUnit.getColor()) {
-                    useContinueOnce = true;
-                }
-
-            } // ?ND OF WHILE LOOP
-
-            // based on the while loop above, either use continue or don't use it.  This boolean resets to false
-            // for each for loop iteration.
-
-            if (useContinueOnce) {
-                continue;
+            currentMilitaryUnit = tempUnitsIterator.next();
+            if (edge_.getNode2().getXTile() == currentMilitaryUnit.getXTile() &&
+                    edge_.getNode2().getYTile() == currentMilitaryUnit.getYTile() &&
+                    gameBoard.getSelectedMilitaryUnit().getColor() != currentMilitaryUnit.getColor()) {
+                return false;
             }
 
-            terrainMovementRequirement = edge.getMovementRequired(militaryUnitType);
-            nodeToMoveTo = edge.getNode2();
+        } // AND OF WHILE LOOP
 
-            // Check if the number of steps is enough to move over the terrain
-            // Check if the new node is not already in the list being compiled
-
-            if (steps >= terrainMovementRequirement &&
-                    !nodeList.contains(nodeToMoveTo)) {
-
-                // subtract the number of steps possible left
-
-                newSteps = steps - terrainMovementRequirement;
-
-                // add the node2 to the tempNodeList, which represents the new locations the military unit can travel to.
-
-                nodeList.add(nodeToMoveTo);
-
-                // return recursively
-
-                nodeList.addAll(NodesAccessibleFromLocationWithStepsRecursion(nodeList, newSteps, nodeToMoveTo, militaryUnitType));
-
-            }
-
-        } // END OF FOR LOOP
-
-        // return the list.
-
-        System.out.println("Leaving recursive call");
-        return nodeList;
-
+        return true;
     }
+
+
 
 
 
@@ -285,3 +281,110 @@ public class WeightedGraph {
     } // END OF DirectedEdge INNER CLASS
 
 } // END OF WeightedGraph CLASS
+
+
+
+
+
+
+
+
+
+   /*
+    Recursive call from the nodesAccessibleFromLocationWithSteps method
+     */
+
+/*           --------PREVIOUS ATTEMPT AT GRAPH SEARCH------------
+    CopyOnWriteArrayList<Node> NodesAccessibleFromLocationWithStepsRecursion(
+            CopyOnWriteArrayList<Node> nodeList, int steps, Node startingNode, GameBoard.MilitaryUnitType militaryUnitType) {
+
+        // The continue variable is used to skip instances where the path runs into an enemy unit.
+
+        System.out.println("New recursive call");
+        boolean useContinueOnce = false;
+
+*//*      // get the xTile and yTile of the startingNode
+
+        int startingXTile = startingNode.getXTile();
+        int startingYTile = startingNode.getYTile();
+        getNodeAtLocation(startingXTile, startingYTile) *//*
+
+        // moves required to go from node 1 to node 2 for the edge
+
+        int terrainMovementRequirement;
+        int newSteps = steps;
+
+        // this stores the nodes that will be moved to
+
+        Node nodeToMoveTo = null;
+        Node nodeToMoveFrom = null;
+
+        // the edges at a given node
+
+        CopyOnWriteArrayList<DirectedEdge> currentEdges = nodeEdges.get(startingNode);
+
+        // prepare to skip movement through tiles with enemy units in them.  You cannot move through the other team's color units.
+
+        MilitaryUnit currentMilitaryUnit = null;
+        Iterator<MilitaryUnit> tempUnitsIterator = gameBoard.militaryUnitsIterator();
+
+        // loops through all edges that start from this starting node, and go to a new node called "node 2".
+
+        for (DirectedEdge edge : currentEdges) {
+
+            useContinueOnce = false;
+
+            // if this edge has the same node2 X position and Y position of an enemy unit then we want to skip this edge.
+
+            while (tempUnitsIterator.hasNext()) {
+
+                currentMilitaryUnit = tempUnitsIterator.next();
+                if (edge.getNode2().getXTile() == currentMilitaryUnit.getXTile() &&
+                        edge.getNode2().getYTile() == currentMilitaryUnit.getYTile() &&
+                        gameBoard.getTurnColor() != currentMilitaryUnit.getColor()) {
+                    useContinueOnce = true;
+                }
+
+            } // ?ND OF WHILE LOOP
+
+            // based on the while loop above, either use continue or don't use it.  This boolean resets to false
+            // for each for loop iteration.
+
+            if (useContinueOnce) {
+                continue;
+            }
+
+            terrainMovementRequirement = edge.getMovementRequired(militaryUnitType);
+            nodeToMoveTo = edge.getNode2();
+
+            // Check if the number of steps is enough to move over the terrain
+            // Check if the new node is not already in the list being compiled
+
+            if (steps >= terrainMovementRequirement *//* && !nodeList.contains(nodeToMoveTo)*//*) {
+
+                // subtract the number of steps possible left
+
+                newSteps = steps - terrainMovementRequirement;
+
+                // add the node2 to the tempNodeList, which represents the new locations the military unit can travel to.
+
+                nodeList.add(nodeToMoveTo);
+
+                // Update this new variable so it is easier to read by a programmer.
+
+                nodeToMoveFrom = nodeToMoveTo;
+
+                // return recursively
+
+                nodeList.addAll(NodesAccessibleFromLocationWithStepsRecursion(nodeList, newSteps, nodeToMoveFrom, militaryUnitType));
+
+            }
+
+        } // END OF FOR LOOP
+
+        // return the list.
+
+        System.out.println("Leaving recursive call");
+        return nodeList;
+
+    }*/
