@@ -395,6 +395,28 @@ public class GameBoard extends JFrame {
     public void setBuyingFromBasePossible(boolean buyingFromBasePossible) {
         this.buyingFromBasePossible = buyingFromBasePossible;
     }
+    public MilitaryUnit getSelectedMilitaryUnit() {
+        return selectedMilitaryUnit;
+    }
+
+    public void setSelectedMilitaryUnit() {
+        MilitaryUnit currentMilitaryUnit = null;
+        MilitaryUnit selectedMilitaryUnit = null;
+
+        // loop through all units
+
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+            if (currentMilitaryUnit.isSelected()) {
+                selectedMilitaryUnit = currentMilitaryUnit;
+            }
+        }
+
+        // this value can be null.
+
+        this.selectedMilitaryUnit = selectedMilitaryUnit;
+    }
     public Iterator<MilitaryUnit> militaryUnitsIterator() {
         readLock.lock();
         try {
@@ -483,6 +505,7 @@ public class GameBoard extends JFrame {
     private boolean aMilitaryUnitSelected = false;
     private boolean aRangedMilitaryUnitSelected = false;
     private boolean aMeleeMilitaryUnitSelected = false;
+    private MilitaryUnit selectedMilitaryUnit = null;
 
 
     // Turn, base clicked on (a base allows you to buy units)
@@ -1119,29 +1142,6 @@ public class GameBoard extends JFrame {
         return graph.getNodeAtLocation(xTile, yTile);
     }
 
-    /*
-    This finds the one unit selected by the cursor.  Be sure to only call this method if a unit is currently selected.
-     */
-
-    public MilitaryUnit getSelectedMilitaryUnit() {
-        MilitaryUnit currentMilitaryUnit = null;
-        MilitaryUnit selectedMilitaryUnit = null;
-
-        // loop through all units
-
-        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
-        while (tempMilitaryUnitsIterator.hasNext()) {
-            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
-            if (currentMilitaryUnit.isSelected()) {
-                selectedMilitaryUnit = currentMilitaryUnit;
-            }
-        }
-
-        // the return value can be null.
-
-        return selectedMilitaryUnit;
-    }
-
     public void resetMilitaryUnitSelected() {
         System.out.println("test3");
         MilitaryUnit currentMilitaryUnit = null;
@@ -1151,6 +1151,8 @@ public class GameBoard extends JFrame {
 
             currentMilitaryUnit = tempMilitaryUnitsIterator.next();
             currentMilitaryUnit.setSelected(false);
+            updateGameBoardSpecificSelectedMilitaryUnitVariables(false, false, false);
+
         }
         System.out.println("test4");
 
@@ -1346,6 +1348,16 @@ public class GameBoard extends JFrame {
 
     } // END OF updateRangedAttackSquares METHOD
 
+    void updateGameBoardSpecificSelectedMilitaryUnitVariables(boolean isAMilitaryUnitSelected, boolean isMelee, boolean isRanged) {
+        setAMilitaryUnitSelected(isAMilitaryUnitSelected);    // SETTER USED
+        setAMeleeMilitaryUnitSelected(isMelee);    // SETTER USED
+        setARangedMilitaryUnitSelected(isRanged);    // SETTER USED
+        setSelectedMilitaryUnit();    // SETTER USED
+    }
+
+
+
+
 } // END OF GameBoard CLASS
 
 class GameDrawingPanel extends JPanel {
@@ -1364,13 +1376,11 @@ class GameDrawingPanel extends JPanel {
     //// CONSTRUCTOR
 
     GameDrawingPanel(GameBoard gameBoard) {
-        /////////////////// Next game place the different sections into grid bags, but for this it should be okay not to.
+
         this.gameBoard = gameBoard;
         drawingTopLeftXPos = gameBoard.getMapStartX();
         drawingTopLeftYPos = gameBoard.getMapStartY();
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
     // METHODS

@@ -3,37 +3,42 @@ public class FindRightClickGameStateChanges {
     GameBoard gameBoard;
     int xClicked;
     int yClicked;
-    int cursorTileX; ////???????
-    int cursorTileY; ////???????
-    int selectedXTile; ////???????
-    int selectedYTile; ////???????
+    int cursorXTile;
+    int cursorYTile;
+    int selectedXTile;
+    int selectedYTile;
+    boolean isAMilitaryUnitSelected;
+    boolean isAMeleeMilitaryUnitSelected;
+    boolean isARangedMilitaryUnitSelected;
 
-    /*   ACCOUNT FOR THIS!!!!!!!!!!!!!
-        private final int leftJFrameBorderLength = 8;
-private final int topJFrameBorderLength = 30;
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     */
+
     FindRightClickGameStateChanges(GameBoard gameBoard, int xClicked, int yClicked) {
 
         this.gameBoard = gameBoard;
 
-        // Pull in the snapshot click location (x, y)
+        // pull snapshots of variables
 
         this.xClicked = xClicked;
         this.yClicked = yClicked;
-
-        // check if right click location is a free space with no units;
-        // note if a unit moved and/or attacked this turn it counts as a move
-        // if so, move and update the unit to have the state moved.*** a military unit property
-        // only allow movement from units when it is their turn.***
-
-
-
-        // check if the player clicked on a free map location within moving range while their unit was selected
+        selectedXTile = gameBoard.findXTileClickedOn();
+        selectedYTile = gameBoard.findYTileClickedOn();
+        cursorXTile = gameBoard.getCursorMapTileX();
+        cursorYTile = gameBoard.getCursorMapTileY();
+        this.isAMilitaryUnitSelected = gameBoard.isAMilitaryUnitSelected();
+        this.isAMeleeMilitaryUnitSelected = gameBoard.isAMeleeMilitaryUnitSelected();
+        this.isARangedMilitaryUnitSelected = gameBoard.isARangedMilitaryUnitSelected();
 
 
 
-        // check if the player clicked on an enemy unit while their unit was selected
+
+        // check if the player clicked on a tile that is true in the movable grid while a unit is selected (black tiles)
+
+        militaryUnitMovementCommand();
+
+        // check if the player clicked on an enemy unit inside the attack grid and make sure a unti is currently under the cursor
+
+        militaryUnitAttackCommand();
+
 
 
 
@@ -42,7 +47,50 @@ private final int topJFrameBorderLength = 30;
 
     } // END OF CONSTRUCTOR
 
+    /*
+    check if the player clicked on a tile that is true in the movable grid while a unit is selected (black tiles)
+     */
 
+    void militaryUnitMovementCommand() {
+
+        if (!isAMeleeMilitaryUnitSelected) { return; } // return early if no unit is selected
+
+        boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoicesGrid();
+
+        // if the selected tile is currently movable
+
+        if (tempCurrentMoveableChoices[selectedYTile][selectedXTile]) {
+
+
+
+        }
+
+
+
+
+        for (boolean[] row : tempCurrentMoveableChoices) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j]) {
+
+
+
+                }
+
+            }
+
+        } // END OF FOR LOOP
+
+    }
+
+    /*
+    check if the player clicked on an enemy unit inside the attack grid and make sure a unti is currently under the cursor
+     */
+
+    void militaryUnitAttackCommand() {
+
+
+
+    }
 
 
 } // END OF FindRightClickGameStateChanges CLASS
