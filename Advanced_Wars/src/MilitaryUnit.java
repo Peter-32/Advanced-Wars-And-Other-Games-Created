@@ -78,6 +78,14 @@ abstract class MilitaryUnit {
         setDisplayAndCaptureHealth(newDisplayAndCaptureHealth);
     }
 
+    void setCaptureProgress(int captureProgress) {
+        this.captureProgress = captureProgress;
+    }
+
+    int getCaptureProgress() {
+        return captureProgress;
+    }
+
     public int getDefenseStars() {
         return defenseStars;
     }
@@ -86,6 +94,9 @@ abstract class MilitaryUnit {
         this.defenseStars = defenseStars;
     }
 
+    public int getCost() {
+        return cost;
+    }
 
     public GameBoard.MilitaryUnitType getMilitaryUnitType() {
 
@@ -115,6 +126,8 @@ abstract class MilitaryUnit {
     private boolean attackedThisTurn = false;
     private int defenseStars;
     protected boolean isRanged;
+    protected int cost;
+    protected int captureProgress; // getting 20 capture points gains a new building for your team
 
     MilitaryUnit(char color, int xTile, int yTile, boolean selected, boolean movedThisTurn, boolean attackedThisTurn,
                  int defenseStars) {
@@ -151,6 +164,7 @@ class Infantry extends MilitaryUnit {
              int defenseStars) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
         isRanged = false;
+        this.cost = 1000;
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -200,6 +214,7 @@ class Mech extends MilitaryUnit {
          int defenseStars) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
         isRanged = false;
+        this.cost = 1000;
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -249,6 +264,7 @@ class Artillery extends MilitaryUnit {
               int defenseStars) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
         isRanged = true;
+        this.cost = 1000;
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -299,6 +315,7 @@ class Tank extends MilitaryUnit {
          int defenseStars) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
         isRanged = false;
+        this.cost = 1000;
     }
 
     void attack(MilitaryUnit enemyUnit) {

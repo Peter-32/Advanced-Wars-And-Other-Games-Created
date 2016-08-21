@@ -1471,7 +1471,7 @@ public class GameBoard extends JFrame {
     Went for counting buildings each turn rather than keeping a running total which would be more efficient
      */
 
-    void giveNewTurnIncome(char playerColor) {
+    void giveNewTurnIncome() {
         int redDailyIncome = 0;
         int blueDailyIncome = 0;
         int newBankAmount = 0;
@@ -1513,57 +1513,96 @@ public class GameBoard extends JFrame {
 
         } // END OF FOR LOOP
 
-        switch (playerColor) {
+        switch (getTurnColor()) {
             case 'r':
-                newBankAmount = Math.min(99000, getRedPlayerBank() + redDailyIncome);
+                newBankAmount = Math.min(99900, getRedPlayerBank() + redDailyIncome);
                 setRedPlayerBank(newBankAmount);
-                 initiateRepairs('b');  // start the repairs for the other color's start of turn
                 break;
             case 'b':
-                newBankAmount = Math.min(99000, getBluePlayerBank() + blueDailyIncome);
+                newBankAmount = Math.min(99900, getBluePlayerBank() + blueDailyIncome);
                 setBluePlayerBank(newBankAmount);
-                initiateRepairs('r');  // start the repairs for the other color's start of turn
                 break;
 
         } // END OF SWITCH
 
     } // END OF giveNewTurnIncome METHOD
 
-    void initiateRepairs(char playerColor) {
+    void tryRepairingAllUnits() {
 
 
         MilitaryUnit currentMilitaryUnit = null;
+        BuildingTile theBuildingTile;
+        char buildingColor;
 
         // loop through all units; update selected to true or false.
 
         Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
         while (tempMilitaryUnitsIterator.hasNext()) {
             currentMilitaryUnit = tempMilitaryUnitsIterator.next();
-            
 
+            // continue to the next military unit if this one already has full health.  There is no point in repairing it.
 
+            if (currentMilitaryUnit.getHealth() == 100) { continue; }
+
+            // get the building tile at the location of this military unit
+
+            theBuildingTile = getBuildingAtXYTile(currentMilitaryUnit.getXTile(), currentMilitaryUnit.getYTile());
+
+            // get the color of this bulding tile
+
+            buildingColor = getBuildingColor(theBuildingTile);
+
+            // if the building tile is the right color; then try to repair it automatically if the funds allow.
+
+            tryRepairingMilitaryUnit(buildingColor, currentMilitaryUnit); // two chances to repair it for 1/10 of the unit cost.
+            tryRepairingMilitaryUnit(buildingColor, currentMilitaryUnit); // two chances to repair it for 1/10 of the unit cost.
+
+        } // END OF WHILE LOOP
+
+    }  // END OF initiateRepairs METHOD
+
+    void tryRepairingMilitaryUnit(char buildingColor, MilitaryUnit currentMilitaryUnit) {
+
+        // Check if 1) The building is the right color
+        //          2) The unit is the right color
+        //          3) The bank is high enough
+
+        if (buildingColor == getTurnColor() &&
+                currentMilitaryUnit.getColor() == getTurnColor() &&
+                getRedPlayerBank() >= currentMilitaryUnit.getCost() / 10) {
+            setRedPlayerBank(getRedPlayerBank() - (currentMilitaryUnit.getCost() / 10));
+            currentMilitaryUnit.setHealth(currentMilitaryUnit.getHealth() + 10);
         }
-
-
-
-
-
-
-
-
-
-
-        switch (playerColor) {
-
-            case 'r':
-                break;
-            case 'b':
-                break;
-
-        }
-
-
     }
+
+
+    char getBuildingColor(BuildingTile theBuildingtile) {
+
+        switch(theBuildingtile) {
+
+            case NONE:
+                return '0';
+            case GRAY_BASE:
+                return 'g';
+            case GRAY_CITY:
+                return 'g';
+            case RED_HQ:
+                return 'r';
+            case RED_BASE:
+                return 'r';
+            case RED_CITY:
+                return 'r';
+            case BLUE_HQ:
+                return 'b';
+            case BLUE_BASE:
+                return 'b';
+            case BLUE_CITY:
+                return 'b';
+            default:
+                return '0';
+        }
+
+    } // END OF getBuildingColor METHOD
 
 } // END OF GameBoard CLASS
 

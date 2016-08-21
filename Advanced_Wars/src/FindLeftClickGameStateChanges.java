@@ -351,12 +351,14 @@ public class FindLeftClickGameStateChanges {
             if (gameBoard.getTurnColor() == 'r') {
 
                 gameBoard.setTurnColor('b');
-                gameBoard.giveNewTurnIncome('b');
+                gameBoard.giveNewTurnIncome();
+                gameBoard.tryRepairingAllUnits();
 
             } else {
 
                 gameBoard.setTurnColor('r');
-                gameBoard.giveNewTurnIncome('r');
+                gameBoard.giveNewTurnIncome();
+                gameBoard.tryRepairingAllUnits();
 
             }
 
