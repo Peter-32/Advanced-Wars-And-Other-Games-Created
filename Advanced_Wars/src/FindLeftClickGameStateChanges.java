@@ -338,11 +338,13 @@ public class FindLeftClickGameStateChanges {
             if (gameBoard.getTurnColor() == 'r') {
 
                 gameBoard.setTurnColor('b');
+                gameBoard.giveNewTurnIncome('b');
                 System.out.println("It is blue's turn");
 
             } else {
 
                 gameBoard.setTurnColor('r');
+                gameBoard.giveNewTurnIncome('r');
                 System.out.println("It is red's turn");
 
             }

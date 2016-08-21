@@ -1457,7 +1457,62 @@ public class GameBoard extends JFrame {
         return highestDefenseStars;
     }
 
+    /*
+    Went for counting buildings each turn rather than keeping a running total which would be more efficient
+     */
 
+    void giveNewTurnIncome(char playerColor) {
+        int redDailyIncome = 0;
+        int blueDailyIncome = 0;
+
+        BuildingTile[][] tempBuildingTilesGrid = cloneBuildingTilesGrid();
+
+        for (BuildingTile[] row : tempBuildingTilesGrid) {
+            for (int j = 0; j < row.length; j++) {
+                switch(row[j]) {
+
+                    case NONE:
+                        break;
+                    case GRAY_BASE:
+                        break;
+                    case GRAY_CITY:
+                        break;
+                    case RED_HQ:
+                        redDailyIncome += 1000;
+                        break;
+                    case RED_BASE:
+                        redDailyIncome += 1000;
+                        break;
+                    case RED_CITY:
+                        redDailyIncome += 1000;
+                        break;
+                    case BLUE_HQ:
+                        blueDailyIncome += 1000;
+                        break;
+                    case BLUE_BASE:
+                        blueDailyIncome += 1000;
+                        break;
+                    case BLUE_CITY:
+                        blueDailyIncome += 1000;
+                        break;
+
+                } // END OF SWITCH
+
+            } // END OF INNER FOR LOOP
+
+        } // END OF FOR LOOP
+
+        switch (playerColor) {
+            case 'r':
+                setRedPlayerBank(getRedPlayerBank() + redDailyIncome);
+                break;
+            case 'b':
+                setBluePlayerBank(getBluePlayerBank() + blueDailyIncome);
+                break;
+
+        } // END OF SWITCH
+
+    } // END OF giveNewTurnIncome METHOD
 
 
 } // END OF GameBoard CLASS

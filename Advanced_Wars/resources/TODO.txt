@@ -7,9 +7,9 @@ update unit's terrain at creation and movement
 
 
 
-then attack math, 
-then defense points, 
-destroy units and remove them from lists when they lose all health
+Implemented, untested:    then attack math, 
+Implemented, untested:    then defense points, 
+Implemented, untested:    destroy units and remove them from lists when they lose all health
 gain X money at the end of the turn (1000 per building)
 lose X money at end of turn and repair occurs if injured units on on buildings (2 health repair ??? cost)
 then capturing city mechanic, 

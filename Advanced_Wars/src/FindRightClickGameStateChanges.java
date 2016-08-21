@@ -140,7 +140,7 @@ public class FindRightClickGameStateChanges {
             if (currentMilitaryUnit.getHealth() < 0) {
                 gameBoard.removeMilitaryUnits(currentMilitaryUnit);
             }
-            
+
         }
 
     } // END OF checkForDestroyedUnits METHOD
