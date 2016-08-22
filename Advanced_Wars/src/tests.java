@@ -22,8 +22,6 @@ public class tests {
     }
 
     tests() {
-        System.out.println(terrainTilesGrid.length);
-        System.out.println(terrainTilesGrid[0].length);
         /*
         for (int i = 0; i < terrainTilesGrid.length; i++) {
             for (int j = 0; j < terrainTilesGrid[0].length; j++) {

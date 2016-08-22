@@ -718,11 +718,6 @@ public class GameBoard extends JFrame {
         GameDrawingPanel gameDrawingPanel = new GameDrawingPanel(this);
         this.add(gameDrawingPanel, BorderLayout.CENTER);
 
-        // create testing units
-
-        addMilitaryUnits(new Tank('r', 6, 8, true, false, false, 0));
-        addMilitaryUnits(new Tank('b', 7, 8, true, false, false, 0));
-
         // final changes to JFrame
 
         setResizable(false);
@@ -1181,7 +1176,6 @@ public class GameBoard extends JFrame {
     }
 
     public void resetMilitaryUnitSelected() {
-        System.out.println("test3");
         MilitaryUnit currentMilitaryUnit = null;
         Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
 
