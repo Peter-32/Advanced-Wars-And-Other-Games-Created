@@ -1176,6 +1176,7 @@ public class GameBoard extends JFrame {
     }
 
     public void resetMilitaryUnitSelected() {
+        System.out.println("test3");
         MilitaryUnit currentMilitaryUnit = null;
         Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
 
@@ -1650,7 +1651,7 @@ public class GameBoard extends JFrame {
                     // check if the HQ was captured, if so end the game
 
                     if (newBuilding == BuildingTile.BLUE_HQ || newBuilding == BuildingTile.RED_HQ) {
-                        new GameOver();
+                        new GameOver(this);
                     }
 
                 } // END OF INNER IF
