@@ -23,10 +23,15 @@ public class MainGameLoop implements Runnable {
         xClicked = gameBoard.getXClicked();
         yClicked = gameBoard.getYClicked();
 
-        // Check if A button is pressed
+        // Check if A button is pressed; shows a selected units attack grids
 
         if (gameBoard.isPressedTheAKeyWhileUnitSelected()) {
             new FindAButtonGameStateChanges(gameBoard);
+        }
+
+        // Check if Q button is pressed; shows all display attack grids
+        if (gameBoard.isPressedTheQKey()) {
+            new FindQButtonGameStateChanges(gameBoard);
         }
 
         // if the click type is 1, it is a left click.  If click type is greater than 1 it is an alternative click

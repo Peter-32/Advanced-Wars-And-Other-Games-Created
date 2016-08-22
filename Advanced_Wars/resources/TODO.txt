@@ -1,9 +1,33 @@
-Implemented, untested:    then attack choice, 
+Update tab, 1, 2, 3, 4 hotkeys.  Just make them simulate clicks by updating the clicked values, easy enough.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Implemented, untested:    then attack choice,
 Implemented, untested:    then one attack and one move per turn, unless artillery-movement costs an attack, 
 Implemented, and tested:    then health fields and drawing, (Only draw health if the display health is less than 10)
 Implemented, untested:    then attack math,
 Implemented, untested:    then defense points, 
 Implemented, untested:    destroy units and remove them from lists when they lose all health
+
+
+
+
+Finished capturing?
+Apply filter to sprite to gray out when moved
 
 
 

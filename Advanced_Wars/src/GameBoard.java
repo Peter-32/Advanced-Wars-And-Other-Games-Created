@@ -92,7 +92,25 @@ public class GameBoard extends JFrame {
         }
 
     }
+    public boolean[][] cloneCurrentDisplayQAttackChoicesGrid() {
 
+        boolean[][] clonedCurrentDisplayQAttackChoicesGrid = new boolean[10][16];
+        for(int i = 0; i < currentDisplayQAttackChoicesGrid.length; i++) {
+            clonedCurrentDisplayQAttackChoicesGrid[i] = currentDisplayQAttackChoicesGrid[i].clone();
+        }
+        return clonedCurrentDisplayQAttackChoicesGrid;
+    }
+    synchronized public void updateCurrentDisplayQAttackChoicesGrid(int x, int y, boolean newValue) {
+        currentDisplayQAttackChoicesGrid[y][x] = newValue;
+    }
+    synchronized public void resetCurrentDisplayQAttackChoicesGrid() {
+        for (int i = 0; i < currentDisplayQAttackChoicesGrid.length; i++) {
+            for (int j = 0; j < currentDisplayQAttackChoicesGrid[0].length; j++) {
+                currentDisplayQAttackChoicesGrid[i][j] = false;
+            }
+        }
+
+    }
     public int getRedHQXTile() {
         return redHQXTile;
     }
@@ -207,6 +225,13 @@ public class GameBoard extends JFrame {
 
     public boolean isPressedTheAKeyWhileUnitSelected() {
         return pressedTheAKeyWhileUnitSelected;
+    }
+    public boolean isPressedTheQKey() {
+        return pressedTheQKey;
+    }
+
+    public void setPressedTheQKey(boolean pressedTheQKey) {
+        this.pressedTheQKey = pressedTheQKey;
     }
     public boolean isWaitForTheAKeyRelease() {
         return waitForTheAKeyRelease;
@@ -517,12 +542,12 @@ public class GameBoard extends JFrame {
 
     // Other board states
 
-    private boolean lockInput = false; // not sure if this still be used
     private int yClicked = -1;
     private int xClicked = -1;
     private int clickType = -1;
     private boolean pressedTheAKeyWhileUnitSelected = false;
     private boolean waitForTheAKeyRelease = false;
+    private boolean pressedTheQKey = false;
     private boolean GameOver = false;
     private boolean aMilitaryUnitSelected = false;
     private boolean aRangedMilitaryUnitSelected = false;
@@ -532,6 +557,7 @@ public class GameBoard extends JFrame {
     private int redHQYTile;
     private int blueHQXTile;
     private int blueHQYTile;
+
 
 
     // Turn, base clicked on (a base allows you to buy units)
@@ -559,6 +585,7 @@ public class GameBoard extends JFrame {
     private BuildingTile[][] buildingTilesGrid = new BuildingTile[10][16];
     private boolean[][] currentMoveableChoicesGrid = new boolean[10][16];
     private boolean[][] currentAttackChoicesGrid = new boolean[10][16];
+    private boolean[][] currentDisplayQAttackChoicesGrid = new boolean[10][16];
 
     // Terrain
 
@@ -627,6 +654,7 @@ public class GameBoard extends JFrame {
     //// CONSTRUCTOR
     GameBoard(int mapNumber) {
 
+        this.setFocusTraversalKeysEnabled(false);
         this.mapNumber = mapNumber;
         this.setSize(jFrameWidth, jFrameHeight);
         this.setLocationRelativeTo(null);
@@ -650,8 +678,8 @@ public class GameBoard extends JFrame {
         BufferedImage spriteSheetMilitaryUnits = null;
         BufferedImage spriteSheetBtns = null;
         try {
-            spriteSheetBuildings = loader.loadImage("file:./resources/Game Boy Advance - Advance Wars 2 - Buildings.png");
-            spriteSheetMilitaryUnits = loader.loadImage("file:./resources/Map_units.png");
+            spriteSheetBuildings = loader.loadImage("file:./resources/Game Boy Advance - Advance Wars 2 - Buildings_version3.png");
+            spriteSheetMilitaryUnits = loader.loadImage("file:./resources/Map_units_version3.png");
             spriteSheetBtns = loader.loadImage("file:./resources/game_button_spritesheet.png");
         } catch (IOException e) {
             e.printStackTrace();
@@ -776,16 +804,14 @@ public class GameBoard extends JFrame {
     private class ListenForMouse implements MouseListener {
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (!lockInput) {// lock is off
 
-                // Account for the size of the left border
+            // Account for the size of the left border
 
-                xClicked = e.getX() - leftJFrameBorderLength;
+            xClicked = e.getX() - leftJFrameBorderLength;
 
-                // Account for the size of the top border
+            // Account for the size of the top border
 
-                yClicked = e.getY() - topJFrameBorderLength;
-            }
+            yClicked = e.getY() - topJFrameBorderLength;
 
             clickType = e.getButton();
         }
@@ -821,6 +847,8 @@ public class GameBoard extends JFrame {
         @Override
         public void keyPressed(KeyEvent e) {
 
+            // check for A pressed
+
             if (e.getKeyCode() == 65 &&
                     getSelectedMilitaryUnit() != null && // a military unit is selected
                     !waitForTheAKeyRelease) {
@@ -828,6 +856,89 @@ public class GameBoard extends JFrame {
             } else if (e.getKeyCode() == 65) {
                 waitForTheAKeyRelease = true;
             }
+
+            // check for tab pressed; jump to random unit or base that has no unit on it
+
+            if (e.getKeyCode() == 9) {
+                updateClickOntoRandomUnitOrFreeBase();
+
+            }
+
+            // check for space;  end turn if it is pressed
+
+            if (e.getKeyCode() == 32) {
+                xClicked = 144;
+                yClicked = 119;
+                clickType = 1;
+
+            }
+
+            // check for q;  show all display attack ranges while pressed
+
+            if (e.getKeyCode() == 81) {
+                pressedTheQKey = true;
+            }
+
+            // check for 1 pressed to buy first unit
+
+            if (e.getKeyCode() == 49) {
+                if (getTurnColor() == 'r') {
+                    xClicked = 143;
+                    yClicked = 185;
+                    clickType = 1;
+
+                } else if (getTurnColor() == 'b') {
+                    xClicked = 143;
+                    yClicked = 478;
+                    clickType = 1;
+                }
+            }
+
+            // check for 2 pressed to buy first unit
+
+            if (e.getKeyCode() == 50) {
+                if (getTurnColor() == 'r') {
+                    xClicked = 143;
+                    yClicked = 259;
+                    clickType = 1;
+
+                } else if (getTurnColor() == 'b') {
+                    xClicked = 143;
+                    yClicked = 559;
+                    clickType = 1;
+                }
+            }
+
+            // check for 3 pressed to buy first unit
+
+            if (e.getKeyCode() == 51) {
+                if (getTurnColor() == 'r') {
+                    xClicked = 143;
+                    yClicked = 339;
+                    clickType = 1;
+
+                } else if (getTurnColor() == 'b') {
+                    xClicked = 143;
+                    yClicked = 637;
+                    clickType = 1;
+                }
+            }
+
+            // check for 4 pressed to buy first unit
+
+            if (e.getKeyCode() == 52) {
+                if (getTurnColor() == 'r') {
+                    xClicked = 143;
+                    yClicked = 410;
+                    clickType = 1;
+
+                } else if (getTurnColor() == 'b') {
+                    xClicked = 143;
+                    yClicked = 706;
+                    clickType = 1;
+                }
+            }
+
         }
 
         @Override
@@ -835,6 +946,10 @@ public class GameBoard extends JFrame {
             if (e.getKeyCode() == 65) {
                 waitForTheAKeyRelease = false;
                 pressedTheAKeyWhileUnitSelected = false;
+            }
+
+            if (e.getKeyCode() == 81) {
+                pressedTheQKey = false;
             }
         }
     }
@@ -1179,7 +1294,6 @@ public class GameBoard extends JFrame {
     }
 
     public void resetMilitaryUnitSelected() {
-        System.out.println("test3");
         MilitaryUnit currentMilitaryUnit = null;
         Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
 
@@ -1641,7 +1755,7 @@ public class GameBoard extends JFrame {
 
                 // check if the unit has completed the capture.  If so do state updates.
 
-                if (currentMilitaryUnit.captureProgress > 20) {
+                if (currentMilitaryUnit.captureProgress >= 20) {
 
                     // find what the new building should be
 
@@ -1717,6 +1831,246 @@ public class GameBoard extends JFrame {
 
     } // END OF findCapturedBuildingNewBuildingType METHOD
 
+    void updateClickOntoRandomUnitOrFreeBase() {
+
+        MilitaryUnit currentMilitaryUnit = null;
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
+        ArrayList<Integer> xTiles = new ArrayList<Integer>();
+        ArrayList<Integer> yTiles = new ArrayList<Integer>();
+
+        while (tempMilitaryUnitsIterator.hasNext()) {
+
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+
+            // move on if the unit is another color or has moved already
+
+            if (currentMilitaryUnit.getColor() != getTurnColor()) {
+                continue;
+            }
+            if (currentMilitaryUnit.isMovedThisTurn()) {
+                continue;
+            }
+
+            // add x and y to the array for military units that haven't met the continue conditions above.
+
+            xTiles.add(currentMilitaryUnit.getXTile());
+            yTiles.add(currentMilitaryUnit.getYTile());
+
+        }
+
+        // add the x and y to the array for bases without units on them
+
+        BuildingTile[][] tempBuildingTilesGrid = cloneBuildingTilesGrid();
+        int rowNum = 0;
+        for (BuildingTile[] row : tempBuildingTilesGrid) {
+            for (int j = 0; j < row.length; j++) {
+
+                // if there is no military unit continue to the switch
+
+                if (getMilitaryUnitAtXYTile(j, rowNum) == null) {
+
+                    switch (row[j]) {
+
+                        case RED_BASE:
+                            if (turnColor == 'r') {
+                                xTiles.add(j);
+                                yTiles.add(rowNum);
+                            }
+                            break;
+                        case BLUE_BASE:
+                            if (turnColor == 'b') {
+                                xTiles.add(j);
+                                yTiles.add(rowNum);
+                            }
+                            break;
+
+                    } // END OF SWITCH
+                }
+
+            } // END OF INNER FOR LOOP
+            rowNum++;
+        } // END OF FOR LOOP
+
+        // get the array size and generate a random number
+
+        int size = xTiles.size();
+        if (size == 0) { return; } // if empty return early without updating clicks
+        int randomNumber = (int) (Math.random() * size);
+
+        // update click location
+        xClicked = getMapStartX() + (getTileLength() * xTiles.get(randomNumber)) + 30;
+        yClicked = getMapStartY() + (getTileLength() * yTiles.get(randomNumber)) + 30;
+        clickType = 1;
+
+    }
+
+    /*
+    This will update the state of the displayQAttackChoicesGrid.  This is for viewing all attacks possible at once on all your units
+     */
+
+    void updateDisplayQAttackSquares() {
+
+        // variables
+        resetCurrentDisplayQAttackChoicesGrid();
+        int xTile, yTile;
+        MilitaryUnit currentMilitaryUnit = null;
+
+        Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
+        while (tempMilitaryUnitsIterator.hasNext()) {
+            currentMilitaryUnit = tempMilitaryUnitsIterator.next();
+
+            // continue to next iteration if this unit has already attacked
+
+            if (currentMilitaryUnit.isAttackedThisTurn()) { continue; }
+            xTile = currentMilitaryUnit.getXTile();
+            yTile = currentMilitaryUnit.getYTile();
+
+            if (currentMilitaryUnit.getMilitaryUnitType() != MilitaryUnitType.ARTILLERY) {
+
+                if (xTile != 0) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 1, yTile, true);
+                }
+
+                if (xTile != getMapTileWidth() - 1) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 1, yTile, true);
+                }
+
+                if (yTile != 0) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile, yTile - 1, true);
+                }
+
+                if (yTile != getMapTileHeight() - 1) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile, yTile + 1, true);
+                }
+
+            } else {
+
+                // furthest left
+
+                if (xTile >= 3) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 3, yTile, true);
+                }
+
+                // furthest up
+
+                if (yTile >= 3) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile, yTile - 3, true);
+                }
+
+                // furthest right
+
+                if (xTile <= getMapTileWidth() - 4) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 3, yTile, true);
+                }
+
+                // furthest down
+
+                if (yTile <= getMapTileHeight() - 4) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile, yTile + 3, true);
+                }
+
+                // left 2
+
+                if (xTile >= 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 2, yTile, true);
+                }
+
+                // up 2
+
+                if (yTile >= 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile, yTile - 2, true);
+                }
+
+                // right 2
+
+                if (xTile <= getMapTileWidth() - 3) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 2, yTile, true);
+                }
+
+                // down 2
+
+                if (yTile <= getMapTileHeight() - 3) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile, yTile + 2, true);
+                }
+
+                // diagonal up 1 / left 1
+
+                if (xTile >= 1 && yTile >= 1) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 1, yTile - 1, true);
+                }
+
+                // diagonal up 1 / right 1
+
+                if (xTile <= getMapTileWidth() - 2 && yTile >= 1) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 1, yTile - 1, true);
+                }
+
+                // diagonal down 1 / left 1
+
+                if (xTile >= 1 && yTile <= getMapTileHeight() - 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 1, yTile + 1, true);
+                }
+
+                // diagonal down 1 / right 1
+
+                if (xTile <= getMapTileWidth() - 2 && yTile <= getMapTileHeight() - 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 1, yTile + 1, true);
+                }
+
+                // diagonal up 2 / left 1
+
+                if (xTile >= 1 && yTile >= 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 1, yTile - 2, true);
+                }
+
+                // diagonal up 1 / left 2
+
+                if (xTile >= 2 && yTile >= 1) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 2, yTile - 1, true);
+                }
+
+                // diagonal up 2 / right 1
+
+                if (xTile <= getMapTileWidth() - 2 && yTile >= 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 1, yTile - 2, true);
+                }
+
+                // diagonal up 1 / right 2
+
+                if (xTile <= getMapTileWidth() - 3 && yTile >= 1) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 2, yTile - 1, true);
+                }
+                // diagonal down 2 / left 1
+
+                if (xTile >= 1 && yTile <= getMapTileHeight() - 3) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 1, yTile + 2, true);
+                }
+
+                // diagonal down 1 / left 2
+
+                if (xTile >= 2 && yTile <= getMapTileHeight() - 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile - 2, yTile + 1, true);
+                }
+
+                // diagonal down 2 / right 1
+
+                if (xTile <= getMapTileWidth() - 2 && yTile <= getMapTileHeight() - 3) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 1, yTile + 2, true);
+                }
+
+                // diagonal down 1 / right 2
+
+                if (xTile <= getMapTileWidth() - 3 && yTile <= getMapTileHeight() - 2) {
+                    updateCurrentDisplayQAttackChoicesGrid(xTile + 2, yTile + 1, true);
+                }
+
+            }
+
+        }
+
+    } // END OF updateDisplayQAttackSquares METHOD
+
+
 } // END OF GameBoard CLASS
 
 class GameDrawingPanel extends JPanel {
@@ -1787,6 +2141,8 @@ class GameDrawingPanel extends JPanel {
             if (!gameBoard.getSelectedMilitaryUnit().isAttackedThisTurn()) {  // if military unit has not attacked this turn (null checked above)
                 drawAttackGrid(graphicSettings);
             }
+        } else if (gameBoard.isPressedTheQKey()) {
+            drawDisplayQAttackGrid(graphicSettings);
         }
 
 
@@ -1953,8 +2309,11 @@ class GameDrawingPanel extends JPanel {
         int drawXPosition = 0;
         int drawYPosition = 0;
         final int drawStringAdjustmentX = (int) (0.80 * gameBoard.getTileLength());
+        final int drawStringAdjustment2X = (int) (0.60 * gameBoard.getTileLength());
         final int drawStringAdjustmentY = gameBoard.getTileLength();
+        final int drawStringAdjustment2Y = (int) (0.30 * gameBoard.getTileLength());
         int currentDisplayAndCaptureHealth;
+        int currentCaptureProgress;
 
         // loop through all units; update selected to true or false.
 
@@ -1967,6 +2326,7 @@ class GameDrawingPanel extends JPanel {
             drawXPosition = gameBoard.getMapStartX() + (gameBoard.getTileLength() * currentMilitaryUnit.getXTile());
             drawYPosition = gameBoard.getMapStartY() + (gameBoard.getTileLength() * currentMilitaryUnit.getYTile());
             currentDisplayAndCaptureHealth = currentMilitaryUnit.getDisplayAndCaptureHealth();
+            currentCaptureProgress = currentMilitaryUnit.getCaptureProgress();
 
             // if a red unit, make a red unit
 
@@ -2011,6 +2371,7 @@ class GameDrawingPanel extends JPanel {
             } // END OF ELSE
 
             // Draw health if under 10 displayAndCaptureHealth
+
             if (currentDisplayAndCaptureHealth < 10) {
                 g.setColor(Color.BLACK);
                 g.fillRect(drawXPosition + gameBoard.getTileLength() - 20, drawYPosition + gameBoard.getTileLength() - 20, 20, 20);
@@ -2019,6 +2380,18 @@ class GameDrawingPanel extends JPanel {
                 g.drawString(Integer.toString(currentDisplayAndCaptureHealth),
                         drawXPosition + drawStringAdjustmentX,
                         drawYPosition + drawStringAdjustmentY);
+            }
+
+            // draw capture if greater than 0
+            if (currentCaptureProgress > 0) {
+                if (currentMilitaryUnit.getColor() == 'r') { g.setColor(Color.RED); } else { g.setColor(Color.BLUE); }
+                //g.setColor(Color.BLACK);
+                g.fillRect(drawXPosition + gameBoard.getTileLength() - 30, drawYPosition, 30, 30);
+                g.setColor(Color.GREEN);
+                g.setFont(new Font("TimesRoman", Font.PLAIN, 25));
+                g.drawString(Integer.toString(currentCaptureProgress),
+                        drawXPosition + drawStringAdjustment2X,
+                        drawYPosition + drawStringAdjustment2Y);
             }
 
         } // END OF WHLIE LOOP
@@ -2093,6 +2466,28 @@ class GameDrawingPanel extends JPanel {
 
     } // END OF drawAttackGrid METHOD
 
+    void drawDisplayQAttackGrid(Graphics2D graphicSettings) {
+        boolean[][] tempCurrentDisplayQAttackChoices = gameBoard.cloneCurrentDisplayQAttackChoicesGrid();
+
+        graphicSettings.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.40f));
+        graphicSettings.setPaint(Color.RED);
+
+        for (boolean[] row : tempCurrentDisplayQAttackChoices) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j]) {
+
+                    // draw a transparent rectangle
+
+                    graphicSettings.fill(new Rectangle(drawingTopLeftXPos, drawingTopLeftYPos, gameBoard.getTileLength(),
+                            gameBoard.getTileLength()));
+                }
+
+                updateXYPositionForMapDrawing();
+            }
+
+        } // END OF FOR LOOP
+
+    } // END OF drawDisplayQAttackGrid METHOD
 
     public void updateXYPositionForMapDrawing() {
         if (drawingTopLeftXPos < gameBoard.getMapWidth() + gameBoard.getMapStartX() - gameBoard.getTileLength()) {

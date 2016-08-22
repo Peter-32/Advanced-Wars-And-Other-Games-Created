@@ -366,7 +366,7 @@ public class FindLeftClickGameStateChanges {
 
                 // at end of turn it tries capturing buildings
 
-                gameBoard.continueBuildingCapturesAndCheckForCompletion('r');
+                gameBoard.continueBuildingCapturesAndCheckForCompletion('b');
 
             }
 
