@@ -62,7 +62,7 @@ public class FindRightClickGameStateChanges {
 
     void militaryUnitMovementOrMergeCommand() {
 
-        MilitaryUnit clickedOnMilitaryUnit = selectedMilitaryUnit = gameBoard.getMilitaryUnitAtXYTile(clickedXTile, clickedYTile);
+        MilitaryUnit clickedOnMilitaryUnit = gameBoard.getMilitaryUnitAtXYTile(clickedXTile, clickedYTile);
         boolean[][] tempCurrentMoveableChoices = gameBoard.cloneCurrentMoveableChoicesGrid();
         int defenseStars = 0;
 

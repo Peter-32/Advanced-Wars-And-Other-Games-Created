@@ -2109,5 +2109,3 @@ class GameDrawingPanel extends JPanel {
     }
 }
 
-
-
