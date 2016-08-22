@@ -46,7 +46,7 @@ public class GameBoard extends JFrame {
     public BuildingTile[][] cloneBuildingTilesGrid() {
 
         BuildingTile[][] clonedBuildingTilesGrid = new BuildingTile[10][16];
-        for(int i = 0; i < terrainTilesGrid.length; i++) {
+        for(int i = 0; i < buildingTilesGrid.length; i++) {
             clonedBuildingTilesGrid[i] = buildingTilesGrid[i].clone();
         }
         return clonedBuildingTilesGrid;
@@ -61,6 +61,9 @@ public class GameBoard extends JFrame {
     }
     synchronized public void updateCurrentMoveableChoicesGrid(int x, int y, boolean newValue) {
         currentMoveableChoicesGrid[y][x] = newValue;
+    }
+    synchronized public void updateBuildingTilesGrid(int x, int y, BuildingTile newValue) {
+        buildingTilesGrid[y][x] = newValue;
     }
     synchronized public void resetCurrentMoveableChoicesGrid() {
         for (int i = 0; i < currentMoveableChoicesGrid.length; i++) {
@@ -1606,7 +1609,7 @@ public class GameBoard extends JFrame {
 
     void continueBuildingCapturesAndCheckForCompletion(char playerColor) {
 
-
+        BuildingTile newBuilding = null;
         MilitaryUnit currentMilitaryUnit = null;
 
         Iterator<MilitaryUnit> tempMilitaryUnitsIterator = militaryUnitsIterator();
@@ -1636,18 +1639,85 @@ public class GameBoard extends JFrame {
 
             if (currentMilitaryUnit.getColor() == playerColor && // #1
                     (currentMilitaryUnit.getMilitaryUnitType() == MilitaryUnitType.INFANTRY || currentMilitaryUnit.getMilitaryUnitType() == MilitaryUnitType.MECH)) { // #2
-                
+                currentMilitaryUnit.setCaptureProgress(currentMilitaryUnit.getCaptureProgress() + currentMilitaryUnit.getDisplayAndCaptureHealth());
 
+                // check if the unit has completed the capture.  If so do state updates.
 
+                if (currentMilitaryUnit.captureProgress > 20) {
 
+                    // find what the new building should be
+
+                    newBuilding = findCapturedBuildingNewBuildingType(buildingTile, playerColor);
+
+                    updateBuildingTilesGrid(currentMilitaryUnit.getXTile(), currentMilitaryUnit.getYTile(), newBuilding);
+
+                    currentMilitaryUnit.setCaptureProgress(0);
+
+                    // check if the HQ was captured, if so end the game
+
+                    if (newBuilding == BuildingTile.BLUE_HQ || newBuilding == BuildingTile.RED_HQ) {
+                        new GameOver();
+                    }
+
+                } // END OF INNER IF
+
+            } // END OF IF
+
+        } // END OF WHILE
+
+    } // END OF continueBuildingCapturesAndCheckForCompletion METHOD
+
+    BuildingTile findCapturedBuildingNewBuildingType(BuildingTile buildingTile, char playerColor) {
+
+        BuildingTile newBuildingTile = null;
+
+        if (playerColor == 'r') {
+
+            switch (buildingTile) {
+
+                case GRAY_BASE:
+                    newBuildingTile = BuildingTile.RED_BASE;
+                    break;
+                case GRAY_CITY:
+                    newBuildingTile = BuildingTile.RED_CITY;
+                    break;
+                case BLUE_HQ:
+                    newBuildingTile = BuildingTile.RED_HQ;
+                    break;
+                case BLUE_BASE:
+                    newBuildingTile = BuildingTile.RED_BASE;
+                    break;
+                case BLUE_CITY:
+                    newBuildingTile = BuildingTile.RED_CITY;
+                    break;
+            }
+
+        } else if (playerColor == 'b') {
+
+            switch (buildingTile) {
+
+                case GRAY_BASE:
+                    newBuildingTile = BuildingTile.BLUE_BASE;
+                    break;
+                case GRAY_CITY:
+                    newBuildingTile = BuildingTile.BLUE_CITY;
+                    break;
+                case RED_HQ:
+                    newBuildingTile = BuildingTile.BLUE_HQ;
+                    break;
+                case RED_BASE:
+                    newBuildingTile = BuildingTile.BLUE_BASE;
+                    break;
+                case RED_CITY:
+                    newBuildingTile = BuildingTile.BLUE_CITY;
+                    break;
             }
 
         }
 
+        return newBuildingTile;
 
-
-    }
-
+    } // END OF findCapturedBuildingNewBuildingType METHOD
 
 } // END OF GameBoard CLASS
 
