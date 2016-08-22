@@ -618,13 +618,16 @@ public class GameBoard extends JFrame {
 
     private final Lock writeLock;
 
+    // store the map number
+    private final int mapNumber;
 
 
     // enum?
 
     //// CONSTRUCTOR
-    GameBoard() {
+    GameBoard(int mapNumber) {
 
+        this.mapNumber = mapNumber;
         this.setSize(jFrameWidth, jFrameHeight);
         this.setLocationRelativeTo(null);
         this.setTitle("Advance Wars");
@@ -703,7 +706,7 @@ public class GameBoard extends JFrame {
 
         // load map #1
 
-        loadMap(1);
+        loadMap(mapNumber);
 
         // Start the mouse listener class
         // his prompts the main game loop each time there is user input
