@@ -1,0 +1,12 @@
+Place SQL Code for by month into iram.
+
+Make zzz aliases, make it API compatible, Auto update names/formats/totals/invisible/hide if empty/Drilldown choice+new+report
+update drilldown choices for dashboard and action_id
+
+GUI for adding drilldowns: (After both exist)
+  column:
+  from report:
+  to report:
+
+
+Create generic version of 12 dashboards that just have one filter choice.  Update later to get unique elements (Use tool to update drill throughs)

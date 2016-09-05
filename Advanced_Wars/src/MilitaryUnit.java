@@ -214,7 +214,7 @@ class Mech extends MilitaryUnit {
          int defenseStars) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
         isRanged = false;
-        this.cost = 1000;
+        this.cost = 3000;
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -264,7 +264,7 @@ class Artillery extends MilitaryUnit {
               int defenseStars) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
         isRanged = true;
-        this.cost = 1000;
+        this.cost = 6000;
     }
 
     void attack(MilitaryUnit enemyUnit) {
@@ -282,16 +282,16 @@ class Artillery extends MilitaryUnit {
         switch (enemyUnitType) {
 
             case INFANTRY:
-                baseDamage = 90;
+                baseDamage = 90*.8; // 90 is original
                 break;
             case MECH:
-                baseDamage = 85;
+                baseDamage = 85*.8; // 85 is original
                 break;
             case ARTILLERY:
-                baseDamage = 75;
+                baseDamage = 75*.8; // 75 is original
                 break;
             case TANK:
-                baseDamage = 70;
+                baseDamage = 70*.8; // 70 is original
                 break;
             default:
                 baseDamage = 0;
@@ -315,7 +315,7 @@ class Tank extends MilitaryUnit {
          int defenseStars) {
         super(color, xTile, yTile, selected, movedThisTurn, attackedThisTurn, defenseStars);
         isRanged = false;
-        this.cost = 1000;
+        this.cost = 7000;
     }
 
     void attack(MilitaryUnit enemyUnit) {
