@@ -489,6 +489,26 @@ public class GameBoard extends JFrame {
             writeLock.unlock();
         }
     }
+    public AI getAi() {
+        return ai;
+    }
+
+    public boolean isToldAIToExecuteTurn() {
+        return toldAIToExecuteTurn;
+    }
+
+    public void setToldAIToExecuteTurn(boolean toldAIToExecuteTurn) {
+        this.toldAIToExecuteTurn = toldAIToExecuteTurn;
+    }
+
+    public int getTurnNumber() {
+        return turnNumber;
+    }
+
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
+    }
+
 
     //// FIELDS
     private final int jFrameWidth = 1500;
@@ -645,17 +665,20 @@ public class GameBoard extends JFrame {
 
     private final Lock writeLock;
 
-    // store the map number
+    // store the map number and number of players from user input
     private final int mapNumber;
-
-
-    // enum?
+    public final int players;
+    private AI ai;
+    private boolean toldAIToExecuteTurn = false;
+    private int turnNumber = 0;
 
     //// CONSTRUCTOR
-    GameBoard(int mapNumber) {
+    GameBoard(int mapNumber, int players) {
 
         this.setFocusTraversalKeysEnabled(false);
         this.mapNumber = mapNumber;
+        this.players = players;
+        this.ai = new AI(this);
         this.setSize(jFrameWidth, jFrameHeight);
         this.setLocationRelativeTo(null);
         this.setTitle("Advance Wars");
@@ -805,6 +828,11 @@ public class GameBoard extends JFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
 
+            // don't allow input here if it is the AI's turn
+
+            if (players == 1 &&
+                    getTurnColor() == 'b') { return; }
+
             // Account for the size of the left border
 
             xClicked = e.getX() - leftJFrameBorderLength;
@@ -846,6 +874,11 @@ public class GameBoard extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent e) {
+
+            // don't allow input here if it is the AI's turn
+
+            if (players == 1 &&
+                    getTurnColor() == 'b') { return; }
 
             // check for A pressed
 

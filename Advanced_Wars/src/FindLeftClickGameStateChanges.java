@@ -36,6 +36,13 @@ public class FindLeftClickGameStateChanges {
         clickedYTile = gameBoard.findYTileClickedOn();
 
 
+        if (gameBoard.getTurnColor() == 'b') {
+            System.out.println(gameBoard.getXClicked());
+            System.out.println(gameBoard.getYClicked());
+        }
+
+
+
         // check if end turn was clicked on
 
         turnChanged = checkIfEndTurnWasClickedOnAndChangeTurn();
@@ -349,7 +356,7 @@ public class FindLeftClickGameStateChanges {
             resetAllMilitaryUnitsHasMoved();
 
             if (gameBoard.getTurnColor() == 'r') {
-
+                gameBoard.setToldAIToExecuteTurn(false);
                 gameBoard.setTurnColor('b');
                 gameBoard.giveNewTurnIncome();
                 gameBoard.tryRepairingAllUnits();
@@ -367,6 +374,7 @@ public class FindLeftClickGameStateChanges {
                 // at end of turn it tries capturing buildings
 
                 gameBoard.continueBuildingCapturesAndCheckForCompletion('b');
+                gameBoard.setTurnNumber(gameBoard.getTurnNumber() + 1);
 
             }
 

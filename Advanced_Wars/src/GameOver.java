@@ -5,6 +5,6 @@ class GameOver {
 
     GameOver(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
-        JOptionPane.showMessageDialog(gameBoard, "Game Over!");
+        JOptionPane.showMessageDialog(gameBoard, "Game Over! Turns: " + gameBoard.getTurnNumber());
     }
 }

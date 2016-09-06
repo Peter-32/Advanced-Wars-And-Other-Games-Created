@@ -19,6 +19,15 @@ public class MainGameLoop implements Runnable {
     @Override
     public void run() {
 
+        // AI Executes turn
+
+        if (gameBoard.players == 1 &&
+                gameBoard.getTurnColor() == 'b' &&
+                !gameBoard.isToldAIToExecuteTurn()) {
+            System.out.println("TEST");
+            gameBoard.getAi().executeEntireTurn();
+        }
+
         // set the xClicked and yClicked for this frame
         xClicked = gameBoard.getXClicked();
         yClicked = gameBoard.getYClicked();
@@ -44,9 +53,6 @@ public class MainGameLoop implements Runnable {
         }
 
         // Search for game over
-
-
-
 
         // repaint
         gameDrawingPanel.repaint();
