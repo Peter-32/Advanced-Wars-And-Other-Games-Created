@@ -16,11 +16,64 @@ public class AI {
 
         gameBoard.setToldAIToExecuteTurn(true);
 
-        decideWhatWillBeDoneThisTurn();
+
+        moveEachUnit();
+        buildFromEachBase();
 
         clickEndTurn();
 
     }
+
+
+
+
+    // Rules:
+    /*
+    Never move units onto bases
+    Build units after all units moved
+    Use point system to decide which moves to make.  Move one unit at a time based on the highest point from moving that unit.
+    Get highest points from building units;  You get good points for infintry at first, then diminishing returns
+    based on how many gray are left, and how the enemy units vs your units total spend compares.  If the computer is behind and it
+    is after a few turns, they will want non-infantry units to fight back.
+
+    Higher points for taking out enemy
+    Higher points for starting and ending capturing
+    Higher points for moving closer to the enemy
+    Lower points for moving into artillery strike range
+
+
+    notes:
+    get a total tank, infantry, mech, artillery counter based on when they are destroyed and created (RED and BLUE)
+    Get a Matchup chart to calculate the $$ Overall gain over the opponent.  IE. a fight one loses 400$ worth and other loses 200$ worth.
+        One of them is 200$ ahead; the computer can use these for deciding who to attack who; and avoiding bad attacks.
+
+
+
+     */
+
+
+
+
+
+
+
+    private void moveEachUnit() {
+
+    }
+
+
+    private void buildFromEachBase() {
+
+    }
+
+    private void calculateDeltaPointsMovement() {
+
+    }
+
+    private void calculateDeltaPointsAttack() {
+
+    }
+
 
     private void decideWhatWillBeDoneThisTurn() {
 
