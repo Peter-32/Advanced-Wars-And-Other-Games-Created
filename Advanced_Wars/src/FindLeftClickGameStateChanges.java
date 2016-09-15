@@ -37,8 +37,6 @@ public class FindLeftClickGameStateChanges {
 
 
         if (gameBoard.getTurnColor() == 'b') {
-            System.out.println(gameBoard.getXClicked());
-            System.out.println(gameBoard.getYClicked());
         }
 
 

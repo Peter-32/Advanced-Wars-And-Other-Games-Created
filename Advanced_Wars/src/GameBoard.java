@@ -1061,8 +1061,8 @@ public class GameBoard extends JFrame {
         }
 
         //File mapTerrainFile = new File("file:./resources/Map" + 1 + "_Terrain.txt");        Why doesn't this work???
-        File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
-        // USE THIS ON MAC File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
+        // File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
+        File mapTerrainFile = new File("/Users/peterjmyers/Documents/Personal/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Terrain.txt");
         BufferedReader br = null;
         try {
             br = new BufferedReader(
@@ -1212,8 +1212,8 @@ public class GameBoard extends JFrame {
         }
 
         //File mapTerrainFile = new File("file:./resources/Map" + 1 + "_Terrain.txt");        Why doesn't this work???
-        File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
-        // USE THIS ON MAC File mapTerrainFile = new File("/Users/peterjmyers/IdeaProjects/GameClones/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
+        //File mapTerrainFile = new File("C:/Users/Peter/Java Projects/Game_Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
+        File mapTerrainFile = new File("/Users/peterjmyers/Documents/Personal/Game-Clones/Advanced_Wars/resources/Map" + mapNumber + "_Buildings.txt");
         BufferedReader br = null;
 
         try {
@@ -1954,7 +1954,7 @@ public class GameBoard extends JFrame {
 
             // continue to next iteration if this unit has already attacked
 
-            if (currentMilitaryUnit.isAttackedThisTurn()) { continue; }
+            if (currentMilitaryUnit.getColor() == turnColor || currentMilitaryUnit.getMilitaryUnitType() != MilitaryUnitType.ARTILLERY) { continue; }
             xTile = currentMilitaryUnit.getXTile();
             yTile = currentMilitaryUnit.getYTile();
 
@@ -2174,7 +2174,8 @@ class GameDrawingPanel extends JPanel {
             if (!gameBoard.getSelectedMilitaryUnit().isAttackedThisTurn()) {  // if military unit has not attacked this turn (null checked above)
                 drawAttackGrid(graphicSettings);
             }
-        } else if (gameBoard.isPressedTheQKey()) {
+        }
+        if (gameBoard.isPressedTheQKey()) {
             drawDisplayQAttackGrid(graphicSettings);
         }
 

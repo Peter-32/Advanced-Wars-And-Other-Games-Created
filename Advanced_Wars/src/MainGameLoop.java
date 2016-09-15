@@ -24,7 +24,6 @@ public class MainGameLoop implements Runnable {
         if (gameBoard.players == 1 &&
                 gameBoard.getTurnColor() == 'b' &&
                 !gameBoard.isToldAIToExecuteTurn()) {
-            System.out.println("TEST");
             gameBoard.getAi().executeEntireTurn();
         }
 

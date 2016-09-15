@@ -32,7 +32,7 @@ public class AI {
     Never move units onto bases
     Build units after all units moved
     Use point system to decide which moves to make.  Move one unit at a time based on the highest point from moving that unit.
-    Get highest points from building units;  You get good points for infintry at first, then diminishing returns
+    Get highest points from building units;  You get good points for infantry at first, then diminishing returns
     based on how many gray are left, and how the enemy units vs your units total spend compares.  If the computer is behind and it
     is after a few turns, they will want non-infantry units to fight back.
 
